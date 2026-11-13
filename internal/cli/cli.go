@@ -41,8 +41,8 @@ func Run(ctx context.Context, args []string, env Env) int {
 func newRootCmd(env Env) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "trk <command>",
-		Short: "Work trk cards from your terminal and your own agent",
-		Long: "trk takes a card from trk to your terminal, so you or your coding agent\n" +
+		Short: "Work Trk cards from your terminal and your own agent",
+		Long: "trk takes a card from Trk to your terminal, so you or your coding agent\n" +
 			"can work it, and the pull request finds its way back to the card.",
 		Example: "  trk login\n" +
 			"  trk card take BaHtsbhzVDa9 --branch",

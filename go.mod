@@ -3,6 +3,7 @@ module github.com/cirope/trk-cli
 go 1.27.4
 
 require (
+	github.com/google/go-cmp v0.7.0
 	github.com/rogpeppe/go-internal v1.16.0
 	github.com/spf13/cobra v1.10.2
 )

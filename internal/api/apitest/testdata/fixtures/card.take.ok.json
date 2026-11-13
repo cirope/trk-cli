@@ -1,0 +1,94 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/take"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "card": {
+        "id": "BaHtsbhzVDa9",
+        "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9",
+        "title": "CSV export loses accents",
+        "description": "Rows come out as mojibake in Excel.",
+        "type": "bug",
+        "priority": "high",
+        "state": "open",
+        "due_on": "2026-11-27",
+        "closed_at": null,
+        "archived_at": null,
+        "agent": false,
+        "board": {
+          "id": "TyzgACHc57CG",
+          "name": "Soporte",
+          "status": "active",
+          "repository": "cirope/trk",
+          "path": [
+            "Producto",
+            "Soporte"
+          ]
+        },
+        "column": {
+          "id": "Cd8iNgPr6Ty3",
+          "name": "In progress",
+          "role": "doing"
+        },
+        "owners": [
+          {
+            "id": "Us7rAnaRz2Kp",
+            "name": "Ana Ruiz"
+          },
+          {
+            "id": "Us9rFrancoX2",
+            "name": "Franco Catena"
+          }
+        ],
+        "tags": [
+          {
+            "id": "Tg2BiLLing9x",
+            "name": "Billing",
+            "color": "blue"
+          }
+        ],
+        "customers": [
+          {
+            "id": "Cu5tAcme7Qx3",
+            "name": "Acme",
+            "notes": "Has the new_export flag on."
+          }
+        ],
+        "branch": "trk/card-BaHtsbhzVDa9",
+        "pull_request": null,
+        "attachments": [
+          {
+            "id": "At5tRaCe9Lg2",
+            "filename": "trace.log",
+            "path": "attachments/trace.log",
+            "content_type": "text/plain",
+            "byte_size": 35,
+            "message_id": null,
+            "url": "http://trk.test/api/v1/attachments/At5tRaCe9Lg2"
+          }
+        ],
+        "attachments_next_page_token": null,
+        "messages": [
+          {
+            "id": "Ms9gAgent2Qw",
+            "author": "agent",
+            "body": "Which Excel version shows it?",
+            "inserted_at": "2026-11-13T12:15:32Z"
+          }
+        ],
+        "messages_next_page_token": null,
+        "inserted_at": "2026-11-12T09:00:00Z",
+        "updated_at": "2026-11-13T12:15:32Z"
+      },
+      "steps": {
+        "owner": "added",
+        "agent": "turned_off",
+        "moved": "to_doing"
+      },
+      "branch": "trk/card-BaHtsbhzVDa9"
+    }
+  }
+}

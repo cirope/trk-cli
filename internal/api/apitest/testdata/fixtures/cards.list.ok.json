@@ -1,0 +1,91 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cards"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "id": "BaHtsbhzVDa9",
+          "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9",
+          "title": "CSV export loses accents",
+          "type": "bug",
+          "priority": "high",
+          "state": "open",
+          "due_on": "2026-11-27",
+          "closed_at": null,
+          "archived_at": null,
+          "agent": true,
+          "board": {
+            "id": "TyzgACHc57CG",
+            "name": "Soporte",
+            "status": "active",
+            "repository": "cirope/trk",
+            "path": [
+              "Producto",
+              "Soporte"
+            ]
+          },
+          "column": {
+            "id": "Cq3mRkT8vWx2",
+            "name": "To do",
+            "role": "todo"
+          },
+          "owners": [
+            {
+              "id": "Us7rAnaRz2Kp",
+              "name": "Ana Ruiz"
+            }
+          ],
+          "tags": [
+            {
+              "id": "Tg2BiLLing9x",
+              "name": "Billing",
+              "color": "blue"
+            }
+          ],
+          "branch": "trk/card-BaHtsbhzVDa9",
+          "pull_request": null,
+          "inserted_at": "2026-11-12T09:00:00Z",
+          "updated_at": "2026-11-13T12:15:32Z"
+        },
+        {
+          "id": "Xk29LmQp77aB",
+          "url": "http://trk.test/boards/Pr3dUctAcme7/cards/Xk29LmQp77aB",
+          "title": "Rework the importer",
+          "type": "feature",
+          "priority": "normal",
+          "state": "open",
+          "due_on": null,
+          "closed_at": null,
+          "archived_at": null,
+          "agent": true,
+          "board": {
+            "id": "Pr3dUctAcme7",
+            "name": "Implementación Acme",
+            "status": "on_hold",
+            "repository": null,
+            "path": [
+              "Producto",
+              "Implementación Acme"
+            ]
+          },
+          "column": {
+            "id": "Cm4tDoXy7Hq2",
+            "name": "To do",
+            "role": "todo"
+          },
+          "owners": [],
+          "tags": [],
+          "branch": null,
+          "pull_request": null,
+          "inserted_at": "2026-11-10T15:30:00Z",
+          "updated_at": "2026-11-11T10:00:00Z"
+        }
+      ],
+      "next_page_token": null
+    }
+  }
+}

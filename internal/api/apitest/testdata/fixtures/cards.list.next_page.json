@@ -1,0 +1,51 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cards",
+    "query": {
+      "limit": "1",
+      "page_token": "pt_next_page"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "id": "Xk29LmQp77aB",
+          "url": "http://trk.test/boards/Pr3dUctAcme7/cards/Xk29LmQp77aB",
+          "title": "Rework the importer",
+          "type": "feature",
+          "priority": "normal",
+          "state": "open",
+          "due_on": null,
+          "closed_at": null,
+          "archived_at": null,
+          "agent": true,
+          "board": {
+            "id": "Pr3dUctAcme7",
+            "name": "Implementación Acme",
+            "status": "on_hold",
+            "repository": null,
+            "path": [
+              "Producto",
+              "Implementación Acme"
+            ]
+          },
+          "column": {
+            "id": "Cm4tDoXy7Hq2",
+            "name": "To do",
+            "role": "todo"
+          },
+          "owners": [],
+          "tags": [],
+          "branch": null,
+          "pull_request": null,
+          "inserted_at": "2026-11-10T15:30:00Z",
+          "updated_at": "2026-11-11T10:00:00Z"
+        }
+      ],
+      "next_page_token": null
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/device/token",
+    "body": {
+      "device_code": "dc_test_device_code"
+    }
+  },
+  "response": {
+    "status": 400,
+    "body": {
+      "error": "authorization_pending"
+    }
+  }
+}
