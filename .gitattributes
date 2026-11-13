@@ -1,0 +1,3 @@
+# LF everywhere, also on Windows checkouts: gofmt, golden files and test
+# scripts compare bytes.
+* text=auto eol=lf
