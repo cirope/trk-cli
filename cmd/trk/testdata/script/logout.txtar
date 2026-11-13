@@ -1,0 +1,19 @@
+# Logging out revokes the token on the server, then forgets it.
+fake-trk device.code.fast device.token.ok me.ok session.delete.ok
+exits 0 trk login --no-browser
+exits 0 trk logout
+stdout 'Signed out of http://127.0.0.1'
+exits 4 trk whoami
+
+# Logging out again is fine.
+exits 0 trk logout
+stdout 'Not signed in'
+
+# It succeeds when the server cannot be reached, and says so.
+env TRK_HOST=http://127.0.0.1:1
+env TRK_TOKEN=test_access_token
+exits 0 trk logout
+stderr 'could not reach'
+! stderr test_access_token
+# A token from the environment cannot be forgotten by trk.
+stderr 'TRK_TOKEN'

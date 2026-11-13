@@ -1,0 +1,16 @@
+CSV export loses accents
+BaHtsbhzVDa9 · Producto › Soporte · To do
+http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9
+
+Priority:     high
+State:        open
+Due:          Fri Nov 27, 2026 (in 14 days)
+Owners:       Ana Ruiz
+Tags:         Billing
+Agent:        on
+Pull request: #12 open, checks failing  https://github.com/cirope/trk/pull/12
+
+Conversation
+  Older messages are on the web: trk card show BaHtsbhzVDa9 --web
+  agent · Nov 13 09:15
+  Which Excel version shows it?

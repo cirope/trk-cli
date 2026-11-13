@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/messages",
+    "query": {
+      "page_token": "pt_older"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "id": "Ms2gUser9Hk3",
+          "author": "Ana Ruiz",
+          "body": "Customer says it started last week.",
+          "inserted_at": "2026-11-12T10:00:00Z"
+        }
+      ],
+      "next_page_token": null
+    }
+  }
+}

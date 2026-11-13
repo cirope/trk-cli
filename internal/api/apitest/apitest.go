@@ -15,7 +15,6 @@ import (
 	"slices"
 	"strings"
 	"sync"
-	"testing"
 )
 
 //go:embed testdata/fixtures/*.json
@@ -50,7 +49,7 @@ func Names() []string {
 }
 
 // Load reads the fixture called name ("card.get.ok").
-func Load(t testing.TB, name string) Fixture {
+func Load(t T, name string) Fixture {
 	t.Helper()
 	b, err := files.ReadFile(path.Join("testdata/fixtures", name+".json"))
 	if err != nil {
@@ -64,13 +63,22 @@ func Load(t testing.TB, name string) Fixture {
 	return f
 }
 
+// T is the part of testing.TB the server needs, so scripts can use it
+// too.
+type T interface {
+	Helper()
+	Errorf(format string, args ...any)
+	Fatalf(format string, args ...any)
+	Cleanup(func())
+}
+
 // Server answers requests with the fixtures it was given. When several
 // match a request they are served in order, and the last one repeats
 // (a device flow's pending, pending, approved). A request no fixture
 // matches fails the test.
 type Server struct {
 	*httptest.Server
-	t        testing.TB
+	t        T
 	mu       sync.Mutex
 	fixtures []Fixture
 	served   map[int]bool
@@ -88,7 +96,7 @@ type Request struct {
 
 // NewServer starts a server answering with the named fixtures. It stops
 // when the test ends.
-func NewServer(t testing.TB, names ...string) *Server {
+func NewServer(t T, names ...string) *Server {
 	t.Helper()
 	s := &Server{t: t, served: map[int]bool{}}
 	for _, n := range names {

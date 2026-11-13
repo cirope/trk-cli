@@ -1,0 +1,76 @@
+# Releases (run by .github/workflows/release.yml when a v* tag is pushed).
+# Check locally with: make release-check (and make release-snapshot).
+version: 2
+
+project_name: trk
+
+before:
+  hooks:
+    - go mod tidy -diff
+
+builds:
+  - id: trk
+    main: ./cmd/trk
+    binary: trk
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+
+archives:
+  - id: trk
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "trk_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: checksums.txt
+
+nfpms:
+  - id: trk
+    package_name: trk
+    vendor: Hullop
+    homepage: https://github.com/cirope/trk-cli
+    maintainer: Hullop <dev@hullop.com>
+    description: Take a Trk card to your terminal and your own coding agent.
+    license: Proprietary
+    formats: [deb, rpm, apk]
+    bindir: /usr/bin
+
+homebrew_casks:
+  - name: trk
+    repository:
+      owner: hullop
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    homepage: https://github.com/cirope/trk-cli
+    description: Take a Trk card to your terminal and your own coding agent
+    commit_author:
+      name: hullop-bot
+      email: dev@hullop.com
+    hooks:
+      post:
+        # Release binaries are not notarized; let macOS run them.
+        install_steps: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/trk"]
+          end
+
+changelog:
+  # Release notes come from CHANGELOG.md, written for the people who use trk.
+  disable: true
+
+release:
+  github:
+    owner: cirope
+    name: trk-cli

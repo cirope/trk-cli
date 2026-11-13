@@ -2,7 +2,9 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"strings"
 	"testing"
@@ -133,12 +135,12 @@ func TestCards(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(page.Items) != 2 || page.NextPageToken != "" {
-		t.Fatalf("page = %d items, next %q", len(page.Items), page.NextPageToken)
+	if len(page.Items) != 2 || page.NextPageToken != nil {
+		t.Fatalf("page = %d items, next %v", len(page.Items), page.NextPageToken)
 	}
 	second := page.Items[1]
-	if second.ID != "Xk29LmQp77aB" || second.DueOn != "" || second.Branch != "" ||
-		second.Board.Repository != "" || second.Board.Status != "on_hold" {
+	if second.ID != "Xk29LmQp77aB" || second.DueOn != nil || second.Branch != nil ||
+		second.Board.Repository != nil || second.Board.Status != "on_hold" {
 		t.Errorf("second card = %+v", second)
 	}
 	if diff := cmp.Diff([]string{"Producto", "Implementación Acme"}, second.Board.Path); diff != "" {
@@ -154,10 +156,10 @@ func TestCardsFiltersAndPaging(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if page.NextPageToken != "pt_next_page" {
-		t.Fatalf("next page token = %q", page.NextPageToken)
+	if page.NextPageToken == nil || *page.NextPageToken != "pt_next_page" {
+		t.Fatalf("next page token = %v", page.NextPageToken)
 	}
-	page, err = c.Cards(context.Background(), CardsQuery{Limit: 1, PageToken: page.NextPageToken})
+	page, err = c.Cards(context.Background(), CardsQuery{Limit: 1, PageToken: *page.NextPageToken})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -173,7 +175,8 @@ func TestCard(t *testing.T) {
 		t.Fatal(err)
 	}
 	if card.Title != "CSV export loses accents" || card.Column.Role != "todo" || !card.Agent ||
-		card.Branch != "trk/card-BaHtsbhzVDa9" || card.PullRequest != nil || card.ClosedAt != nil {
+		card.Branch == nil || *card.Branch != "trk/card-BaHtsbhzVDa9" ||
+		card.DueOn == nil || *card.DueOn != "2026-11-27" || card.PullRequest != nil || card.ClosedAt != nil {
 		t.Errorf("card = %+v", card)
 	}
 	if len(card.Customers) != 1 || card.Customers[0].Notes != "Has the new_export flag on." {
@@ -181,7 +184,11 @@ func TestCard(t *testing.T) {
 	}
 	wantAttachment := Attachment{
 		ID: "At5tRaCe9Lg2", Filename: "trace.log", Path: "attachments/trace.log", ContentType: "text/plain", ByteSize: 35,
-		URL: "http://trk.test/api/v1/attachments/At5tRaCe9Lg2",
+		URL:        "http://trk.test/api/v1/attachments/At5tRaCe9Lg2",
+		InsertedAt: mustTime("2026-11-12T09:05:00Z"),
+	}
+	if card.Attachments[0].MessageID != nil {
+		t.Errorf("message id = %v, want nil", *card.Attachments[0].MessageID)
 	}
 	if diff := cmp.Diff([]Attachment{wantAttachment}, card.Attachments); diff != "" {
 		t.Errorf("attachments (-want +got):\n%s", diff)
@@ -220,7 +227,7 @@ func TestTake(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := TakeSteps{Owner: "added", Agent: "turned_off", Moved: "to_doing"}
-	if got.Steps != want || got.Branch != "trk/card-BaHtsbhzVDa9" || got.Card.Agent || got.Card.Column.Role != "doing" {
+	if got.Steps != want || got.Branch == nil || *got.Branch != "trk/card-BaHtsbhzVDa9" || got.Card.Agent || got.Card.Column.Role != "doing" {
 		t.Errorf("take = %+v", got)
 	}
 }
@@ -255,5 +262,79 @@ func TestValidID(t *testing.T) {
 		if got := ValidID(id); got != want {
 			t.Errorf("ValidID(%q) = %v, want %v", id, got, want)
 		}
+	}
+}
+
+func TestCardAttachmentsPage(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.attachments.next_page")
+	page, err := c.CardAttachments(context.Background(), "BaHtsbhzVDa9", "pt_more_files")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(page.Items) != 1 || page.Items[0].Path != "attachments/2-trace.log" || page.NextPageToken != nil {
+		t.Errorf("page = %+v", page)
+	}
+}
+
+func TestCardMessagesPage(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.messages.next_page")
+	page, err := c.CardMessages(context.Background(), "BaHtsbhzVDa9", "pt_older")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(page.Items) != 1 || page.Items[0].Author != "Ana Ruiz" {
+		t.Errorf("page = %+v", page)
+	}
+}
+
+func TestDownload(t *testing.T) {
+	c, srv := fixtureClient(t, "test_access_token", "attachment.get.ok")
+	var b strings.Builder
+	n, err := c.Download(context.Background(), "At5tRaCe9Lg2", 35, &b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n != 35 || b.Len() != 35 {
+		t.Errorf("wrote %d (%d), want 35", n, b.Len())
+	}
+	r := srv.Requests()[0]
+	if r.Header.Get("Authorization") != "Bearer test_access_token" {
+		t.Errorf("Authorization = %q", r.Header.Get("Authorization"))
+	}
+}
+
+func TestDownloadSizeMismatch(t *testing.T) {
+	for _, size := range []int64{34, 36} {
+		c, _ := fixtureClient(t, "test_access_token", "attachment.get.ok")
+		var b strings.Builder
+		_, err := c.Download(context.Background(), "At5tRaCe9Lg2", size, &b)
+		if !errors.Is(err, ErrSizeMismatch) {
+			t.Errorf("size %d: err = %v, want ErrSizeMismatch", size, err)
+		}
+		if int64(b.Len()) > size {
+			t.Errorf("size %d: wrote %d bytes, more than promised", size, b.Len())
+		}
+	}
+}
+
+func TestDownloadErrors(t *testing.T) {
+	c, srv := fixtureClient(t, "test_access_token")
+	if _, err := c.Download(context.Background(), "../../me", 1, io.Discard); !errors.Is(err, ErrBadID) {
+		t.Errorf("err = %v, want ErrBadID", err)
+	}
+	if n := len(srv.Requests()); n != 0 {
+		t.Errorf("server got %d requests", n)
+	}
+}
+
+// A card without a type keeps its null in trk's own --json.
+func TestNullTypeStaysNull(t *testing.T) {
+	var c Card
+	if err := json.Unmarshal([]byte(`{"type": null}`), &c); err != nil {
+		t.Fatal(err)
+	}
+	out, _ := json.Marshal(c)
+	if !strings.Contains(string(out), `"type":null`) {
+		t.Errorf("re-encoded type = %s", out)
 	}
 }

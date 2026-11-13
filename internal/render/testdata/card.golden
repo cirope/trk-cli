@@ -1,0 +1,24 @@
+CSV export loses accents
+BaHtsbhzVDa9 · Producto › Soporte · To do
+http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9
+
+Type:         bug
+Priority:     high
+State:        open
+Due:          Fri Nov 27, 2026 (in 14 days)
+Owners:       Ana Ruiz
+Tags:         Billing
+Agent:        on
+Branch:       trk/card-BaHtsbhzVDa9
+
+Customers
+  Acme: Has the new_export flag on.
+
+Rows come out as mojibake in Excel.
+
+Conversation
+  agent · Nov 13 09:15
+  Which Excel version shows it?
+
+Files
+  trace.log  35 B

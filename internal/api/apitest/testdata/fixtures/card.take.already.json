@@ -15,6 +15,7 @@
         "priority": "high",
         "state": "open",
         "due_on": "2026-11-27",
+        "due_window": "later",
         "closed_at": null,
         "archived_at": null,
         "agent": false,
@@ -67,7 +68,8 @@
             "content_type": "text/plain",
             "byte_size": 35,
             "message_id": null,
-            "url": "http://trk.test/api/v1/attachments/At5tRaCe9Lg2"
+            "url": "http://trk.test/api/v1/attachments/At5tRaCe9Lg2",
+            "inserted_at": "2026-11-12T09:05:00Z"
           }
         ],
         "attachments_next_page_token": null,

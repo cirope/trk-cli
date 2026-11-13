@@ -1,12 +1,14 @@
 package cli
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
+
+	"github.com/cirope/trk-cli/internal/api"
 )
 
-// Exit codes, as documented in SPEC 4.8. They are a public contract: an
+// Exit codes, as documented in --help. They are a public contract: an
 // agent branches on them.
 const (
 	ExitOK       = 0 // Done.
@@ -23,24 +25,70 @@ type usageError struct{ err error }
 func (e usageError) Error() string { return e.err.Error() }
 func (e usageError) Unwrap() error { return e.err }
 
-// exitCode picks the exit code for err.
-func exitCode(err error) int {
-	if err == nil {
-		return ExitOK
+// refusedError marks something trk understood and will not do.
+type refusedError struct{ err error }
+
+func (e refusedError) Error() string { return e.err.Error() }
+func (e refusedError) Unwrap() error { return e.err }
+
+// silentError has been reported already; it only carries the exit code.
+type silentError struct{ code int }
+
+func (e silentError) Error() string { return fmt.Sprintf("exit %d", e.code) }
+
+// classify picks the exit code and the JSON error code for err.
+func classify(err error) (int, string) {
+	var (
+		ue usageError
+		re refusedError
+		ns notSignedIn
+		se silentError
+	)
+	switch {
+	case err == nil:
+		return ExitOK, ""
+	case errors.As(err, &se):
+		return se.code, ""
+	case errors.As(err, &ue), errors.Is(err, api.ErrBadID):
+		return ExitUsage, "usage"
+	case errors.As(err, &ns), errors.Is(err, api.ErrUnauthorized):
+		return ExitAuth, "unauthorized"
+	case errors.Is(err, api.ErrNotFound):
+		return ExitNotFound, "not_found"
+	case errors.As(err, &re), errors.Is(err, api.ErrForbidden), errors.Is(err, api.ErrConflict):
+		return ExitRefused, "refused"
 	}
-	var ue usageError
-	if errors.As(err, &ue) {
-		return ExitUsage
-	}
-	return ExitError
+	return ExitError, "error"
 }
 
-// reportError writes err as one sentence to w, with a hint for usage
-// errors.
-func reportError(w io.Writer, err error) {
-	fmt.Fprintf(w, "trk: %s\n", err)
-	var ue usageError
-	if errors.As(err, &ue) {
+func exitCode(err error) int {
+	code, _ := classify(err)
+	return code
+}
+
+// message is err as one sentence for a person.
+func message(err error) string {
+	if errors.Is(err, api.ErrUnauthorized) {
+		return "your session expired or was revoked; run trk login to sign in again"
+	}
+	return err.Error()
+}
+
+// reportError writes err to stderr: one line, or a JSON object under
+// --json.
+func (a *app) reportError(err error) {
+	code, kind := classify(err)
+	if kind == "" {
+		return
+	}
+	w := a.env.Stderr
+	if a.flags.json {
+		b, _ := json.Marshal(map[string]string{"code": kind, "message": message(err)})
+		fmt.Fprintf(w, "%s\n", b)
+		return
+	}
+	fmt.Fprintf(w, "trk: %s\n", message(err))
+	if code == ExitUsage {
 		fmt.Fprintln(w, "Run 'trk --help' for usage.")
 	}
 }

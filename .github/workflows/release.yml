@@ -1,0 +1,48 @@
+name: release
+
+# Pushing a tag like v1.2.3 builds and publishes a release: binaries for
+# macOS, Linux and Windows (amd64, arm64), .deb/.rpm/.apk packages,
+# checksums, a signed provenance attestation, and the Homebrew cask in
+# hullop/homebrew-tap. Release notes are the tag's section of CHANGELOG.md.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write     # create the release
+  id-token: write     # sign the attestation
+  attestations: write # store the attestation
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - run: make check
+      - name: Release notes from CHANGELOG.md
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="${TAG#v}"
+          awk -v v="$version" '
+            $0 ~ "^## " { if (found) exit; if ($2 == v) { found = 1; next } }
+            found { print }
+          ' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+          if [ ! -s "$RUNNER_TEMP/notes.md" ]; then
+            echo "CHANGELOG.md has no section '## $version'" >&2
+            exit 1
+          fi
+      - name: GoReleaser
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: go tool -modfile=tools/go.mod goreleaser release --clean --release-notes "$RUNNER_TEMP/notes.md"
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-checksums: dist/checksums.txt

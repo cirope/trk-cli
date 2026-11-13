@@ -15,18 +15,26 @@ The pull request, opened from `trk/card-BaHtsbhzVDa9`, attaches to its card
 by itself: the card moves to review and shows the pull request, and moving
 the card to done merges it.
 
-> **Status:** in development. The commands below describe the first
-> release; not all of them work yet.
+> **Status:** ready for its first release; not published yet.
 
 ## Install
 
 ```sh
-brew install hullop/tap/trk                        # Homebrew
-go install github.com/cirope/trk-cli/cmd/trk@latest # Go
+brew install hullop/tap/trk                          # macOS and Linux
+go install github.com/cirope/trk-cli/cmd/trk@latest  # anywhere with Go
 ```
 
-Or download a binary for macOS, Linux or Windows from the
-[releases](https://github.com/cirope/trk-cli/releases).
+Or download from the [releases](https://github.com/cirope/trk-cli/releases):
+archives for macOS, Linux and Windows (amd64 and arm64), and `.deb`,
+`.rpm` and `.apk` packages for Linux. Each release has a `checksums.txt`
+and a signed provenance attestation you can check with
+`gh attestation verify <file> --repo cirope/trk-cli`.
+
+Shell completions: `trk completion bash|zsh|fish|powershell --help`.
+
+`trk` tells you, at most once a day, when a newer version exists (never
+under `--json` or in a pipe; `TRK_NO_UPDATE_NOTIFIER=1` turns it off). It
+never updates itself.
 
 ## Sign in
 
@@ -96,6 +104,7 @@ the card, not for the repository.
 | `-q`, `--quiet` | | Only errors and the essential result |
 | `-v`, `--verbose` | `TRK_DEBUG=1` | Requests and timings on stderr (never the token) |
 | | `TRK_TOKEN` | Use this token instead of the stored session |
+| | `TRK_NO_UPDATE_NOTIFIER=1` | Never say when a newer version exists |
 
 ## Development
 
@@ -109,6 +118,20 @@ make check
 make build   # bin/trk
 ```
 
-Linters and other tools are pinned in `tools/go.mod` and run with
-`go tool`; nothing needs installing by hand. Tests never touch the network,
-your keychain or your config.
+Linters, GoReleaser and other tools are pinned in `tools/go.mod` and run
+with `go tool`; nothing needs installing by hand. Tests never touch the
+network, your keychain or your config: the end-to-end tests in
+`cmd/trk/testdata/script` run trk against a fake Trk built from recorded
+API answers (`internal/api/apitest/testdata/fixtures`). Golden files for
+human output are updated with `go test ./internal/render -update`, and
+reviewed like code.
+
+### Releasing
+
+1. Move the "Unreleased" notes in `CHANGELOG.md` under `## <version>`.
+2. Tag and push: `git tag v<version> && git push origin v<version>`.
+
+CI then runs every check and publishes the release, the packages, the
+attestation and the Homebrew cask. `make release-snapshot` builds the
+same locally without publishing. The repository needs a
+`HOMEBREW_TAP_TOKEN` secret that can push to `hullop/homebrew-tap`.

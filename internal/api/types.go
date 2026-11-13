@@ -3,8 +3,8 @@ package api
 import "time"
 
 // The API's JSON, decoded. Unknown fields are ignored, so a server that
-// adds fields never breaks an older CLI. A JSON null decodes as the zero
-// value: "" for an absent date, branch or repository.
+// adds fields never breaks an older CLI. Values that may be null are
+// pointers, so they encode back as null in trk's own --json.
 
 // DeviceCode starts the device flow (RFC 8628 section 3.2).
 type DeviceCode struct {
@@ -51,21 +51,24 @@ type Session struct {
 
 // CardPage is one page of cards.
 type CardPage struct {
-	Items         []Card `json:"items"`
-	NextPageToken string `json:"next_page_token"`
+	Items         []Card  `json:"items"`
+	NextPageToken *string `json:"next_page_token"`
 }
 
 // Card is a card. In lists, Description, Customers, Attachments and
 // Messages are left out.
 type Card struct {
-	ID          string       `json:"id"`
-	URL         string       `json:"url"`
-	Title       string       `json:"title"`
-	Description string       `json:"description"`
-	Type        string       `json:"type"`     // question, feature, bug, security
-	Priority    string       `json:"priority"` // low, normal, high, urgent
-	State       string       `json:"state"`    // open, review, waiting
-	DueOn       string       `json:"due_on"`   // YYYY-MM-DD, or "".
+	ID          string  `json:"id"`
+	URL         string  `json:"url"`
+	Title       string  `json:"title"`
+	Description *string `json:"description,omitzero"` // Absent in lists.
+	Type        *string `json:"type"`                 // question, feature, bug, security
+	Priority    string  `json:"priority"`             // low, normal, high, urgent
+	State       string  `json:"state"`                // open, review, waiting
+	DueOn       *string `json:"due_on"`               // YYYY-MM-DD
+	// DueWindow is overdue, week or later, computed by the server as the
+	// web's "My cards" does, in the app's time zone; nil without a date.
+	DueWindow   *string      `json:"due_window"`
 	ClosedAt    *time.Time   `json:"closed_at"`
 	ArchivedAt  *time.Time   `json:"archived_at"`
 	Agent       bool         `json:"agent"`
@@ -73,14 +76,14 @@ type Card struct {
 	Column      Column       `json:"column"`
 	Owners      []Person     `json:"owners"`
 	Tags        []Tag        `json:"tags"`
-	Customers   []Customer   `json:"customers"`
-	Branch      string       `json:"branch"` // "" on a board without a repository.
+	Customers   []Customer   `json:"customers,omitzero"` // Absent in lists.
+	Branch      *string      `json:"branch"`             // nil on a board without a repository.
 	PullRequest *PullRequest `json:"pull_request"`
 
-	Attachments              []Attachment `json:"attachments"`
-	AttachmentsNextPageToken string       `json:"attachments_next_page_token"`
-	Messages                 []Message    `json:"messages"` // The newest page, oldest first.
-	MessagesNextPageToken    string       `json:"messages_next_page_token"`
+	Attachments              []Attachment `json:"attachments,omitzero"` // Absent in lists.
+	AttachmentsNextPageToken *string      `json:"attachments_next_page_token"`
+	Messages                 []Message    `json:"messages,omitzero"` // The newest page, oldest first; absent in lists.
+	MessagesNextPageToken    *string      `json:"messages_next_page_token"`
 
 	InsertedAt time.Time `json:"inserted_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
@@ -91,7 +94,7 @@ type Board struct {
 	ID         string   `json:"id"`
 	Name       string   `json:"name"`
 	Status     string   `json:"status"`     // active, on_hold, completed
-	Repository string   `json:"repository"` // owner/name, or "".
+	Repository *string  `json:"repository"` // owner/name
 	Path       []string `json:"path"`       // Names, outermost first, ending in this board.
 }
 
@@ -125,24 +128,25 @@ type Customer struct {
 
 // PullRequest is a card's pull request.
 type PullRequest struct {
-	URL      string `json:"url"`
-	Number   int    `json:"number"`
-	State    string `json:"state"`
-	Checks   string `json:"checks"` // pending, passing, failing, or "".
-	OpenedBy string `json:"opened_by"`
+	URL      string  `json:"url"`
+	Number   int     `json:"number"`
+	State    string  `json:"state"`
+	Checks   *string `json:"checks"` // pending, passing, failing
+	OpenedBy string  `json:"opened_by"`
 }
 
 // Attachment is a file on a card. Path ("attachments/<name>") is where
 // the server's Markdown links it; it comes from the server and is
 // untrusted.
 type Attachment struct {
-	ID          string `json:"id"`
-	Filename    string `json:"filename"`
-	Path        string `json:"path"`
-	ContentType string `json:"content_type"`
-	ByteSize    int64  `json:"byte_size"`
-	MessageID   string `json:"message_id"`
-	URL         string `json:"url"`
+	ID          string    `json:"id"`
+	Filename    string    `json:"filename"`
+	Path        string    `json:"path"`
+	ContentType string    `json:"content_type"`
+	ByteSize    int64     `json:"byte_size"`
+	MessageID   *string   `json:"message_id"`
+	URL         string    `json:"url"`
+	InsertedAt  time.Time `json:"inserted_at"`
 }
 
 // Message is one message in a card's conversation.
@@ -157,7 +161,7 @@ type Message struct {
 type TakeResult struct {
 	Card   Card      `json:"card"`
 	Steps  TakeSteps `json:"steps"`
-	Branch string    `json:"branch"` // "" on a board without a repository.
+	Branch *string   `json:"branch"` // nil on a board without a repository.
 }
 
 // TakeSteps reports each step of taking a card.

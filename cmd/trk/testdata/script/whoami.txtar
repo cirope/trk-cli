@@ -1,0 +1,36 @@
+# Not signed in: exit 4, and say what to do.
+fake-trk me.ok
+exits 4 trk whoami
+stderr 'not signed in'
+stderr 'trk login'
+! stdout .
+
+# TRK_TOKEN takes precedence over the stored session.
+env TRK_TOKEN=test_access_token
+exits 0 trk whoami
+stdout 'Franco Catena <franco@example.com>'
+stdout 'Organization: +Hullop'
+stdout 'Host: +http://127.0.0.1'
+stdout 'Session expires: +.*2027'
+! stdout test_access_token
+
+exits 0 trk whoami --json
+stdout '"expires_at": "2027-02-11T12:00:00Z"'
+stdout '"host": "http://127.0.0.1'
+! stdout test_access_token
+
+# A revoked or expired session is exit 4 too.
+fake-trk me.unauthorized
+exits 4 trk whoami
+stderr 'expired or was revoked'
+stderr 'trk login'
+
+# --verbose logs requests on stderr, never the token.
+exits 4 trk whoami --verbose
+stderr 'GET'
+stderr '/api/v1/me'
+! stderr test_access_token
+
+# A host that is not a URL is wrong usage.
+exits 2 trk whoami --host not-a-url
+stderr 'not an http'

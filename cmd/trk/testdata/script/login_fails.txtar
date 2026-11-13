@@ -1,0 +1,11 @@
+# Denied in the browser.
+fake-trk device.code.fast device.token.denied
+exits 1 trk login --no-browser
+stderr 'trk: .*denied'
+! stdout .
+
+# Under --json, the error is a JSON object on stderr.
+exits 1 trk login --no-browser --json
+stderr '"code": *"error"'
+stderr '"message": *".*denied'
+! stdout .

@@ -3,6 +3,9 @@ package cli
 import (
 	"bytes"
 	"context"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
@@ -77,7 +80,7 @@ func TestHelpGoesToStdout(t *testing.T) {
 }
 
 func TestEveryCommandHasAnExample(t *testing.T) {
-	root := newRootCmd(Env{Getenv: func(string) string { return "" }})
+	root := newRootCmd(&app{env: withDefaults(Env{})})
 	var walk func(c *cobra.Command)
 	walk = func(c *cobra.Command) {
 		if c.Hidden || c.Name() == "help" || c.Name() == "completion" {
@@ -91,4 +94,53 @@ func TestEveryCommandHasAnExample(t *testing.T) {
 		}
 	}
 	walk(root)
+}
+
+func TestUpdateNotice(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = io.WriteString(w, `{"tag_name":"v9.0.0"}`)
+	}))
+	defer srv.Close()
+
+	tests := []struct {
+		name     string
+		terminal bool
+		env      string
+		args     []string
+		want     bool
+	}{
+		{"terminal", true, "", []string{"--help"}, true},
+		{"pipe", false, "", []string{"--help"}, false},
+		{"json", true, "", []string{"--help", "--json"}, false},
+		{"opted out", true, "1", []string{"--help"}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var stdout, stderr bytes.Buffer
+			code := Run(context.Background(), tt.args, Env{
+				Stdout: &stdout, Stderr: &stderr,
+				Getenv: func(k string) string {
+					if k == "TRK_NO_UPDATE_NOTIFIER" {
+						return tt.env
+					}
+					return ""
+				},
+				Build:            Build{Version: "1.2.0"},
+				CacheDir:         t.TempDir(),
+				UpdateURL:        srv.URL,
+				StdoutIsTerminal: tt.terminal,
+				StderrIsTerminal: tt.terminal,
+			})
+			if code != ExitOK {
+				t.Fatalf("exit %d: %s", code, stderr.String())
+			}
+			got := strings.Contains(stderr.String(), "A new version of trk is available: 9.0.0")
+			if got != tt.want {
+				t.Errorf("notice shown = %v, want %v; stderr %q", got, tt.want, stderr.String())
+			}
+			if strings.Contains(stdout.String(), "new version") {
+				t.Error("notice on stdout")
+			}
+		})
+	}
 }

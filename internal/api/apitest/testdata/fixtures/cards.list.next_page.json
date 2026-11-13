@@ -19,6 +19,7 @@
           "priority": "normal",
           "state": "open",
           "due_on": null,
+          "due_window": null,
           "closed_at": null,
           "archived_at": null,
           "agent": true,

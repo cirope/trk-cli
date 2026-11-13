@@ -1,0 +1,45 @@
+# Taking a card reports each step, pulls it, and names the branch.
+env TRK_TOKEN=test_access_token
+fake-trk card.take.ok card.markdown.ok card.get.ok attachment.get.ok
+exits 0 trk card take BaHtsbhzVDa9
+cmp stdout taken.txt
+
+# Taking it again: every step is a no-op, said as such.
+fake-trk card.take.already card.markdown.ok card.get.ok attachment.get.ok
+exits 0 trk card take BaHtsbhzVDa9 --no-pull
+stdout 'You already own it.'
+stdout 'Agent: already off.'
+stdout 'Already in In progress.'
+! stdout 'Wrote'
+stdout 'git switch -c trk/card-BaHtsbhzVDa9'
+
+# --json.
+exits 0 trk card take BaHtsbhzVDa9 --no-pull --json
+stdout '"steps": {'
+stdout '"owner": "already"'
+stdout '"branch": "trk/card-BaHtsbhzVDa9"'
+stdout '"pull": null'
+
+# A board without a repository: no branch to name.
+fake-trk card.take.no_repository card.markdown.ok card.get.ok attachment.get.ok
+exits 0 trk card take BaHtsbhzVDa9 --no-pull
+stdout 'no In progress column'
+! stdout 'git switch'
+
+# Refused while Trk's agent works on it, or when archived: exit 5.
+fake-trk card.take.agent_working
+exits 5 trk card take BaHtsbhzVDa9
+stderr 'Stop it in the web app first'
+fake-trk card.take.archived
+exits 5 trk card take BaHtsbhzVDa9
+stderr 'archived'
+
+-- taken.txt --
+You own it now.
+Agent: off for this card.
+Moved to In progress.
+Wrote .trk/cards/BaHtsbhzVDa9/card.md
+Wrote .trk/cards/BaHtsbhzVDa9/attachments/trace.log (35 B)
+
+Work on this branch, and the pull request finds its card:
+  git switch -c trk/card-BaHtsbhzVDa9

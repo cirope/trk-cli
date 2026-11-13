@@ -23,6 +23,7 @@
           "priority": "high",
           "state": "open",
           "due_on": "2026-11-27",
+          "due_window": "later",
           "closed_at": null,
           "archived_at": null,
           "agent": true,

@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/device/code",
+    "body": {
+      "client_name": "test-host"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "device_code": "dc_test_device_code",
+      "user_code": "WDJB-MJHT",
+      "verification_uri": "http://trk.test/cli/approve",
+      "verification_uri_complete": "http://trk.test/cli/approve?code=WDJB-MJHT",
+      "expires_in": 900,
+      "interval": 1
+    }
+  }
+}

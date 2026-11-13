@@ -1,0 +1,46 @@
+# --branch creates and switches to the branch in a clean checkout of the
+# board's repository.
+env TRK_TOKEN=test_access_token
+fake-trk card.get.ok card.take.ok card.markdown.ok attachment.get.ok
+exec git init -q -b main repo
+cd repo
+exec git remote add origin git@github.com:cirope/trk.git
+cp $WORK/README README
+exec git add README
+exec git commit -q -m first
+
+exits 0 trk card take BaHtsbhzVDa9 --branch
+stdout 'Switched to a new branch trk/card-BaHtsbhzVDa9'
+exec git symbolic-ref --short HEAD
+stdout '^trk/card-BaHtsbhzVDa9$'
+exec git status --porcelain
+! stdout .
+
+# The branch exists now: refuse, and say how to switch to it. Nothing on
+# the board changes.
+exec git switch -q main
+exits 5 trk card take BaHtsbhzVDa9 --branch
+stderr 'branch trk/card-BaHtsbhzVDa9 already exists'
+stderr 'git switch trk/card-BaHtsbhzVDa9'
+
+# A dirty tree: refuse.
+exec git branch -D -q trk/card-BaHtsbhzVDa9
+cp $WORK/changed README
+exits 5 trk card take BaHtsbhzVDa9 --branch
+stderr 'uncommitted changes'
+exec git checkout -q README
+
+# Another repository: refuse.
+exec git remote set-url origin git@github.com:someone/else.git
+exits 5 trk card take BaHtsbhzVDa9 --branch
+stderr 'not a checkout of cirope/trk'
+
+# Not a repository at all: refuse.
+cd $WORK
+exits 5 trk card take BaHtsbhzVDa9 --branch
+stderr 'not a git repository'
+
+-- README --
+hello
+-- changed --
+changed

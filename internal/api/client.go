@@ -20,11 +20,12 @@ import (
 )
 
 const (
-	defaultTimeout    = 30 * time.Second
-	defaultMaxRetries = 3
-	defaultMaxBody    = 10 << 20 // JSON answers; files are streamed separately.
-	baseBackoff       = 250 * time.Millisecond
-	maxRetryAfter     = 30 * time.Second
+	defaultTimeout         = 30 * time.Second
+	defaultMaxRetries      = 3
+	defaultDownloadTimeout = 10 * time.Minute
+	defaultMaxBody         = 10 << 20 // JSON answers; files are streamed separately.
+	baseBackoff            = 250 * time.Millisecond
+	maxRetryAfter          = 30 * time.Second
 )
 
 // Options configures a Client. Zero values pick sensible defaults.
@@ -37,6 +38,8 @@ type Options struct {
 	Timeout    time.Duration
 	MaxRetries int   // Retries of idempotent requests; negative means none.
 	MaxBody    int64 // Largest JSON answer read.
+	// DownloadTimeout bounds a whole file download.
+	DownloadTimeout time.Duration
 
 	// Sleep waits between retries; tests replace it to not sleep.
 	Sleep func(context.Context, time.Duration) error
@@ -72,6 +75,9 @@ func New(opts Options) (*Client, error) {
 		opts.MaxRetries = defaultMaxRetries
 	} else if opts.MaxRetries < 0 {
 		opts.MaxRetries = 0
+	}
+	if opts.DownloadTimeout <= 0 {
+		opts.DownloadTimeout = defaultDownloadTimeout
 	}
 	if opts.MaxBody <= 0 {
 		opts.MaxBody = defaultMaxBody
@@ -157,24 +163,19 @@ func (c *Client) attempt(ctx context.Context, method, path string, query url.Val
 	if payload != nil {
 		req.Header.Set("Content-Type", "application/json")
 	}
-	if c.o.UserAgent != "" {
-		req.Header.Set("User-Agent", c.o.UserAgent)
-	}
-	if c.o.Token != "" {
-		req.Header.Set("Authorization", "Bearer "+c.o.Token.Reveal())
-	}
+	c.authorize(req)
 
 	start := time.Now()
 	resp, err := c.o.HTTPClient.Do(req)
 	if err != nil {
-		c.o.Logger.Debug("request failed", "method", method, "path", path, "took", time.Since(start), "error", err)
+		c.o.Logger.Debug("request failed", "method", method, "path", u.Path, "took", time.Since(start), "error", err)
 		if ctx.Err() != nil { // a timeout or a cancel, not a dropped connection
 			return nil, -1, fmt.Errorf("%s %s: %w", method, path, ctx.Err())
 		}
 		return nil, 0, fmt.Errorf("%s %s: %w", method, path, err)
 	}
 	defer func() { _ = resp.Body.Close() }()
-	c.o.Logger.Debug("request", "method", method, "path", path, "status", resp.StatusCode, "took", time.Since(start))
+	c.o.Logger.Debug("request", "method", method, "path", u.Path, "status", resp.StatusCode, "took", time.Since(start))
 
 	data, err = c.read(resp.Body)
 	if err != nil {
@@ -193,6 +194,16 @@ func (c *Client) attempt(ctx context.Context, method, path string, query url.Val
 		return nil, retryAfter(resp.Header.Get("Retry-After"), time.Now()), apiErr
 	}
 	return nil, -1, apiErr
+}
+
+// authorize sets the User-Agent and, with a token, Authorization.
+func (c *Client) authorize(req *http.Request) {
+	if c.o.UserAgent != "" {
+		req.Header.Set("User-Agent", c.o.UserAgent)
+	}
+	if c.o.Token != "" {
+		req.Header.Set("Authorization", "Bearer "+c.o.Token.Reveal())
+	}
 }
 
 // read reads a body up to MaxBody.

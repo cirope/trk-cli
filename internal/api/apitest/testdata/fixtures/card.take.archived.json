@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/take"
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "archived",
+        "message": "The card is archived."
+      }
+    }
+  }
+}

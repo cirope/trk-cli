@@ -1,0 +1,62 @@
+# Pulling writes card.md and the files, inside a git repository keeps
+# .trk/ out of commits, and says so once.
+env TRK_TOKEN=test_access_token
+fake-trk card.markdown.ok card.get.ok attachment.get.ok
+exec git init -q -b main repo
+cd repo
+exits 0 trk card pull BaHtsbhzVDa9
+cmp stdout $WORK/wrote.txt
+stderr 'Added /.trk/ to .git/info/exclude'
+cmp .trk/cards/BaHtsbhzVDa9/card.md $WORK/card.md
+exists .trk/cards/BaHtsbhzVDa9/attachments/trace.log
+grep '^/.trk/$' .git/info/exclude
+! exists .gitignore
+exec git status --porcelain
+! stdout .
+
+# Pulling again downloads nothing that did not change, and says nothing
+# more about git.
+exits 0 trk card pull BaHtsbhzVDa9
+stdout 'Wrote .trk/cards/BaHtsbhzVDa9/card.md'
+! stdout 'trace.log'
+! stderr 'exclude'
+
+# --json says what was written where.
+exits 0 trk card pull BaHtsbhzVDa9 --json
+stdout '"card": "BaHtsbhzVDa9"'
+stdout '"path": "attachments/trace.log"'
+stdout '"status": "unchanged"'
+stdout '"git_exclude": "/.trk/"'
+
+# --dir and --no-files.
+exits 0 trk card pull BaHtsbhzVDa9 --dir $WORK/elsewhere --no-files
+exists $WORK/elsewhere/card.md
+! exists $WORK/elsewhere/attachments
+
+# Outside a repository there is nothing to exclude.
+cd $WORK
+exits 0 trk card pull BaHtsbhzVDa9 --no-files
+! stderr 'exclude'
+exists .trk/cards/BaHtsbhzVDa9/card.md
+
+# Not found: exit 3, and nothing written.
+fake-trk card.markdown.not_found
+cd $WORK/repo
+exits 3 trk card pull Xk29LmQp77aB
+! exists .trk/cards/Xk29LmQp77aB
+
+-- wrote.txt --
+Wrote .trk/cards/BaHtsbhzVDa9/card.md
+Wrote .trk/cards/BaHtsbhzVDa9/attachments/trace.log (35 B)
+-- card.md --
+# CSV export loses accents
+
+Rows come out as mojibake in Excel.
+
+## Archivos
+
+- [trace.log](attachments/trace.log)
+
+## Cómo traerlo de vuelta
+
+Trabajá en la rama `trk/card-BaHtsbhzVDa9`.

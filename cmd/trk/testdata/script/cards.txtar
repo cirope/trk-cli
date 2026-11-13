@@ -1,0 +1,44 @@
+# My cards, grouped by the server's due window, in the server's order.
+env TRK_TOKEN=test_access_token
+fake-trk cards.list.ok
+exits 0 trk cards
+cmp stdout cards.txt
+! stderr .
+
+# trk card list is the same command.
+exits 0 trk card list
+cmp stdout cards.txt
+
+# --json is the page, exactly: items and next_page_token.
+exits 0 trk cards --json
+stdout '"items": \['
+stdout '"next_page_token": null'
+stdout '"due_window": "later"'
+stdout '"due_window": null'
+! stderr .
+
+# Filters and paging go to the server; more to show says how on stderr.
+fake-trk cards.list.filtered cards.list.next_page
+exits 0 trk cards --board TyzgACHc57CG --all --state open --type bug --priority high --limit 1
+stdout 'BaHtsbhzVDa9'
+stderr 'More cards: trk cards .*--page-token pt_next_page'
+exits 0 trk cards --limit 1 --page-token pt_next_page
+stdout 'Xk29LmQp77aB'
+! stderr 'More cards'
+
+# Wrong values are wrong usage, caught before asking the server.
+exits 2 trk cards --state closed
+stderr 'state must be one of open, review, waiting'
+exits 2 trk cards --limit 0
+stderr 'limit must be between 1 and 100'
+exits 2 trk cards --all
+stderr '--all needs --board'
+exits 2 trk cards extra
+exits 2 trk card frobnicate
+stderr 'unknown command "frobnicate"'
+
+-- cards.txt --
+LATER
+  BaHtsbhzVDa9  CSV export loses accents  Producto › Soporte · To do              due Nov 27  high
+NO DATE
+  Xk29LmQp77aB  Rework the importer       Producto › Implementación Acme · To do

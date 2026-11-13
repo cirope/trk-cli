@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/attachments/At5tRaCe9Lg2"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/plain"
+    },
+    "body": "12:15:31 ERROR export: bad bytes\n.\n"
+  }
+}

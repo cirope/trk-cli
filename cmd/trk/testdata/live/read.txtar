@@ -1,0 +1,18 @@
+# Read-only checks against a real Trk.
+exits 0 trk whoami --json
+stdout '"organization"'
+! stdout $TRK_TOKEN
+
+exits 0 trk cards --json
+stdout '"items"'
+
+exits 0 trk card show $CARD --json
+stdout '"id": "'$CARD'"'
+
+exits 0 trk card show $CARD --markdown
+stdout .
+
+exits 0 trk card pull $CARD
+exists .trk/cards/$CARD/card.md
+
+exits 3 trk card show 23456789ABCD

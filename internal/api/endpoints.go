@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -146,4 +147,87 @@ func (c *Client) Take(ctx context.Context, id string) (*TakeResult, error) {
 		return nil, fmt.Errorf("taking card %s: %w", id, err)
 	}
 	return &out, nil
+}
+
+// AttachmentPage is one page of a card's files.
+type AttachmentPage struct {
+	Items         []Attachment `json:"items"`
+	NextPageToken *string      `json:"next_page_token"`
+}
+
+// MessagePage is one page of a card's conversation, oldest first; each
+// next page is older.
+type MessagePage struct {
+	Items         []Message `json:"items"`
+	NextPageToken *string   `json:"next_page_token"`
+}
+
+// CardAttachments returns the page of a card's files after pageToken.
+func (c *Client) CardAttachments(ctx context.Context, id, pageToken string) (*AttachmentPage, error) {
+	if err := checkID(id); err != nil {
+		return nil, err
+	}
+	var out AttachmentPage
+	q := url.Values{"page_token": {pageToken}}
+	if err := c.Do(ctx, http.MethodGet, "/cards/"+id+"/attachments", q, nil, &out); err != nil {
+		return nil, fmt.Errorf("listing the files of card %s: %w", id, err)
+	}
+	return &out, nil
+}
+
+// CardMessages returns the page of a card's conversation before
+// pageToken.
+func (c *Client) CardMessages(ctx context.Context, id, pageToken string) (*MessagePage, error) {
+	if err := checkID(id); err != nil {
+		return nil, err
+	}
+	var out MessagePage
+	q := url.Values{"page_token": {pageToken}}
+	if err := c.Do(ctx, http.MethodGet, "/cards/"+id+"/messages", q, nil, &out); err != nil {
+		return nil, fmt.Errorf("listing the messages of card %s: %w", id, err)
+	}
+	return &out, nil
+}
+
+// ErrSizeMismatch means a download was not the size the API said.
+var ErrSizeMismatch = errors.New("the file is not the size the server said")
+
+// Download streams attachment id to w and checks it is exactly size
+// bytes; it never writes more than size. It is not retried.
+func (c *Client) Download(ctx context.Context, id string, size int64, w io.Writer) (int64, error) {
+	if err := checkID(id); err != nil {
+		return 0, err
+	}
+	ctx, cancel := context.WithTimeout(ctx, c.o.DownloadTimeout)
+	defer cancel()
+
+	u := *c.base
+	u.Path += "/attachments/" + id
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
+	if err != nil {
+		return 0, err
+	}
+	req.Header.Set("Accept", "*/*")
+	c.authorize(req)
+
+	resp, err := c.o.HTTPClient.Do(req)
+	if err != nil {
+		return 0, fmt.Errorf("downloading file %s: %w", id, err)
+	}
+	defer func() { _ = resp.Body.Close() }()
+	c.o.Logger.Debug("request", "method", http.MethodGet, "path", u.Path, "status", resp.StatusCode)
+	if resp.StatusCode >= 300 {
+		data, _ := c.read(resp.Body)
+		return 0, fmt.Errorf("downloading file %s: %w", id, c.parseError(resp.StatusCode, resp.Status, data))
+	}
+
+	n, err := io.Copy(w, io.LimitReader(resp.Body, size))
+	if err != nil {
+		return n, fmt.Errorf("downloading file %s: %w", id, err)
+	}
+	extra, _ := resp.Body.Read(make([]byte, 1))
+	if n != size || extra > 0 {
+		return n, fmt.Errorf("downloading file %s: %w", id, ErrSizeMismatch)
+	}
+	return n, nil
 }

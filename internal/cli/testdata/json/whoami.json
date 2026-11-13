@@ -1,0 +1,16 @@
+{
+  "user": {
+    "id": "Us9rFrancoX2",
+    "name": "Franco Catena",
+    "email": "franco@example.com"
+  },
+  "organization": {
+    "id": "Or9HuLLop2Zx",
+    "name": "Hullop"
+  },
+  "host": "http://TRK_HOST",
+  "session": {
+    "name": "trk CLI on test-host",
+    "expires_at": "2027-02-11T12:00:00Z"
+  }
+}

@@ -3,7 +3,7 @@
 TOOL      := go tool -modfile=tools/go.mod
 PLATFORMS := darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 windows/amd64 windows/arm64
 
-.PHONY: check fmt tidy vet staticcheck lint test vulncheck cross build
+.PHONY: check fmt tidy vet staticcheck lint test vulncheck cross build release-check release-snapshot
 
 check: fmt tidy vet staticcheck lint test vulncheck cross
 
@@ -37,3 +37,10 @@ cross:
 
 build:
 	go build -o bin/trk ./cmd/trk
+
+# Releases are made by CI from a tag; these check them locally.
+release-check:
+	HOMEBREW_TAP_TOKEN=unused $(TOOL) goreleaser check
+
+release-snapshot:
+	HOMEBREW_TAP_TOKEN=unused $(TOOL) goreleaser release --snapshot --clean --skip=publish

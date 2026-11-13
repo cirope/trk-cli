@@ -1,0 +1,75 @@
+# A card as a person reads it, by id or by URL.
+env TRK_TOKEN=test_access_token
+fake-trk card.get.ok card.markdown.ok
+exits 0 trk card show BaHtsbhzVDa9
+cmp stdout card.txt
+! stderr .
+exits 0 trk card show 'https://trk.hullop.com/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9?tab=files'
+cmp stdout card.txt
+
+# --json is the card, with null for what is absent.
+exits 0 trk card show BaHtsbhzVDa9 --json
+stdout '"id": "BaHtsbhzVDa9"'
+stdout '"pull_request": null'
+stdout '"notes": "Has the new_export flag on."'
+
+# --markdown is the server's document, untouched.
+exits 0 trk card show BaHtsbhzVDa9 --markdown
+cmp stdout card.md
+
+# --web opens the card's page.
+exits 0 trk card show BaHtsbhzVDa9 --web
+grep 'http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9' $WORK/browser.log
+
+# Not found, or not yours: exit 3.
+fake-trk card.get.not_found
+exits 3 trk card show BaHtsbhzVDa9
+stderr 'trk: getting card BaHtsbhzVDa9: Card not found.'
+exits 3 trk card show BaHtsbhzVDa9 --json
+stderr '"code":"not_found"'
+
+# Not a card: wrong usage, and the server is never asked.
+exits 2 trk card show ../../me
+stderr 'not a card id'
+exits 2 trk card show
+stderr 'needs one card'
+exits 2 trk card show BaHtsbhzVDa9 --web --markdown
+stderr 'either --web or --markdown'
+
+-- card.txt --
+CSV export loses accents
+BaHtsbhzVDa9 · Producto › Soporte · To do
+http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9
+
+Type:         bug
+Priority:     high
+State:        open
+Due:          Fri Nov 27, 2026 (in 14 days)
+Owners:       Ana Ruiz
+Tags:         Billing
+Agent:        on
+Branch:       trk/card-BaHtsbhzVDa9
+
+Customers
+  Acme: Has the new_export flag on.
+
+Rows come out as mojibake in Excel.
+
+Conversation
+  agent · Nov 13 12:15
+  Which Excel version shows it?
+
+Files
+  trace.log  35 B
+-- card.md --
+# CSV export loses accents
+
+Rows come out as mojibake in Excel.
+
+## Archivos
+
+- [trace.log](attachments/trace.log)
+
+## Cómo traerlo de vuelta
+
+Trabajá en la rama `trk/card-BaHtsbhzVDa9`.
