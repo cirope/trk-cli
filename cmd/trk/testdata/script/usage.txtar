@@ -1,0 +1,12 @@
+# Wrong usage exits 2, says what was wrong on stderr, and prints nothing
+# on stdout.
+exits 2 trk --bogus
+stderr 'trk: unknown flag: --bogus'
+stderr 'Run .trk --help. for usage\.'
+! stdout .
+
+# Help, with an example, goes to stdout.
+exits 0 trk --help
+stdout 'Usage:'
+stdout 'Examples:'
+! stderr .

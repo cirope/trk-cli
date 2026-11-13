@@ -1,0 +1,4 @@
+# --version prints the stamped version on stdout and exits 0.
+exec trk --version
+stdout '^trk dev \(commit none, built unknown\)$'
+! stderr .
