@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.4.0
 
 - `trk card edit <card>` changes a card's title, description, type,
   priority or due date; only what you give changes.
