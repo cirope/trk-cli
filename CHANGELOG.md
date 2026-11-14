@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.4.2
 
 - When Trk refuses a value, trk no longer suggests `trk --help`.
 
