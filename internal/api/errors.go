@@ -48,7 +48,7 @@ func (e *Error) Error() string {
 // Is matches the sentinel for the error's status.
 func (e *Error) Is(target error) bool {
 	switch e.Status {
-	case http.StatusBadRequest, http.StatusUnprocessableEntity:
+	case http.StatusBadRequest, http.StatusUnprocessableEntity, http.StatusRequestEntityTooLarge:
 		return target == ErrInvalid
 	case http.StatusUnauthorized:
 		return target == ErrUnauthorized

@@ -39,6 +39,10 @@ func TestJSONContract(t *testing.T) {
 		{"card_edit", []string{"card.update.ok"}, []string{"card", "edit", "BaHtsbhzVDa9", "--title", "La exportación a CSV pierde los acentos"}},
 		{"card_link", []string{"card.link.ok"}, []string{"card", "link", "BaHtsbhzVDa9", "https://github.com/cirope/trk/pull/12"}},
 		{"card_rate", []string{"card.rate.ok"}, []string{"card", "rate", "BaHtsbhzVDa9", "bad", "--note", "It also happens in LibreOffice."}},
+		{"mail", []string{"mail.list.ok"}, []string{"mail"}},
+		{"mail_file", []string{"mail.file.ok"}, []string{"mail", "file", "Mx7tHrEad2Qx", "--board", "Soporte"}},
+		{"mail_discard", []string{"mail.discard.ok"}, []string{"mail", "discard", "Mx7tHrEad2Qx", "--block"}},
+		{"card_attach", []string{"card.attach.ok"}, []string{"card", "attach", "BaHtsbhzVDa9", "testdata/notes.txt"}},
 		{"card_new", []string{"card.create.ok"}, []string{"card", "new", "--board", "Soporte", "Board notes for the agent",
 			"--type", "feature", "--priority", "normal", "--description", "Where the docs are, which is the website."}},
 	}

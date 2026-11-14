@@ -1,5 +1,5 @@
 {
-  "id": "Bc1iSuBpRj01",
+  "id": "Bc3iSuBpRj83",
   "name": "CLI",
   "status": "active",
   "repository": "cirope/trk-cli",
@@ -10,22 +10,22 @@
   },
   "columns": [
     {
-      "id": "Ct1oDoCl1Aa1",
+      "id": "Ct3oDoCk3Aa3",
       "name": "To do",
       "role": "todo"
     },
     {
-      "id": "Ct2dOiNg2Bb2",
+      "id": "Ct2dQiNg2Bb2",
       "name": "In progress",
       "role": "doing"
     },
     {
-      "id": "Ct3rEvIw3Cc3",
+      "id": "Ct3rEvJw3Cc3",
       "name": "Review",
       "role": "review"
     },
     {
-      "id": "Ct4dOnE04Dd4",
+      "id": "Ct4dQnE84Dd4",
       "name": "Done",
       "role": "done"
     }
@@ -36,5 +36,5 @@
       "value": "SPEC.md"
     }
   ],
-  "url": "http://trk.test/boards/Bc1iSuBpRj01"
+  "url": "http://trk.test/boards/Bc3iSuBpRj83"
 }

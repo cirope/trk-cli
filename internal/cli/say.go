@@ -10,7 +10,10 @@ import (
 )
 
 func newSayCmd(a *app) *cobra.Command {
-	var file string
+	var (
+		file   string
+		attach []string
+	)
 	cmd := &cobra.Command{
 		Use:     "say <card> [message]",
 		Aliases: []string{"reply"},
@@ -22,7 +25,8 @@ func newSayCmd(a *app) *cobra.Command {
 			"Otherwise it is a note: the card stays as and where it is.",
 		Example: "  trk card say BaHtsbhzVDa9 \"Fixed in #12; the export keeps accents now.\"\n" +
 			"  trk card reply BaHtsbhzVDa9 --file notes.md\n" +
-			"  git log -1 --format=%B | trk card say BaHtsbhzVDa9 --file -",
+			"  git log -1 --format=%B | trk card say BaHtsbhzVDa9 --file -\n" +
+			"  trk card say BaHtsbhzVDa9 \"The log from this morning.\" --attach morning.log",
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) < 1 || len(args) > 2 {
 				return usageError{fmt.Errorf("%s needs a card, then the message or --file", cmd.CommandPath())}
@@ -45,8 +49,12 @@ func newSayCmd(a *app) *cobra.Command {
 			case len(args) == 2:
 				body = args[1]
 			}
-			if strings.TrimSpace(body) == "" {
-				return usageError{errors.New("nothing to post: give a message or --file")}
+			files, err := checkUploads(attach)
+			if err != nil {
+				return err
+			}
+			if strings.TrimSpace(body) == "" && len(files) == 0 {
+				return usageError{errors.New("nothing to post: give a message, --file or --attach")}
 			}
 
 			_, c, err := a.signedIn()
@@ -60,7 +68,7 @@ func newSayCmd(a *app) *cobra.Command {
 			if card.Agent && card.Board.Repository != nil {
 				a.progress("Trk's agent is on for this card: it will answer with a new turn.\n")
 			}
-			posted, err := c.PostMessage(cmd.Context(), id, body)
+			posted, err := c.PostMessage(cmd.Context(), id, body, files...)
 			if err != nil {
 				return err
 			}
@@ -72,14 +80,23 @@ func newSayCmd(a *app) *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&file, "file", "", "read the message from a file; - reads stdin")
+	cmd.Flags().StringArrayVar(&attach, "attach", nil, "send this file with the message (repeatable; 20 MB each)")
 	return cmd
 }
 
 // reportPosted says what posting did: an agent turn, or a note.
 func (a *app) reportPosted(id string, p *api.Posted) {
+	with := ""
+	switch n := len(p.Attachments); n {
+	case 0:
+	case 1:
+		with = " with 1 file"
+	default:
+		with = fmt.Sprintf(" with %d files", n)
+	}
 	if p.AgentTurn {
-		a.result("Posted on %s. Trk's agent is answering; the card is back in In progress.\n", id)
+		a.result("Posted on %s%s. Trk's agent is answering; the card is back in In progress.\n", id, with)
 		return
 	}
-	a.result("Posted a note on %s; the card stays where it is.\n", id)
+	a.result("Posted a note on %s%s; the card stays where it is.\n", id, with)
 }

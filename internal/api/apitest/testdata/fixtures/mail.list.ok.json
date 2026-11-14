@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/mail"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "card_id": null,
+          "discarded_at": null,
+          "emails": 1,
+          "from": {
+            "address": "bob@shop.example",
+            "name": "Bob Shop"
+          },
+          "held_at": "2026-11-13T12:30:00Z",
+          "id": "Mx7tHrEad2Qx",
+          "reason": "no_board",
+          "reason_text": null,
+          "snippet": "Why can't we edit invoice 12 any more?",
+          "status": "held",
+          "subject": "Invoice 12 is frozen"
+        }
+      ],
+      "next_page_token": null
+    }
+  }
+}

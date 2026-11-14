@@ -206,3 +206,25 @@ func TestCardProposedResponse(t *testing.T) {
 		t.Errorf("conversation:\n%s\nwant it to contain:\n%s", b.String(), want)
 	}
 }
+
+// A card that came by email says so, and a customer's message is headed
+// by the sender.
+func TestCardFromEmail(t *testing.T) {
+	c := fixtureCard(t)
+	c.Email = &api.CardEmail{From: []string{"bob@shop.example"}, Subject: "Invoice 12 is frozen"}
+	c.Messages = []api.Message{{
+		Author: "customer", Body: "Why can't we edit invoice 12 any more?",
+		From:       &api.Address{Name: "Bob Shop", Address: "bob@shop.example"},
+		InsertedAt: time.Date(2026, 11, 13, 12, 30, 0, 0, time.UTC),
+	}}
+	var b bytes.Buffer
+	Card(&b, &c, Style{Now: now})
+	for _, want := range []string{
+		"Email:        from bob@shop.example: Invoice 12 is frozen\n",
+		"  Bob Shop <bob@shop.example> · Nov 13 09:30\n  Why can't we edit invoice 12 any more?\n",
+	} {
+		if !strings.Contains(b.String(), want) {
+			t.Errorf("card:\n%s\nwant it to contain %q", b.String(), want)
+		}
+	}
+}

@@ -8,7 +8,10 @@ import (
 	"bytes"
 	"embed"
 	"encoding/json"
+	"errors"
 	"io"
+	"mime"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"path"
@@ -28,6 +31,8 @@ type Fixture struct {
 		Path   string            `json:"path"`
 		Query  map[string]string `json:"query"`
 		Body   json.RawMessage   `json:"body"`
+		// Multipart is a multipart/form-data request's parts, in order.
+		Multipart []Part `json:"multipart"`
 	} `json:"request"`
 	Response struct {
 		Status  int               `json:"status"`
@@ -36,6 +41,15 @@ type Fixture struct {
 		// answer when Content-Type is not JSON (Markdown, files).
 		Body json.RawMessage `json:"body"`
 	} `json:"response"`
+}
+
+// Part is one part of a multipart request. A large file is recorded by
+// ContentSize instead of Content.
+type Part struct {
+	Name        string  `json:"name"`
+	Filename    string  `json:"filename"`
+	Content     *string `json:"content"`
+	ContentSize *int64  `json:"content_size"`
 }
 
 // Names lists every fixture, sorted.
@@ -180,10 +194,42 @@ func matches(f Fixture, r *http.Request, body []byte) bool {
 			return false
 		}
 	}
+	if f.Request.Multipart != nil {
+		return multipartEqual(f.Request.Multipart, r.Header.Get("Content-Type"), body)
+	}
 	if len(f.Request.Body) == 0 {
 		return true
 	}
 	return jsonEqual(f.Request.Body, body)
+}
+
+// multipartEqual reports whether body holds exactly the parts wanted, in
+// order: same names, filenames, and contents or sizes.
+func multipartEqual(want []Part, contentType string, body []byte) bool {
+	mt, params, err := mime.ParseMediaType(contentType)
+	if err != nil || mt != "multipart/form-data" {
+		return false
+	}
+	mr := multipart.NewReader(bytes.NewReader(body), params["boundary"])
+	for i := 0; ; i++ {
+		p, err := mr.NextPart()
+		if errors.Is(err, io.EOF) {
+			return i == len(want)
+		}
+		if err != nil || i >= len(want) {
+			return false
+		}
+		data, err := io.ReadAll(p)
+		w := want[i]
+		switch {
+		case err != nil, p.FormName() != w.Name, p.FileName() != w.Filename:
+			return false
+		case w.Content != nil && string(data) != *w.Content:
+			return false
+		case w.ContentSize != nil && int64(len(data)) != *w.ContentSize:
+			return false
+		}
+	}
 }
 
 func jsonEqual(a, b []byte) bool {

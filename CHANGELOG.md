@@ -2,6 +2,15 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk card attach <card> <file>…` attaches files; `trk card say --attach`
+  sends them with a message.
+- `trk mail` lists email Trk held; `trk mail file` and `trk mail discard`
+  (`--block`) act on it.
+- `trk card show` says when a card came by email and names the sender of
+  customer messages.
+
 ## 0.4.3
 
 - `trk card rate <card> good|bad` rates Trk's agent's latest answer,

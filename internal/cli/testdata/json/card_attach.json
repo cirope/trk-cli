@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "id": "At3NoTeS4txt",
+      "filename": "notes.txt",
+      "path": "attachments/notes.txt",
+      "content_type": "text/plain",
+      "byte_size": 12,
+      "message_id": null,
+      "url": "http://trk.test/api/v1/attachments/At3NoTeS4txt",
+      "inserted_at": "2026-11-13T12:30:00Z"
+    }
+  ]
+}

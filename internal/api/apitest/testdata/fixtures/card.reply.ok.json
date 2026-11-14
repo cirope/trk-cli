@@ -10,6 +10,7 @@
     "status": 201,
     "body": {
       "agent_turn": true,
+      "attachments": [],
       "message": {
         "author": "human",
         "body": "Fixed in #12; the export keeps accents now.",

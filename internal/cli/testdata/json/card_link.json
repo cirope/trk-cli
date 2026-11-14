@@ -39,7 +39,7 @@
     }
   ],
   "column": {
-    "id": "Cs3rEvIwSup3",
+    "id": "Cs3rEvJwSup3",
     "name": "Review",
     "role": "review"
   },
@@ -71,6 +71,7 @@
     "checks": null,
     "opened_by": "outside"
   },
+  "email": null,
   "attachments": [
     {
       "id": "At5tRaCe9Lg2",

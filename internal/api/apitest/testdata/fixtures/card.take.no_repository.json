@@ -45,6 +45,7 @@
         "description": null,
         "due_on": null,
         "due_window": null,
+        "email": null,
         "id": "BaHtsbhzVDa9",
         "inserted_at": "2026-11-12T09:00:00Z",
         "messages": [],

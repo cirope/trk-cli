@@ -6,5 +6,6 @@
     "proposed_response": null,
     "inserted_at": "2026-11-13T12:30:00Z"
   },
-  "agent_turn": true
+  "agent_turn": true,
+  "attachments": []
 }

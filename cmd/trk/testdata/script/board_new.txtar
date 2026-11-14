@@ -2,12 +2,12 @@
 env TRK_TOKEN=test_access_token
 fake-trk board.create.ok
 exits 0 trk board new CLI --parent Soporte --repo cirope/trk-cli --detail Docs=SPEC.md
-stdout '^Created Bc1iSuBpRj01: Soporte › CLI$'
-stdout '^http://trk.test/boards/Bc1iSuBpRj01$'
+stdout '^Created Bc3iSuBpRj83: Soporte › CLI$'
+stdout '^http://trk.test/boards/Bc3iSuBpRj83$'
 exits 0 trk board new -q CLI --parent Soporte --repo cirope/trk-cli --detail Docs=SPEC.md
-stdout '^Bc1iSuBpRj01$'
+stdout '^Bc3iSuBpRj83$'
 exits 0 trk board new --json CLI --parent Soporte --repo cirope/trk-cli --detail Docs=SPEC.md
-stdout '"id": "Bc1iSuBpRj01"'
+stdout '"id": "Bc3iSuBpRj83"'
 
 # Wrong usage, caught before asking the server.
 exits 2 trk board new

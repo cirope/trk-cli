@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/attachments",
+    "multipart": [
+      {
+        "content": "hello world\n",
+        "filename": "notes.txt",
+        "name": "files"
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "items": [
+        {
+          "byte_size": 12,
+          "content_type": "text/plain",
+          "filename": "notes.txt",
+          "id": "At3NoTeS4txt",
+          "inserted_at": "2026-11-13T12:30:00Z",
+          "message_id": null,
+          "path": "attachments/notes.txt",
+          "url": "http://trk.test/api/v1/attachments/At3NoTeS4txt"
+        }
+      ]
+    }
+  }
+}

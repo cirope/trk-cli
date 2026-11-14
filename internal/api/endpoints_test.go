@@ -100,7 +100,7 @@ func TestMe(t *testing.T) {
 	}
 	want := &Me{
 		User:         User{ID: "Us9rFrancoX2", Name: "Franco Catena", Email: "franco@example.com"},
-		Organization: Organization{ID: "Or9HuLLop2Zx", Name: "Hullop"},
+		Organization: Organization{ID: "Qr9HuLLop2Zx", Name: "Hullop"},
 		Session:      Session{Name: "Trk CLI on test-host", ExpiresAt: mustTime("2027-02-11T12:00:00Z")},
 	}
 	if diff := cmp.Diff(want, got); diff != "" {
@@ -452,7 +452,7 @@ func TestCreateBoard(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if b.ID != "Bc1iSuBpRj01" || b.Parent == nil || b.Parent.ID != "TyzgACHc57CG" {
+	if b.ID != "Bc3iSuBpRj83" || b.Parent == nil || b.Parent.ID != "TyzgACHc57CG" {
 		t.Errorf("board = %+v", b)
 	}
 }
@@ -561,5 +561,82 @@ func TestRateAnswer(t *testing.T) {
 	var apiErr *Error
 	if !errors.As(err, &apiErr) || apiErr.Code != "no_answer" || !errors.Is(err, ErrConflict) {
 		t.Errorf("no answer: %v", err)
+	}
+}
+
+func TestMail(t *testing.T) {
+	c, srv := fixtureClient(t, "test_access_token", "mail.list.ok", "mail.file.ok", "mail.discard.ok")
+	page, err := c.Mail(context.Background(), MailQuery{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	th := page.Items[0]
+	if th.ID != "Mx7tHrEad2Qx" || th.Reason != "no_board" || th.From.Address != "bob@shop.example" || th.CardID != nil || th.Emails != 1 {
+		t.Errorf("thread = %+v", th)
+	}
+
+	card, err := c.FileMail(context.Background(), "Mx7tHrEad2Qx", "Soporte")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if card.ID != "CaRdFrMaiL3x" || card.Email == nil || card.Email.Subject != "Invoice 12 is frozen" ||
+		len(card.Email.From) != 1 || card.Email.Language != nil {
+		t.Errorf("filed card email = %+v", card.Email)
+	}
+	if m := card.Messages[0]; m.Author != "customer" || m.From == nil || m.From.Name != "Bob Shop" {
+		t.Errorf("customer message = %+v", m)
+	}
+
+	th2, err := c.DiscardMail(context.Background(), "Mx7tHrEad2Qx", true)
+	if err != nil || th2.Status != "discarded" || th2.Reason != "blocked" {
+		t.Errorf("discard = %+v, %v", th2, err)
+	}
+	if b := string(srv.Requests()[2].Body); b != `{"block":true}` {
+		t.Errorf("discard body = %s", b)
+	}
+}
+
+func TestMailDiscardedFilter(t *testing.T) {
+	q := MailQuery{Discarded: true, Limit: 5}.values()
+	if q.Encode() != "limit=5&status=discarded" {
+		t.Errorf("query = %s", q.Encode())
+	}
+}
+
+func textUpload(name, content string) Upload {
+	return Upload{Name: name, Size: int64(len(content)), Open: func() (io.ReadCloser, error) {
+		return io.NopCloser(strings.NewReader(content)), nil
+	}}
+}
+
+func TestAttachFiles(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.attach.ok")
+	items, err := c.AttachFiles(context.Background(), "BaHtsbhzVDa9", []Upload{textUpload("notes.txt", "hello world\n")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(items) != 1 || items[0].ID != "At3NoTeS4txt" || items[0].Path != "attachments/notes.txt" || items[0].MessageID != nil {
+		t.Errorf("items = %+v", items)
+	}
+}
+
+func TestAttachTooLarge(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.attach.too_large")
+	_, err := c.AttachFiles(context.Background(), "BaHtsbhzVDa9", []Upload{textUpload("big.bin", strings.Repeat("x", 20971521))})
+	var apiErr *Error
+	if !errors.As(err, &apiErr) || apiErr.Code != "too_large" || !errors.Is(err, ErrInvalid) {
+		t.Errorf("err = %v, want a 413 too_large", err)
+	}
+}
+
+func TestPostMessageWithFiles(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.reply.with_file")
+	got, err := c.PostMessage(context.Background(), "BaHtsbhzVDa9", "The log from this morning.",
+		textUpload("morning.log", "09:02:11 ERROR export: bad bytes\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got.Attachments) != 1 || got.Attachments[0].MessageID == nil || *got.Attachments[0].MessageID != "Ms5gWiThFiLe" {
+		t.Errorf("posted = %+v", got)
 	}
 }

@@ -50,6 +50,7 @@
         "description": "Where the docs are, which is the website.",
         "due_on": null,
         "due_window": null,
+        "email": null,
         "id": "Nw5cArDx7Qp2",
         "inserted_at": "2026-11-13T12:30:00Z",
         "messages": [],

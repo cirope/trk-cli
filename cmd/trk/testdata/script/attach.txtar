@@ -1,0 +1,31 @@
+# Attaching files to a card.
+env TRK_TOKEN=test_access_token
+fake-trk card.attach.ok
+exits 0 trk card attach BaHtsbhzVDa9 notes.txt
+stdout '^Attached notes\.txt \(12 B\) to BaHtsbhzVDa9\.$'
+exits 0 trk card attach BaHtsbhzVDa9 notes.txt -q
+stdout '^At3NoTeS4txt$'
+exits 0 trk card attach BaHtsbhzVDa9 notes.txt --json
+stdout '"id": "At3NoTeS4txt"'
+
+# Checked here before anything is sent.
+exits 2 trk card attach BaHtsbhzVDa9 missing.txt
+stderr 'missing.txt'
+exits 2 trk card attach BaHtsbhzVDa9 empty.txt
+stderr 'empty.txt is empty'
+exits 2 trk card attach BaHtsbhzVDa9 somedir
+stderr 'somedir is not a file'
+exits 2 trk card attach BaHtsbhzVDa9
+stderr 'needs a card and at least one file'
+
+# Files with a message.
+fake-trk card.get.ok card.reply.with_file
+exits 0 trk card say BaHtsbhzVDa9 'The log from this morning.' --attach morning.log
+stdout '^Posted on BaHtsbhzVDa9 with 1 file\. Trk''s agent is answering; the card is back in In progress\.$'
+
+-- notes.txt --
+hello world
+-- empty.txt --
+-- somedir/keep --
+-- morning.log --
+09:02:11 ERROR export: bad bytes

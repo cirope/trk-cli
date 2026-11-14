@@ -65,6 +65,7 @@
       "description": "Rows come out as mojibake in Excel.",
       "due_on": "2026-11-27",
       "due_window": "later",
+      "email": null,
       "id": "BaHtsbhzVDa9",
       "inserted_at": "2026-11-12T09:00:00Z",
       "messages": [

@@ -84,6 +84,8 @@ type Card struct {
 	Customers    []Customer    `json:"customers,omitzero"` // Absent in lists.
 	Branch       *string       `json:"branch"`             // nil on a board without a repository.
 	PullRequest  *PullRequest  `json:"pull_request"`
+	// Email says how the card came by email; nil when it did not.
+	Email *CardEmail `json:"email"`
 
 	Attachments              []Attachment `json:"attachments,omitzero"` // Absent in lists.
 	AttachmentsNextPageToken *string      `json:"attachments_next_page_token"`
@@ -170,8 +172,10 @@ type Message struct {
 	// ProposedResponse is, on an agent's message from a question turn, the
 	// response it proposes for the customer (Markdown); Body is then its
 	// note about it. nil on every other message.
-	ProposedResponse *string   `json:"proposed_response"`
-	InsertedAt       time.Time `json:"inserted_at"`
+	ProposedResponse *string `json:"proposed_response"`
+	// From is the sender of a customer's message (Author "customer").
+	From       *Address  `json:"from,omitzero"`
+	InsertedAt time.Time `json:"inserted_at"`
 }
 
 // TakeResult is what taking a card changed.

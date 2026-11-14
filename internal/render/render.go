@@ -139,6 +139,9 @@ func Card(w io.Writer, c *api.Card, s Style) {
 		}
 		field("Due", label)
 	}
+	if e := c.Email; e != nil {
+		field("Email", "from "+strings.Join(e.From, ", ")+": "+e.Subject)
+	}
 	field("Owners", joinNames(c.Owners, func(p api.Person) string { return p.Name }))
 	field("Tags", joinNames(c.Tags, func(t api.Tag) string { return t.Name }))
 	agent := "on"
@@ -199,7 +202,14 @@ func Card(w io.Writer, c *api.Card, s Style) {
 			fmt.Fprintln(w, s.paint(dim, "  Older messages are on the web: trk card show "+c.ID+" --web"))
 		}
 		for _, m := range c.Messages {
-			head := m.Author + " · " + m.InsertedAt.In(s.Now.Location()).Format("Jan 2 15:04")
+			who := m.Author
+			if m.From != nil {
+				who = m.From.Name + " <" + m.From.Address + ">"
+				if m.From.Name == "" {
+					who = m.From.Address
+				}
+			}
+			head := who + " · " + m.InsertedAt.In(s.Now.Location()).Format("Jan 2 15:04")
 			if m.ProposedResponse == nil {
 				fmt.Fprintf(w, "  %s\n", s.paint(dim, head))
 				fmt.Fprintf(w, "  %s\n", indent(strings.TrimRight(m.Body, "\n"), "  "))

@@ -277,19 +277,30 @@ func (c *Client) MoveCard(ctx context.Context, id, column string, close bool) (*
 // Posted is a message posted on a card's conversation. AgentTurn means
 // Trk's agent answers it with a new turn.
 type Posted struct {
-	Message   Message `json:"message"`
-	AgentTurn bool    `json:"agent_turn"`
+	Message     Message      `json:"message"`
+	AgentTurn   bool         `json:"agent_turn"`
+	Attachments []Attachment `json:"attachments"` // The files sent with it.
 }
 
 // PostMessage posts body (Markdown) on card id's conversation, as a reply
 // in the web app does: the card goes back to In progress.
-func (c *Client) PostMessage(ctx context.Context, id, body string) (*Posted, error) {
+// With files, it sends them with the message; body may then be empty.
+func (c *Client) PostMessage(ctx context.Context, id, body string, files ...Upload) (*Posted, error) {
 	if err := checkID(id); err != nil {
 		return nil, err
 	}
 	var out Posted
-	in := map[string]string{"body": body}
-	if err := c.Do(ctx, http.MethodPost, "/cards/"+id+"/messages", nil, in, &out); err != nil {
+	var err error
+	if len(files) > 0 {
+		var fields []field
+		if body != "" {
+			fields = append(fields, field{"body", body})
+		}
+		err = c.sendMultipart(ctx, "/cards/"+id+"/messages", fields, files, &out)
+	} else {
+		err = c.Do(ctx, http.MethodPost, "/cards/"+id+"/messages", nil, map[string]string{"body": body}, &out)
+	}
+	if err != nil {
 		return nil, fmt.Errorf("posting on card %s: %w", id, err)
 	}
 	return &out, nil

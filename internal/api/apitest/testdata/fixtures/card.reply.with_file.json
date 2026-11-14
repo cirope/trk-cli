@@ -1,0 +1,42 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/messages",
+    "multipart": [
+      {
+        "content": "The log from this morning.",
+        "name": "body"
+      },
+      {
+        "content": "09:02:11 ERROR export: bad bytes\n",
+        "filename": "morning.log",
+        "name": "files"
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "agent_turn": true,
+      "attachments": [
+        {
+          "byte_size": 33,
+          "content_type": "application/octet-stream",
+          "filename": "morning.log",
+          "id": "At4TrAcE5Lg3",
+          "inserted_at": "2026-11-13T12:30:00Z",
+          "message_id": "Ms5gWiThFiLe",
+          "path": "attachments/morning.log",
+          "url": "http://trk.test/api/v1/attachments/At4TrAcE5Lg3"
+        }
+      ],
+      "message": {
+        "author": "human",
+        "body": "The log from this morning.",
+        "id": "Ms5gWiThFiLe",
+        "inserted_at": "2026-11-13T12:30:00Z",
+        "proposed_response": null
+      }
+    }
+  }
+}

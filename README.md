@@ -113,11 +113,13 @@ are; `trk logout` revokes the session.
 | `trk card edit <card>` | Changes only what you give: `--title`, `--description` (or `--description-file -`), `--type`, `--priority`, `--due` (`""` clears it). |
 | `trk card link <card> <pull request url>` | Links a pull request opened from another branch; one from `trk/card-<id>` links itself. |
 | `trk card rate <card> good\|bad` | Rates Trk's agent's latest answer; `--note` says what was wrong and `--sent` what you sent instead (`--note-file`, `--sent-file`, `-` for stdin). The agent reads a bad rating on its next turn. |
+| `trk card attach <card> <file>…` | Attaches files to a card (20 MB each, 100 MB per upload). `trk card say --attach <file>` sends files with a message. |
 | `trk card pull <card>` | Writes the card and its files to `.trk/cards/<card>/`. |
 | `trk card take <card>` | Makes you an owner, turns Trk's agent off for the card, moves it to In progress, pulls it, and prints the branch to use. `--branch` creates and switches to it. |
 | `trk boards` | The boards as a tree, subprojects under their parent, with repository and status. |
 | `trk board new <name>` | Creates a board; `--parent` makes it a subproject. `--repo`, `--language`, `--status`, `--detail Name=Value`. |
 | `trk board edit <board>` | Changes only what you give; `--detail` adds or replaces one detail, `--remove-detail` removes one. |
+| `trk mail` | Email Trk held instead of filing it (`--discarded` for the discarded). `trk mail file <thread> --board <b>` files it as a card; `trk mail discard <thread> [--block]` discards it. trk never emails customers. |
 | `trk login`, `logout`, `whoami` | Sign in and out. |
 
 `<card>` is a card id (`BaHtsbhzVDa9`) or its URL, as copied from the

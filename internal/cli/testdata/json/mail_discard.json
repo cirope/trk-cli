@@ -1,0 +1,16 @@
+{
+  "id": "Mx7tHrEad2Qx",
+  "subject": "Invoice 12 is frozen",
+  "status": "discarded",
+  "reason": "blocked",
+  "reason_text": null,
+  "from": {
+    "name": "Bob Shop",
+    "address": "bob@shop.example"
+  },
+  "snippet": "Why can't we edit invoice 12 any more?",
+  "emails": 1,
+  "card_id": null,
+  "held_at": "2026-11-13T12:30:00Z",
+  "discarded_at": "2026-11-13T12:30:00Z"
+}

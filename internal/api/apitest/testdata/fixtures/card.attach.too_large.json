@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/attachments",
+    "multipart": [
+      {
+        "content_size": 20971521,
+        "filename": "big.bin",
+        "name": "files"
+      }
+    ]
+  },
+  "response": {
+    "status": 413,
+    "body": {
+      "error": {
+        "code": "too_large",
+        "message": "big.bin is over the 20 MB a file may be."
+      }
+    }
+  }
+}
