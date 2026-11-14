@@ -2,6 +2,12 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk card show` shows the response Trk's agent proposes for the
+  customer on a question, with its note under it; `--json` has it as
+  `messages[].proposed_response`.
+
 ## 0.3.0
 
 - `trk boards` lists boards as a tree, subprojects under their parent.

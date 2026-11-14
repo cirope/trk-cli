@@ -190,3 +190,19 @@ func TestColorIsOnlyEscapes(t *testing.T) {
 		t.Error("escapes without colour")
 	}
 }
+
+// An agent's message from a question turn shows the response it proposes
+// for the customer, with its note under it.
+func TestCardProposedResponse(t *testing.T) {
+	c := fixtureCard(t)
+	c.Messages[0].Body = "I kept it short and pointed to the export setting."
+	c.Messages[0].ProposedResponse = ptr("Hi! Choose **UTF-8** in the export dialog.")
+	var b bytes.Buffer
+	Card(&b, &c, Style{Now: now})
+	want := "  agent · Nov 13 09:15 · proposed response\n" +
+		"  Hi! Choose **UTF-8** in the export dialog.\n" +
+		"  Note: I kept it short and pointed to the export setting.\n"
+	if !strings.Contains(b.String(), want) {
+		t.Errorf("conversation:\n%s\nwant it to contain:\n%s", b.String(), want)
+	}
+}

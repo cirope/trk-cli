@@ -14,7 +14,8 @@
           "author": "human",
           "body": "Customer says it started last week.",
           "id": "Ms2gUser9Hk3",
-          "inserted_at": "2026-11-13T12:30:00Z"
+          "inserted_at": "2026-11-13T12:30:00Z",
+          "proposed_response": null
         }
       ],
       "next_page_token": null

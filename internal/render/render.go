@@ -199,8 +199,19 @@ func Card(w io.Writer, c *api.Card, s Style) {
 			fmt.Fprintln(w, s.paint(dim, "  Older messages are on the web: trk card show "+c.ID+" --web"))
 		}
 		for _, m := range c.Messages {
-			fmt.Fprintf(w, "  %s\n", s.paint(dim, m.Author+" · "+m.InsertedAt.In(s.Now.Location()).Format("Jan 2 15:04")))
-			fmt.Fprintf(w, "  %s\n", indent(strings.TrimRight(m.Body, "\n"), "  "))
+			head := m.Author + " · " + m.InsertedAt.In(s.Now.Location()).Format("Jan 2 15:04")
+			if m.ProposedResponse == nil {
+				fmt.Fprintf(w, "  %s\n", s.paint(dim, head))
+				fmt.Fprintf(w, "  %s\n", indent(strings.TrimRight(m.Body, "\n"), "  "))
+				continue
+			}
+			// As the web app shows it: the response proposed for the
+			// customer, then the agent's note about it.
+			fmt.Fprintf(w, "  %s\n", s.paint(dim, head+" · proposed response"))
+			fmt.Fprintf(w, "  %s\n", indent(strings.TrimRight(*m.ProposedResponse, "\n"), "  "))
+			if note := strings.TrimSpace(m.Body); note != "" {
+				fmt.Fprintf(w, "  %s\n", s.paint(dim, "Note: "+indent(note, "  ")))
+			}
 		}
 	}
 	if len(c.Attachments) > 0 {

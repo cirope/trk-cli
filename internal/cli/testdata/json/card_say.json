@@ -3,6 +3,7 @@
     "id": "Ms7rEpLy3Kq9",
     "author": "human",
     "body": "Fixed in #12; the export keeps accents now.",
+    "proposed_response": null,
     "inserted_at": "2026-11-13T12:30:00Z"
   },
   "agent_turn": true
