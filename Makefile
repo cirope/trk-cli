@@ -57,14 +57,25 @@ cross:
 build:
 	go build -o bin/trk ./cmd/trk
 
-# Cuts a release: make release V=0.3.0. Renames CHANGELOG.md's
-# "## Unreleased" to the version, commits, tags and pushes; CI publishes.
+# Cuts a release: make release bumps the patch version of the last tag
+# (0.4.0 -> 0.4.1); BUMP=minor or BUMP=major for bigger steps, or V=1.2.3.
+# Renames CHANGELOG.md's "## Unreleased" to the version, commits, tags
+# and pushes; CI publishes.
+BUMP ?= patch
+LAST := $(shell git describe --tags --abbrev=0 --match 'v[0-9]*' 2>/dev/null | sed 's/^v//')
+NEXT := $(shell echo "$(or $(LAST),0.0.0)" | awk -F. -v b="$(BUMP)" '{ \
+	if (b == "major") print $$1+1 ".0.0"; \
+	else if (b == "minor") print $$1 "." $$2+1 ".0"; \
+	else print $$1 "." $$2 "." $$3+1 }')
+V ?= $(NEXT)
+
 release:
-	@echo "$(V)" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$$' || { echo "usage: make release V=1.2.3"; exit 1; }
+	@echo "$(V)" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$$' || { echo "bad version $(V): use BUMP=major|minor|patch or V=1.2.3"; exit 1; }
 	@test "$$(git branch --show-current)" = master || { echo "not on master"; exit 1; }
 	@test -z "$$(git status --porcelain --untracked-files=no)" || { echo "commit or stash your changes first"; exit 1; }
 	@! git rev-parse -q --verify "refs/tags/v$(V)" >/dev/null || { echo "v$(V) already exists"; exit 1; }
 	@grep -q '^## Unreleased$$' CHANGELOG.md || { echo "CHANGELOG.md has no '## Unreleased' section"; exit 1; }
+	@echo "Releasing v$(V) (last: v$(or $(LAST),none))"
 	sed -i.bak 's/^## Unreleased$$/## $(V)/' CHANGELOG.md && rm CHANGELOG.md.bak
 	git commit -qm "Release v$(V)" CHANGELOG.md
 	git tag "v$(V)"

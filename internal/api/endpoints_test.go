@@ -531,3 +531,16 @@ func TestCardUpdateClearsDue(t *testing.T) {
 		t.Errorf("no change sends %s", b)
 	}
 }
+
+func TestLinkPullRequest(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.link.ok", "card.link.not_this_repository")
+	card, err := c.LinkPullRequest(context.Background(), "BaHtsbhzVDa9", "https://github.com/cirope/trk/pull/12")
+	if err != nil || card.PullRequest == nil || card.PullRequest.Number != 12 || card.PullRequest.OpenedBy != "outside" {
+		t.Fatalf("LinkPullRequest = %+v, %v", card, err)
+	}
+	_, err = c.LinkPullRequest(context.Background(), "BaHtsbhzVDa9", "https://github.com/someone/else/pull/3")
+	var apiErr *Error
+	if !errors.As(err, &apiErr) || apiErr.Code != "not_this_repository" {
+		t.Errorf("another repository: %v", err)
+	}
+}

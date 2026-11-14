@@ -343,3 +343,17 @@ func (c *Client) UpdateCard(ctx context.Context, id string, u CardUpdate) (*Card
 	}
 	return &out, nil
 }
+
+// LinkPullRequest links a pull request of the board's repository to card
+// id, for work done on a branch other than the card's.
+func (c *Client) LinkPullRequest(ctx context.Context, id, prURL string) (*Card, error) {
+	if err := checkID(id); err != nil {
+		return nil, err
+	}
+	var out Card
+	body := map[string]string{"url": prURL}
+	if err := c.Do(ctx, http.MethodPost, "/cards/"+id+"/pull", nil, body, &out); err != nil {
+		return nil, fmt.Errorf("linking %s to card %s: %w", prURL, id, err)
+	}
+	return &out, nil
+}

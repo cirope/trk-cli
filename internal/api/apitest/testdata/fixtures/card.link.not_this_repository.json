@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/pull",
+    "body": {
+      "url": "https://github.com/someone/else/pull/3"
+    }
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "not_this_repository",
+        "message": "That is not a pull request of this board's repository."
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+# Linking a pull request opened from another branch.
+env TRK_TOKEN=test_access_token
+fake-trk card.link.ok
+exits 0 trk card link BaHtsbhzVDa9 https://github.com/cirope/trk/pull/12
+stdout '^Linked pull request #12 to BaHtsbhzVDa9\.$'
+exits 0 trk card link BaHtsbhzVDa9 https://github.com/cirope/trk/pull/12 --json
+stdout '"opened_by": "outside"'
+
+# Not a pull request URL: wrong usage, the server is never asked.
+exits 2 trk card link BaHtsbhzVDa9 https://github.com/cirope/trk/issues/12
+stderr 'not a GitHub pull request URL'
+exits 2 trk card link BaHtsbhzVDa9
+stderr 'needs a card and a pull request URL'
+
+# The server checks it belongs to the board's repository.
+fake-trk card.link.not_this_repository
+exits 2 trk card link BaHtsbhzVDa9 https://github.com/someone/else/pull/3
+stderr 'not a pull request of this board.s repository'

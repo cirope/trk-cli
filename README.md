@@ -111,6 +111,7 @@ are; `trk logout` revokes the session.
 | `trk card say <card> "text"` | Posts on the card's conversation (also `trk card reply`; `--file -` reads stdin). When Trk's agent will answer (a board with a repository, the card's agent on), the card goes back to In progress and the agent takes a turn: take the card first to avoid that. Otherwise it's a note and the card stays put. |
 | `trk card own <card> [person…]`, `unown` | Adds or removes owners: you by default, or people by email or id. |
 | `trk card edit <card>` | Changes only what you give: `--title`, `--description` (or `--description-file -`), `--type`, `--priority`, `--due` (`""` clears it). |
+| `trk card link <card> <pull request url>` | Links a pull request opened from another branch; one from `trk/card-<id>` links itself. |
 | `trk card pull <card>` | Writes the card and its files to `.trk/cards/<card>/`. |
 | `trk card take <card>` | Makes you an owner, turns Trk's agent off for the card, moves it to In progress, pulls it, and prints the branch to use. `--branch` creates and switches to it. |
 | `trk boards` | The boards as a tree, subprojects under their parent, with repository and status. |

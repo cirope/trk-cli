@@ -2,6 +2,11 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk card link <card> <pull request url>` links a pull request
+  opened from another branch.
+
 ## 0.4.0
 
 - `trk card edit <card>` changes a card's title, description, type,
