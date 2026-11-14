@@ -12,7 +12,7 @@
       },
       "session": {
         "expires_at": "2027-02-11T12:00:00Z",
-        "name": "trk CLI on test-host"
+        "name": "Trk CLI on test-host"
       },
       "user": {
         "email": "franco@example.com",

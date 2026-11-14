@@ -29,7 +29,7 @@ stdout 'Moved to In progress.'
 # Refused while Trk's agent works on it, or when archived: exit 5.
 fake-trk card.take.agent_working
 exits 5 trk card take BaHtsbhzVDa9
-stderr 'Stop it in trk first'
+stderr 'Stop it in Trk first'
 fake-trk card.take.archived
 exits 5 trk card take BaHtsbhzVDa9
 stderr 'archived'

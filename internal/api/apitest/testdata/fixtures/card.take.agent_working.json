@@ -8,7 +8,7 @@
     "body": {
       "error": {
         "code": "agent_working",
-        "message": "The agent is working on this card. Stop it in trk first."
+        "message": "The agent is working on this card. Stop it in Trk first."
       }
     }
   }

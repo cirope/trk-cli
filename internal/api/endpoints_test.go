@@ -101,7 +101,7 @@ func TestMe(t *testing.T) {
 	want := &Me{
 		User:         User{ID: "Us9rFrancoX2", Name: "Franco Catena", Email: "franco@example.com"},
 		Organization: Organization{ID: "Or9HuLLop2Zx", Name: "Hullop"},
-		Session:      Session{Name: "trk CLI on test-host", ExpiresAt: mustTime("2027-02-11T12:00:00Z")},
+		Session:      Session{Name: "Trk CLI on test-host", ExpiresAt: mustTime("2027-02-11T12:00:00Z")},
 	}
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("(-want +got):\n%s", diff)

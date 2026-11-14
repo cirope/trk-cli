@@ -10,7 +10,7 @@
   },
   "host": "http://TRK_HOST",
   "session": {
-    "name": "trk CLI on test-host",
+    "name": "Trk CLI on test-host",
     "expires_at": "2027-02-11T12:00:00Z"
   }
 }
