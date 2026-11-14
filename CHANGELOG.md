@@ -2,6 +2,11 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## 0.1.1
+
+- `brew install cirope/tap/trk` works: the Homebrew cask in 0.1.0 could
+  not be read.
+
 ## 0.1.0
 
 The first release.

@@ -64,8 +64,8 @@ homebrew_casks:
       post:
         # Release binaries are not notarized; let macOS run them.
         install_steps: |
-          if OS.mac?
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/trk"]
+          on_macos do
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/trk"]
           end
 
 changelog:
