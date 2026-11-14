@@ -41,7 +41,8 @@ func newCardCmd(a *app) *cobra.Command {
 		},
 		RunE: func(cmd *cobra.Command, _ []string) error { return cmd.Help() },
 	}
-	cmd.AddCommand(newCardsCmd(a, "list"), newShowCmd(a), newNewCmd(a), newPullCmd(a), newTakeCmd(a))
+	cmd.AddCommand(newCardsCmd(a, "list"), newShowCmd(a), newNewCmd(a), newPullCmd(a), newTakeCmd(a),
+		newMoveCmd(a), newDoneCmd(a), newSayCmd(a))
 	return cmd
 }
 
@@ -140,7 +141,7 @@ func newShowCmd(a *app) *cobra.Command {
 		Example: "  trk card show BaHtsbhzVDa9\n" +
 			"  trk card show https://trk.hullop.com/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9\n" +
 			"  trk card show BaHtsbhzVDa9 --markdown | claude -p \"Summarize this card\"",
-		Args: oneArg("card"),
+		Args: oneCard,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if web && markdown {
 				return usageError{errors.New("use either --web or --markdown")}

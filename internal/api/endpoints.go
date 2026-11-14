@@ -252,3 +252,43 @@ func (c *Client) CreateCard(ctx context.Context, n NewCard) (*Card, error) {
 	}
 	return &out, nil
 }
+
+// MoveCard moves card id to a column, by name or role. Into the done
+// column it closes the card and merges its open pull request; close
+// confirms that, and the server refuses such a move without it (409
+// close_required).
+func (c *Client) MoveCard(ctx context.Context, id, column string, close bool) (*Card, error) {
+	if err := checkID(id); err != nil {
+		return nil, err
+	}
+	body := struct {
+		Column string `json:"column"`
+		Close  bool   `json:"close,omitempty"`
+	}{column, close}
+	var out Card
+	if err := c.Do(ctx, http.MethodPost, "/cards/"+id+"/move", nil, body, &out); err != nil {
+		return nil, fmt.Errorf("moving card %s: %w", id, err)
+	}
+	return &out, nil
+}
+
+// Posted is a message posted on a card's conversation. AgentTurn means
+// Trk's agent answers it with a new turn.
+type Posted struct {
+	Message   Message `json:"message"`
+	AgentTurn bool    `json:"agent_turn"`
+}
+
+// PostMessage posts body (Markdown) on card id's conversation, as a reply
+// in the web app does: the card goes back to In progress.
+func (c *Client) PostMessage(ctx context.Context, id, body string) (*Posted, error) {
+	if err := checkID(id); err != nil {
+		return nil, err
+	}
+	var out Posted
+	in := map[string]string{"body": body}
+	if err := c.Do(ctx, http.MethodPost, "/cards/"+id+"/messages", nil, in, &out); err != nil {
+		return nil, fmt.Errorf("posting on card %s: %w", id, err)
+	}
+	return &out, nil
+}

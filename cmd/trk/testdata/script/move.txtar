@@ -1,0 +1,31 @@
+# Moving a card to another column, by name or role.
+env TRK_TOKEN=test_access_token
+fake-trk card.move.ok
+exits 0 trk card move BaHtsbhzVDa9 review
+stdout '^Moved to Review\.$'
+exits 0 trk card move BaHtsbhzVDa9 review --json
+stdout '"role": "review"'
+
+# An unknown column: the server names the board's columns.
+fake-trk card.move.unknown_column
+exits 2 trk card move BaHtsbhzVDa9 Shipped
+stderr 'Its columns: To do \(todo\), In progress \(doing\), Review \(review\), Done \(done\)'
+
+# Into done: it closes the card and merges its pull request, so trk asks,
+# and without a terminal it needs --yes. Nothing changes until then.
+fake-trk card.move.close_required card.move.done
+exits 5 trk card move BaHtsbhzVDa9 done
+stderr 'merges its pull request #12'
+stderr 'run it again with --yes'
+! stdout .
+exits 0 trk card move BaHtsbhzVDa9 done --yes
+stdout '^Moved to Done: the card is closed\.$'
+! stdout 'Pull request'
+
+# trk card done is the same.
+exits 5 trk card done BaHtsbhzVDa9
+exits 0 trk card done BaHtsbhzVDa9 --yes
+stdout 'the card is closed'
+
+exits 2 trk card move BaHtsbhzVDa9
+stderr 'needs a card and a column'

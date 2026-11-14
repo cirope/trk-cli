@@ -1,0 +1,25 @@
+# Posting on a card's conversation, as a reply in the web app.
+env TRK_TOKEN=test_access_token
+fake-trk card.get.ok card.reply.ok
+exits 0 trk card say BaHtsbhzVDa9 'Fixed in #12; the export keeps accents now.'
+stderr 'Trk''s agent is on for this card: it will answer with a new turn'
+stdout '^Posted on BaHtsbhzVDa9\. Trk''s agent is answering\.$'
+
+# From stdin, and as trk card reply.
+stdin reply.md
+exits 0 trk card reply BaHtsbhzVDa9 --file -
+stdout 'Posted on BaHtsbhzVDa9'
+
+# --json: the message and whether the agent answers.
+exits 0 trk card say BaHtsbhzVDa9 'Fixed in #12; the export keeps accents now.' --json
+stdout '"id": "Ms7rEpLy3Kq9"'
+stdout '"agent_turn": true'
+
+# Nothing to say is wrong usage, caught before asking the server.
+exits 2 trk card say BaHtsbhzVDa9 '  '
+stderr 'nothing to post'
+exits 2 trk card say BaHtsbhzVDa9 text --file -
+stderr 'either a message or --file'
+
+-- reply.md --
+Fixed in #12; the export keeps accents now.

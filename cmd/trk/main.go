@@ -69,6 +69,7 @@ func run(args []string, d deps) int {
 		Hostname:         d.hostname,
 		Now:              d.now,
 		Location:         d.location,
+		StdinIsTerminal:  term.IsTerminal(int(os.Stdin.Fd())),  //nolint:gosec // Fd fits in an int.
 		StdoutIsTerminal: term.IsTerminal(int(os.Stdout.Fd())), //nolint:gosec // Fd fits in an int.
 		StderrIsTerminal: term.IsTerminal(int(os.Stderr.Fd())), //nolint:gosec // Fd fits in an int.
 		CacheDir:         cacheDir,

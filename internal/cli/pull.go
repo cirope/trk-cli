@@ -44,7 +44,7 @@ func newPullCmd(a *app) *cobra.Command {
 			"content, which can include internal customer notes, is never committed.",
 		Example: "  trk card pull BaHtsbhzVDa9\n" +
 			"  trk card pull BaHtsbhzVDa9 --dir /tmp/card --no-files",
-		Args: oneArg("card"),
+		Args: oneCard,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := parseCardRef(args[0])
 			if err != nil {

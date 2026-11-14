@@ -41,7 +41,7 @@ func newTakeCmd(a *app) *cobra.Command {
 		Example: "  trk card take BaHtsbhzVDa9\n" +
 			"  trk card take BaHtsbhzVDa9 --branch\n" +
 			"  trk card take BaHtsbhzVDa9 --no-pull --json",
-		Args: oneArg("card"),
+		Args: oneCard,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			id, err := parseCardRef(args[0])

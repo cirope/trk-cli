@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/move",
+    "body": {
+      "column": "done"
+    }
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "close_required",
+        "message": "Moving to Done closes the card and merges its pull request #12. Confirm to continue."
+      }
+    }
+  }
+}

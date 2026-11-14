@@ -396,3 +396,33 @@ func TestCardBoardDetails(t *testing.T) {
 		t.Errorf("board details (-want +got):\n%s", diff)
 	}
 }
+
+func TestMoveCard(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.move.ok")
+	card, err := c.MoveCard(context.Background(), "BaHtsbhzVDa9", "review", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if card.Column.Role != "review" {
+		t.Errorf("column = %+v", card.Column)
+	}
+}
+
+func TestMoveCardUnknownColumn(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.move.unknown_column")
+	_, err := c.MoveCard(context.Background(), "BaHtsbhzVDa9", "Shipped", false)
+	if !errors.Is(err, ErrInvalid) || !strings.Contains(err.Error(), "Its columns: To do (todo)") {
+		t.Errorf("err = %v, want a 400 naming the columns", err)
+	}
+}
+
+func TestPostMessage(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.reply.ok")
+	got, err := c.PostMessage(context.Background(), "BaHtsbhzVDa9", "Fixed in #12; the export keeps accents now.")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Message.ID != "Ms7rEpLy3Kq9" || got.Message.Author != "human" || !got.AgentTurn {
+		t.Errorf("posted = %+v", got)
+	}
+}

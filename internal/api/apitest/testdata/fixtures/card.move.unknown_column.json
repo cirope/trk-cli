@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/move",
+    "body": {
+      "column": "Shipped"
+    }
+  },
+  "response": {
+    "status": 400,
+    "body": {
+      "error": {
+        "code": "bad_request",
+        "message": "This board has no column \"Shipped\". Its columns: To do (todo), In progress (doing), Review (review), Done (done)."
+      }
+    }
+  }
+}

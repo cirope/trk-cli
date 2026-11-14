@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/messages",
+    "body": {
+      "body": "Fixed in #12; the export keeps accents now."
+    }
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "agent_turn": true,
+      "message": {
+        "author": "human",
+        "body": "Fixed in #12; the export keeps accents now.",
+        "id": "Ms7rEpLy3Kq9",
+        "inserted_at": "2026-11-13T12:30:00Z"
+      }
+    }
+  }
+}

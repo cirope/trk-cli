@@ -2,6 +2,15 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk card move <card> <column>` moves a card, by column name or role.
+  Moving into done closes the card and merges its pull request, so trk
+  asks first, or needs `--yes`. `trk card done <card>` is the shortcut.
+- `trk card say <card> "text"` (or `trk card reply`) posts on a card's
+  conversation; `--file -` reads stdin. trk says when Trk's agent will
+  answer.
+
 ## 0.2.0
 
 - `trk card new --board <board> "Title"` creates a card, with

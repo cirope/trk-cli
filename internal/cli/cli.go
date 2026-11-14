@@ -41,6 +41,7 @@ type Env struct {
 	Location    *time.Location // Where dates are shown for people.
 	Workdir     func() (string, error)
 
+	StdinIsTerminal  bool
 	StdoutIsTerminal bool
 	StderrIsTerminal bool
 
@@ -146,14 +147,12 @@ func noArgs(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// oneArg wants exactly one argument, named name in the message.
-func oneArg(name string) cobra.PositionalArgs {
-	return func(cmd *cobra.Command, args []string) error {
-		if len(args) != 1 {
-			return usageError{fmt.Errorf("%s needs one %s", cmd.CommandPath(), name)}
-		}
-		return nil
+// oneCard wants exactly one argument, a card.
+func oneCard(cmd *cobra.Command, args []string) error {
+	if len(args) != 1 {
+		return usageError{fmt.Errorf("%s needs one card", cmd.CommandPath())}
 	}
+	return nil
 }
 
 // updateNotice says, at most once a day, when a newer trk exists: only to
