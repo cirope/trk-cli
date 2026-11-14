@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.2.0
 
 - `trk card new --board <board> "Title"` creates a card, with
   `--description` (or `--description-file -` for stdin), `--type`,
