@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/rating",
+    "body": {
+      "note": "It also happens in LibreOffice.",
+      "verdict": "bad"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "rating": {
+        "note": "It also happens in LibreOffice.",
+        "sent": null,
+        "turn": "Rn5tTuRnQ2x8",
+        "verdict": "bad"
+      },
+      "tally": {
+        "bad": 1,
+        "good": 0
+      }
+    }
+  }
+}

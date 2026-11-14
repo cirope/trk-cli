@@ -357,3 +357,40 @@ func (c *Client) LinkPullRequest(ctx context.Context, id, prURL string) (*Card, 
 	}
 	return &out, nil
 }
+
+// Rating is the team's verdict on Trk's agent's latest answer on a card:
+// good or bad, with what was wrong (Note) and what was sent in the end
+// (Sent). Empty texts are left out.
+type Rating struct {
+	Verdict string `json:"verdict"`
+	Note    string `json:"note,omitempty"`
+	Sent    string `json:"sent,omitempty"`
+}
+
+// Rated is a recorded rating and the tally of the turn it rates.
+type Rated struct {
+	Rating struct {
+		Turn    string  `json:"turn"`
+		Verdict string  `json:"verdict"`
+		Note    *string `json:"note"`
+		Sent    *string `json:"sent"`
+	} `json:"rating"`
+	Tally struct {
+		Good int `json:"good"`
+		Bad  int `json:"bad"`
+	} `json:"tally"`
+}
+
+// RateAnswer rates Trk's agent's latest answer on card id. One rating per
+// person per turn: rating again changes it. A bad one reaches the agent
+// on its next turn on the card.
+func (c *Client) RateAnswer(ctx context.Context, id string, r Rating) (*Rated, error) {
+	if err := checkID(id); err != nil {
+		return nil, err
+	}
+	var out Rated
+	if err := c.Do(ctx, http.MethodPost, "/cards/"+id+"/rating", nil, r, &out); err != nil {
+		return nil, fmt.Errorf("rating the answer on card %s: %w", id, err)
+	}
+	return &out, nil
+}

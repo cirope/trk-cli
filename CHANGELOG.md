@@ -2,6 +2,11 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk card rate <card> good|bad` rates Trk's agent's latest answer,
+  with `--note` and `--sent`.
+
 ## 0.4.2
 
 - When Trk refuses a value, trk no longer suggests `trk --help`.

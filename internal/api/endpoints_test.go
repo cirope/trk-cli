@@ -544,3 +544,22 @@ func TestLinkPullRequest(t *testing.T) {
 		t.Errorf("another repository: %v", err)
 	}
 }
+
+func TestRateAnswer(t *testing.T) {
+	c, srv := fixtureClient(t, "test_access_token", "card.rate.ok", "card.rate.no_answer")
+	got, err := c.RateAnswer(context.Background(), "BaHtsbhzVDa9", Rating{Verdict: "bad", Note: "It also happens in LibreOffice."})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Rating.Turn != "Rn5tTuRnQ2x8" || got.Rating.Sent != nil || got.Tally.Bad != 1 {
+		t.Errorf("rated = %+v", got)
+	}
+	if strings.Contains(string(srv.Requests()[0].Body), "sent") {
+		t.Errorf("sent an absent field: %s", srv.Requests()[0].Body)
+	}
+	_, err = c.RateAnswer(context.Background(), "BaHtsbhzVDa9", Rating{Verdict: "bad"})
+	var apiErr *Error
+	if !errors.As(err, &apiErr) || apiErr.Code != "no_answer" || !errors.Is(err, ErrConflict) {
+		t.Errorf("no answer: %v", err)
+	}
+}

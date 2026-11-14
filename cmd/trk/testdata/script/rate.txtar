@@ -1,0 +1,27 @@
+# Rating Trk's agent's latest answer on a card.
+env TRK_TOKEN=test_access_token
+fake-trk card.rate.ok
+exits 0 trk card rate BaHtsbhzVDa9 bad --note 'It also happens in LibreOffice.'
+stdout '^Rated the agent''s latest answer on BaHtsbhzVDa9: bad\. So far: 0 good, 1 bad\.$'
+stdout 'Trk''s agent reads this on its next turn'
+stdin note.txt
+exits 0 trk card rate BaHtsbhzVDa9 bad --note-file -
+exits 0 trk card rate BaHtsbhzVDa9 bad --note 'It also happens in LibreOffice.' --json
+stdout '"turn": "Rn5tTuRnQ2x8"'
+stdout '"bad": 1'
+
+# Caught before asking the server.
+exits 2 trk card rate BaHtsbhzVDa9 meh
+stderr 'the verdict must be good or bad'
+exits 2 trk card rate BaHtsbhzVDa9
+stderr 'needs a card and a verdict'
+exits 2 trk card rate BaHtsbhzVDa9 bad --sent x --sent-file -
+stderr 'either --sent or --sent-file'
+
+# Nothing to rate yet: refused, exit 5.
+fake-trk card.rate.no_answer
+exits 5 trk card rate BaHtsbhzVDa9 bad
+stderr 'has not answered on this card yet'
+
+-- note.txt --
+It also happens in LibreOffice.

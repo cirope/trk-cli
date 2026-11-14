@@ -1,0 +1,12 @@
+{
+  "rating": {
+    "turn": "Rn5tTuRnQ2x8",
+    "verdict": "bad",
+    "note": "It also happens in LibreOffice.",
+    "sent": null
+  },
+  "tally": {
+    "good": 0,
+    "bad": 1
+  }
+}
