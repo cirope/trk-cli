@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.3.0
 
 - `trk boards` lists boards as a tree, subprojects under their parent.
 - `trk board new <name>` creates a board or a subproject (`--parent`),
