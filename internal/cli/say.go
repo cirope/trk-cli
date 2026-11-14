@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/cirope/trk-cli/internal/api"
 	"github.com/spf13/cobra"
 )
 
@@ -14,10 +15,11 @@ func newSayCmd(a *app) *cobra.Command {
 		Use:     "say <card> [message]",
 		Aliases: []string{"reply"},
 		Short:   "Post on a card's conversation",
-		Long: "Post a message (Markdown) on a card's conversation, as a reply in the web\n" +
-			"app does: the card goes back to In progress. On a card whose agent is on,\n" +
-			"on a board with a repository, Trk's agent answers it with a new turn;\n" +
-			"trk says so before posting. Take the card first to avoid that.",
+		Long: "Post a message (Markdown) on a card's conversation, as in the web app.\n\n" +
+			"When Trk's agent will answer (a board with a repository and the card's\n" +
+			"agent on), the card goes back to In progress and the agent starts a new\n" +
+			"turn; trk says so before posting. Take the card first to avoid that.\n" +
+			"Otherwise it is a note: the card stays as and where it is.",
 		Example: "  trk card say BaHtsbhzVDa9 \"Fixed in #12; the export keeps accents now.\"\n" +
 			"  trk card reply BaHtsbhzVDa9 --file notes.md\n" +
 			"  git log -1 --format=%B | trk card say BaHtsbhzVDa9 --file -",
@@ -65,14 +67,19 @@ func newSayCmd(a *app) *cobra.Command {
 			if a.flags.json {
 				return a.printJSON(posted)
 			}
-			if posted.AgentTurn {
-				a.result("Posted on %s. Trk's agent is answering.\n", id)
-			} else {
-				a.result("Posted on %s.\n", id)
-			}
+			a.reportPosted(id, posted)
 			return nil
 		},
 	}
 	cmd.Flags().StringVar(&file, "file", "", "read the message from a file; - reads stdin")
 	return cmd
+}
+
+// reportPosted says what posting did: an agent turn, or a note.
+func (a *app) reportPosted(id string, p *api.Posted) {
+	if p.AgentTurn {
+		a.result("Posted on %s. Trk's agent is answering; the card is back in In progress.\n", id)
+		return
+	}
+	a.result("Posted a note on %s; the card stays where it is.\n", id)
 }

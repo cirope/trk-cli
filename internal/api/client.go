@@ -147,8 +147,10 @@ func (c *Client) attempt(ctx context.Context, method, path string, query url.Val
 	ctx, cancel := context.WithTimeout(ctx, c.o.Timeout)
 	defer cancel()
 
-	u := *c.base
-	u.Path += path
+	u, err := c.url(path)
+	if err != nil {
+		return nil, -1, err
+	}
 	u.RawQuery = query.Encode()
 
 	var body io.Reader
@@ -194,6 +196,19 @@ func (c *Client) attempt(ctx context.Context, method, path string, query url.Val
 		return nil, retryAfter(resp.Header.Get("Retry-After"), time.Now()), apiErr
 	}
 	return nil, -1, apiErr
+}
+
+// url is the full URL for path, which is under /api/v1 and already
+// escaped: a segment may hold an escaped "/" or space.
+func (c *Client) url(path string) (*url.URL, error) {
+	u := *c.base
+	raw := c.base.EscapedPath() + path
+	p, err := url.PathUnescape(raw)
+	if err != nil {
+		return nil, fmt.Errorf("building the address for %s: %w", path, err)
+	}
+	u.Path, u.RawPath = p, raw
+	return &u, nil
 }
 
 // authorize sets the User-Agent and, with a token, Authorization.

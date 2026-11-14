@@ -1,0 +1,60 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/boards",
+    "body": {
+      "details": [
+        {
+          "name": "Docs",
+          "value": "SPEC.md"
+        }
+      ],
+      "name": "CLI",
+      "parent": "Soporte",
+      "repo": "cirope/trk-cli"
+    }
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "columns": [
+        {
+          "id": "Ct1oDoCl1Aa1",
+          "name": "To do",
+          "role": "todo"
+        },
+        {
+          "id": "Ct2dOiNg2Bb2",
+          "name": "In progress",
+          "role": "doing"
+        },
+        {
+          "id": "Ct3rEvIw3Cc3",
+          "name": "Review",
+          "role": "review"
+        },
+        {
+          "id": "Ct4dOnE04Dd4",
+          "name": "Done",
+          "role": "done"
+        }
+      ],
+      "details": [
+        {
+          "name": "Docs",
+          "value": "SPEC.md"
+        }
+      ],
+      "id": "Bc1iSuBpRj01",
+      "language": "en",
+      "name": "CLI",
+      "parent": {
+        "id": "TyzgACHc57CG",
+        "name": "Soporte"
+      },
+      "repository": "cirope/trk-cli",
+      "status": "active",
+      "url": "http://trk.test/boards/Bc1iSuBpRj01"
+    }
+  }
+}

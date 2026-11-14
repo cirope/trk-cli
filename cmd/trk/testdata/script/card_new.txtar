@@ -20,6 +20,10 @@ stdout '^Created Nw5cArDx7Qp2'
 stdout 'You own it now.'
 stdout 'git switch -c trk/card-Nw5cArDx7Qp2'
 
+# With -q, only the id, --take or not: id=$(trk card new -q ...) works.
+exits 0 trk card new -q --board Soporte 'Board notes for the agent' --type feature --priority normal --description 'Where the docs are, which is the website.' --take --no-pull
+cmp stdout id.txt
+
 # Wrong usage is caught before asking the server.
 exits 2 trk card new 'No board'
 stderr 'needs --board'
@@ -39,3 +43,5 @@ stderr 'title can.t be blank'
 
 -- description.txt --
 Where the docs are, which is the website.
+-- id.txt --
+Nw5cArDx7Qp2

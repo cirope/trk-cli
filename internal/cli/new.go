@@ -78,6 +78,13 @@ func newNewCmd(a *app) *cobra.Command {
 				return err
 			}
 			switch {
+			case take && a.flags.quiet && !a.flags.json:
+				// Only the id, so id=$(trk card new -q --take ...) works; the
+				// take's own report would end up in the variable.
+				a.result("%s\n", card.ID)
+				out := a.env.Stdout
+				a.env.Stdout = io.Discard
+				defer func() { a.env.Stdout = out }()
 			case take && !a.flags.json:
 				a.result("Created %s in %s\n%s\n\n", card.ID, where(card), card.URL)
 			case take:

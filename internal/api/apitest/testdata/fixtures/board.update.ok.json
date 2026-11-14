@@ -1,0 +1,66 @@
+{
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/boards/TyzgACHc57CG",
+    "body": {
+      "details": [
+        {
+          "name": "Tests",
+          "value": "mix precommit"
+        },
+        {
+          "name": "Website",
+          "value": "https://trk.hullop.com"
+        }
+      ],
+      "status": "on_hold"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "columns": [
+        {
+          "id": "Cq3mRkT8vWx2",
+          "name": "To do",
+          "role": "todo"
+        },
+        {
+          "id": "Cd8iNgPr6Ty3",
+          "name": "In progress",
+          "role": "doing"
+        },
+        {
+          "id": "Cs3rEvIwSup3",
+          "name": "Review",
+          "role": "review"
+        },
+        {
+          "id": "Cd0nEsUp4Rt7",
+          "name": "Done",
+          "role": "done"
+        }
+      ],
+      "details": [
+        {
+          "name": "Tests",
+          "value": "mix precommit"
+        },
+        {
+          "name": "Website",
+          "value": "https://trk.hullop.com"
+        }
+      ],
+      "id": "TyzgACHc57CG",
+      "language": "en",
+      "name": "Soporte",
+      "parent": {
+        "id": "Pr0dUcTo4Rt1",
+        "name": "Producto"
+      },
+      "repository": "cirope/trk",
+      "status": "on_hold",
+      "url": "http://trk.test/boards/TyzgACHc57CG"
+    }
+  }
+}

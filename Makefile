@@ -3,7 +3,7 @@
 TOOL      := go tool -modfile=tools/go.mod
 PLATFORMS := darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 windows/amd64 windows/arm64
 
-.PHONY: check check-os check-static deps fmt tidy vet staticcheck lint test vulncheck cross build release-check release-snapshot fixtures-sync fixtures-check
+.PHONY: check check-os check-static deps update fmt tidy vet staticcheck lint test vulncheck cross build release-check release-snapshot fixtures-sync fixtures-check
 
 check: fmt tidy vet staticcheck lint test vulncheck cross
 
@@ -11,6 +11,15 @@ check: fmt tidy vet staticcheck lint test vulncheck cross
 # three, the static analysis and cross-builds once.
 check-os: fmt tidy vet test
 check-static: staticcheck lint vulncheck cross
+
+# Updates dependencies, test ones included, to their latest minor and
+# patch versions, and the pinned tools to their latest releases (with the
+# dependency versions those releases chose), then runs every check.
+update:
+	go get -u -t ./...
+	go mod tidy
+	cd tools && go get tool && go mod tidy
+	$(MAKE) check
 
 # Lists the dependencies (and pinned tools) that have newer versions.
 deps:

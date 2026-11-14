@@ -56,3 +56,20 @@ func TestReportMoveMergedPullRequest(t *testing.T) {
 		t.Errorf("got %q, want %q", out.String(), want)
 	}
 }
+
+func TestReportPosted(t *testing.T) {
+	for _, tt := range []struct {
+		turn bool
+		want string
+	}{
+		{true, "Posted on BaHtsbhzVDa9. Trk's agent is answering; the card is back in In progress.\n"},
+		{false, "Posted a note on BaHtsbhzVDa9; the card stays where it is.\n"},
+	} {
+		var out bytes.Buffer
+		a := &app{env: withDefaults(Env{Stdout: &out})}
+		a.reportPosted("BaHtsbhzVDa9", &api.Posted{AgentTurn: tt.turn})
+		if out.String() != tt.want {
+			t.Errorf("agent turn %v: got %q", tt.turn, out.String())
+		}
+	}
+}

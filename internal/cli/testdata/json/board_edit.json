@@ -1,0 +1,44 @@
+{
+  "id": "TyzgACHc57CG",
+  "name": "Soporte",
+  "status": "on_hold",
+  "repository": "cirope/trk",
+  "language": "en",
+  "parent": {
+    "id": "Pr0dUcTo4Rt1",
+    "name": "Producto"
+  },
+  "columns": [
+    {
+      "id": "Cq3mRkT8vWx2",
+      "name": "To do",
+      "role": "todo"
+    },
+    {
+      "id": "Cd8iNgPr6Ty3",
+      "name": "In progress",
+      "role": "doing"
+    },
+    {
+      "id": "Cs3rEvIwSup3",
+      "name": "Review",
+      "role": "review"
+    },
+    {
+      "id": "Cd0nEsUp4Rt7",
+      "name": "Done",
+      "role": "done"
+    }
+  ],
+  "details": [
+    {
+      "name": "Tests",
+      "value": "mix precommit"
+    },
+    {
+      "name": "Website",
+      "value": "https://trk.hullop.com"
+    }
+  ],
+  "url": "http://trk.test/boards/TyzgACHc57CG"
+}

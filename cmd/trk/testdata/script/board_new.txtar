@@ -1,0 +1,27 @@
+# Creating a board: a subproject, with its repository and details.
+env TRK_TOKEN=test_access_token
+fake-trk board.create.ok
+exits 0 trk board new CLI --parent Soporte --repo cirope/trk-cli --detail Docs=SPEC.md
+stdout '^Created Bc1iSuBpRj01: Soporte › CLI$'
+stdout '^http://trk.test/boards/Bc1iSuBpRj01$'
+exits 0 trk board new -q CLI --parent Soporte --repo cirope/trk-cli --detail Docs=SPEC.md
+stdout '^Bc1iSuBpRj01$'
+exits 0 trk board new --json CLI --parent Soporte --repo cirope/trk-cli --detail Docs=SPEC.md
+stdout '"id": "Bc1iSuBpRj01"'
+
+# Wrong usage, caught before asking the server.
+exits 2 trk board new
+stderr 'needs one name'
+exits 2 trk board new X --status paused
+stderr '--status must be one of active, on_hold, completed'
+exits 2 trk board new X --language fr
+stderr '--language must be one of en, es'
+exits 2 trk board new X --repo trk
+stderr '--repo must be owner/name'
+exits 2 trk board new X --detail Docs
+stderr '--detail must be Name=Value'
+
+# The server's validation: the field is named, exit 2.
+fake-trk board.create.invalid
+exits 2 trk board new ''
+stderr 'name can.t be blank'

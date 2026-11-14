@@ -201,8 +201,10 @@ func (c *Client) Download(ctx context.Context, id string, size int64, w io.Write
 	ctx, cancel := context.WithTimeout(ctx, c.o.DownloadTimeout)
 	defer cancel()
 
-	u := *c.base
-	u.Path += "/attachments/" + id
+	u, err := c.url("/attachments/" + id)
+	if err != nil {
+		return 0, err
+	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return 0, err
@@ -289,6 +291,33 @@ func (c *Client) PostMessage(ctx context.Context, id, body string) (*Posted, err
 	in := map[string]string{"body": body}
 	if err := c.Do(ctx, http.MethodPost, "/cards/"+id+"/messages", nil, in, &out); err != nil {
 		return nil, fmt.Errorf("posting on card %s: %w", id, err)
+	}
+	return &out, nil
+}
+
+// AddOwner makes person ("me", an email or a person id) an owner of card
+// id. Someone who already owns it changes nothing.
+func (c *Client) AddOwner(ctx context.Context, id, person string) (*Card, error) {
+	if err := checkID(id); err != nil {
+		return nil, err
+	}
+	var out Card
+	body := map[string]string{"person": person}
+	if err := c.Do(ctx, http.MethodPost, "/cards/"+id+"/owners", nil, body, &out); err != nil {
+		return nil, fmt.Errorf("adding %s as an owner of card %s: %w", person, id, err)
+	}
+	return &out, nil
+}
+
+// RemoveOwner takes person ("me", an email or a person id) off card id's
+// owners. Someone who does not own it changes nothing.
+func (c *Client) RemoveOwner(ctx context.Context, id, person string) (*Card, error) {
+	if err := checkID(id); err != nil {
+		return nil, err
+	}
+	var out Card
+	if err := c.Do(ctx, http.MethodDelete, "/cards/"+id+"/owners/"+url.PathEscape(person), nil, nil, &out); err != nil {
+		return nil, fmt.Errorf("removing %s from the owners of card %s: %w", person, id, err)
 	}
 	return &out, nil
 }

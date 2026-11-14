@@ -426,3 +426,79 @@ func TestPostMessage(t *testing.T) {
 		t.Errorf("posted = %+v", got)
 	}
 }
+
+func TestBoards(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "boards.list.ok")
+	page, err := c.Boards(context.Background(), "", 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(page.Items) != 3 || page.NextPageToken != nil {
+		t.Fatalf("page = %+v", page)
+	}
+	soporte := page.Items[1]
+	if soporte.Parent == nil || soporte.Parent.Name != "Producto" || soporte.Repository == nil ||
+		*soporte.Repository != "cirope/trk" || len(soporte.Columns) != 4 || soporte.Details[0].Name != "Tests" {
+		t.Errorf("Soporte = %+v", soporte)
+	}
+}
+
+func TestCreateBoard(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "board.create.ok")
+	b, err := c.CreateBoard(context.Background(), NewBoard{
+		Name: "CLI", Parent: "Soporte", Repo: "cirope/trk-cli",
+		Details: []NameValue{{Name: "Docs", Value: "SPEC.md"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.ID != "Bc1iSuBpRj01" || b.Parent == nil || b.Parent.ID != "TyzgACHc57CG" {
+		t.Errorf("board = %+v", b)
+	}
+}
+
+func TestCreateBoardInvalid(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "board.create.invalid")
+	_, err := c.CreateBoard(context.Background(), NewBoard{})
+	if !errors.Is(err, ErrInvalid) || !strings.Contains(err.Error(), "name can't be blank") {
+		t.Errorf("err = %v", err)
+	}
+}
+
+func TestUpdateBoard(t *testing.T) {
+	c, srv := fixtureClient(t, "test_access_token", "board.update.ok")
+	status := "on_hold"
+	details := []NameValue{{Name: "Tests", Value: "mix precommit"}, {Name: "Website", Value: "https://trk.hullop.com"}}
+	b, err := c.UpdateBoard(context.Background(), "TyzgACHc57CG", BoardUpdate{Status: &status, Details: &details})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.Status != "on_hold" || len(b.Details) != 2 {
+		t.Errorf("board = %+v", b)
+	}
+	// Only the fields given are sent.
+	body := string(srv.Requests()[0].Body)
+	for _, k := range []string{`"repo"`, `"parent"`, `"language"`} {
+		if strings.Contains(body, k) {
+			t.Errorf("body sent %s: %s", k, body)
+		}
+	}
+}
+
+func TestOwners(t *testing.T) {
+	c, srv := fixtureClient(t, "test_access_token", "card.own.ok", "card.unown.ok", "card.own.not_found")
+	card, err := c.AddOwner(context.Background(), "BaHtsbhzVDa9", "me")
+	if err != nil || len(card.Owners) != 2 || card.Owners[1].Name != "Franco Catena" {
+		t.Fatalf("AddOwner = %+v, %v", card, err)
+	}
+	card, err = c.RemoveOwner(context.Background(), "BaHtsbhzVDa9", "ana@example.com")
+	if err != nil || len(card.Owners) != 0 {
+		t.Fatalf("RemoveOwner = %+v, %v", card, err)
+	}
+	if p := srv.Requests()[1].Path; p != "/api/v1/cards/BaHtsbhzVDa9/owners/ana@example.com" {
+		t.Errorf("path = %s", p)
+	}
+	if _, err := c.AddOwner(context.Background(), "BaHtsbhzVDa9", "someone@example.com"); !errors.Is(err, ErrNotFound) {
+		t.Errorf("unknown person: %v", err)
+	}
+}

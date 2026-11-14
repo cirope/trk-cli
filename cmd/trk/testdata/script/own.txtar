@@ -1,0 +1,19 @@
+# Owning a card: you by default, or people by email or id.
+env TRK_TOKEN=test_access_token
+fake-trk card.own.ok
+exits 0 trk card own BaHtsbhzVDa9
+stdout '^Owners: Ana Ruiz, Franco Catena\.$'
+exits 0 trk card own BaHtsbhzVDa9 --json
+stdout '"name": "Franco Catena"'
+
+fake-trk card.unown.ok
+exits 0 trk card unown BaHtsbhzVDa9 ana@example.com
+stdout '^No owners now\.$'
+
+# Someone who is not a member: not found, exit 3.
+fake-trk card.own.not_found
+exits 3 trk card own BaHtsbhzVDa9 someone@example.com
+stderr 'someone@example.com'
+
+exits 2 trk card own
+stderr 'needs a card'

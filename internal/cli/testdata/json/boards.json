@@ -1,0 +1,121 @@
+{
+  "items": [
+    {
+      "id": "Pr0dUcTo4Rt1",
+      "name": "Producto",
+      "status": "active",
+      "repository": null,
+      "language": "en",
+      "parent": null,
+      "columns": [
+        {
+          "id": "Cp1tOdOpRd01",
+          "name": "To do",
+          "role": "todo"
+        },
+        {
+          "id": "Cp2dOiNgPrd2",
+          "name": "In progress",
+          "role": "doing"
+        },
+        {
+          "id": "Cp3rEvIwPrd3",
+          "name": "Review",
+          "role": "review"
+        },
+        {
+          "id": "Cp4dOnEpRd04",
+          "name": "Done",
+          "role": "done"
+        }
+      ],
+      "details": [
+        {
+          "name": "Docs",
+          "value": "https://docs.example.com"
+        },
+        {
+          "name": "Website",
+          "value": "https://example.com"
+        }
+      ],
+      "url": "http://trk.test/boards/Pr0dUcTo4Rt1"
+    },
+    {
+      "id": "TyzgACHc57CG",
+      "name": "Soporte",
+      "status": "active",
+      "repository": "cirope/trk",
+      "language": "en",
+      "parent": {
+        "id": "Pr0dUcTo4Rt1",
+        "name": "Producto"
+      },
+      "columns": [
+        {
+          "id": "Cq3mRkT8vWx2",
+          "name": "To do",
+          "role": "todo"
+        },
+        {
+          "id": "Cd8iNgPr6Ty3",
+          "name": "In progress",
+          "role": "doing"
+        },
+        {
+          "id": "Cs3rEvIwSup3",
+          "name": "Review",
+          "role": "review"
+        },
+        {
+          "id": "Cd0nEsUp4Rt7",
+          "name": "Done",
+          "role": "done"
+        }
+      ],
+      "details": [
+        {
+          "name": "Tests",
+          "value": "mix precommit"
+        }
+      ],
+      "url": "http://trk.test/boards/TyzgACHc57CG"
+    },
+    {
+      "id": "Pr3dUctAcme7",
+      "name": "Implementación Acme",
+      "status": "on_hold",
+      "repository": null,
+      "language": "en",
+      "parent": {
+        "id": "Pr0dUcTo4Rt1",
+        "name": "Producto"
+      },
+      "columns": [
+        {
+          "id": "Cm4tDoXy7Hq2",
+          "name": "To do",
+          "role": "todo"
+        },
+        {
+          "id": "Cd2iNgAcMe5r",
+          "name": "In progress",
+          "role": "doing"
+        },
+        {
+          "id": "Cr3vIeWAcMe6",
+          "name": "Review",
+          "role": "review"
+        },
+        {
+          "id": "Cd0nEAcMe7Qz",
+          "name": "Done",
+          "role": "done"
+        }
+      ],
+      "details": [],
+      "url": "http://trk.test/boards/Pr3dUctAcme7"
+    }
+  ],
+  "next_page_token": null
+}

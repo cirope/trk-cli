@@ -1,0 +1,40 @@
+{
+  "id": "Bc1iSuBpRj01",
+  "name": "CLI",
+  "status": "active",
+  "repository": "cirope/trk-cli",
+  "language": "en",
+  "parent": {
+    "id": "TyzgACHc57CG",
+    "name": "Soporte"
+  },
+  "columns": [
+    {
+      "id": "Ct1oDoCl1Aa1",
+      "name": "To do",
+      "role": "todo"
+    },
+    {
+      "id": "Ct2dOiNg2Bb2",
+      "name": "In progress",
+      "role": "doing"
+    },
+    {
+      "id": "Ct3rEvIw3Cc3",
+      "name": "Review",
+      "role": "review"
+    },
+    {
+      "id": "Ct4dOnE04Dd4",
+      "name": "Done",
+      "role": "done"
+    }
+  ],
+  "details": [
+    {
+      "name": "Docs",
+      "value": "SPEC.md"
+    }
+  ],
+  "url": "http://trk.test/boards/Bc1iSuBpRj01"
+}

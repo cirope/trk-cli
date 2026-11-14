@@ -1,0 +1,96 @@
+{
+  "request": {
+    "method": "DELETE",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/owners/ana@example.com"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "agent": true,
+      "archived_at": null,
+      "attachments": [
+        {
+          "byte_size": 35,
+          "content_type": "text/plain",
+          "filename": "trace.log",
+          "id": "At5tRaCe9Lg2",
+          "inserted_at": "2026-11-12T09:05:00Z",
+          "message_id": null,
+          "path": "attachments/trace.log",
+          "url": "http://trk.test/api/v1/attachments/At5tRaCe9Lg2"
+        }
+      ],
+      "attachments_next_page_token": null,
+      "board": {
+        "id": "TyzgACHc57CG",
+        "name": "Soporte",
+        "path": [
+          "Producto",
+          "Soporte"
+        ],
+        "repository": "cirope/trk",
+        "status": "active"
+      },
+      "board_details": [
+        {
+          "board": "Producto",
+          "name": "Docs",
+          "value": "https://docs.example.com"
+        },
+        {
+          "board": "Producto",
+          "name": "Website",
+          "value": "https://example.com"
+        },
+        {
+          "board": "Soporte",
+          "name": "Tests",
+          "value": "mix precommit"
+        }
+      ],
+      "branch": "trk/card-BaHtsbhzVDa9",
+      "closed_at": null,
+      "column": {
+        "id": "Cq3mRkT8vWx2",
+        "name": "To do",
+        "role": "todo"
+      },
+      "customers": [
+        {
+          "id": "Cu5tAcme7Qx3",
+          "name": "Acme",
+          "notes": "Has the new_export flag on."
+        }
+      ],
+      "description": "Rows come out as mojibake in Excel.",
+      "due_on": "2026-11-27",
+      "due_window": "later",
+      "id": "BaHtsbhzVDa9",
+      "inserted_at": "2026-11-12T09:00:00Z",
+      "messages": [
+        {
+          "author": "agent",
+          "body": "Which Excel version shows it?",
+          "id": "Ms9gAgent2Qw",
+          "inserted_at": "2026-11-13T12:15:32Z"
+        }
+      ],
+      "messages_next_page_token": null,
+      "owners": [],
+      "priority": "high",
+      "pull_request": null,
+      "state": "open",
+      "tags": [
+        {
+          "color": "blue",
+          "id": "Tg2BiLLing9x",
+          "name": "Billing"
+        }
+      ],
+      "title": "CSV export loses accents",
+      "type": "bug",
+      "updated_at": "2026-11-13T12:15:32Z",
+      "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9"
+    }
+  }
+}

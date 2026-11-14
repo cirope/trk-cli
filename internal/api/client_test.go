@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -352,5 +353,23 @@ func TestRetryAfterIsCapped(t *testing.T) {
 	}
 	if len(*slept) != 1 || (*slept)[0] > maxRetryAfter {
 		t.Errorf("slept %v, want one sleep of at most %v", *slept, maxRetryAfter)
+	}
+}
+
+// Escaped segments (a board name with a space or a slash) reach the
+// server as one segment, escaped once.
+func TestEscapedPath(t *testing.T) {
+	var got string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = r.URL.EscapedPath()
+		_, _ = io.WriteString(w, `{}`)
+	}))
+	defer srv.Close()
+	c, _ := newTestClient(t, srv)
+	if err := c.Do(context.Background(), http.MethodPatch, "/boards/"+url.PathEscape("Implementación Acme/2"), nil, map[string]string{}, nil); err != nil {
+		t.Fatal(err)
+	}
+	if want := "/api/v1/boards/Implementaci%C3%B3n%20Acme%2F2"; got != want {
+		t.Errorf("path = %s, want %s", got, want)
 	}
 }

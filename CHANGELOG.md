@@ -2,6 +2,20 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk boards` lists boards as a tree, subprojects under their parent.
+- `trk board new <name>` creates a board or a subproject (`--parent`),
+  with `--repo`, `--language`, `--status` and `--detail Name=Value`.
+- `trk board edit <board>` changes a board; `--detail` adds or replaces
+  one detail and `--remove-detail` removes one, keeping the rest.
+- `trk card own <card> [person…]` and `trk card unown` add and remove a
+  card's owners: you by default, or people by email or id.
+- `trk card say` says whether Trk's agent took a turn (the card back in
+  In progress) or the message was a note (the card stays put).
+- `trk card new -q --take` prints only the new card's id, so
+  `id=$(trk card new -q --take …)` works.
+
 ## 0.2.1
 
 - `trk card move <card> <column>` moves a card, by column name or role.

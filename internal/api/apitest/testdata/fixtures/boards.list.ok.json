@@ -1,0 +1,130 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/boards"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "columns": [
+            {
+              "id": "Cp1tOdOpRd01",
+              "name": "To do",
+              "role": "todo"
+            },
+            {
+              "id": "Cp2dOiNgPrd2",
+              "name": "In progress",
+              "role": "doing"
+            },
+            {
+              "id": "Cp3rEvIwPrd3",
+              "name": "Review",
+              "role": "review"
+            },
+            {
+              "id": "Cp4dOnEpRd04",
+              "name": "Done",
+              "role": "done"
+            }
+          ],
+          "details": [
+            {
+              "name": "Docs",
+              "value": "https://docs.example.com"
+            },
+            {
+              "name": "Website",
+              "value": "https://example.com"
+            }
+          ],
+          "id": "Pr0dUcTo4Rt1",
+          "language": "en",
+          "name": "Producto",
+          "parent": null,
+          "repository": null,
+          "status": "active",
+          "url": "http://trk.test/boards/Pr0dUcTo4Rt1"
+        },
+        {
+          "columns": [
+            {
+              "id": "Cq3mRkT8vWx2",
+              "name": "To do",
+              "role": "todo"
+            },
+            {
+              "id": "Cd8iNgPr6Ty3",
+              "name": "In progress",
+              "role": "doing"
+            },
+            {
+              "id": "Cs3rEvIwSup3",
+              "name": "Review",
+              "role": "review"
+            },
+            {
+              "id": "Cd0nEsUp4Rt7",
+              "name": "Done",
+              "role": "done"
+            }
+          ],
+          "details": [
+            {
+              "name": "Tests",
+              "value": "mix precommit"
+            }
+          ],
+          "id": "TyzgACHc57CG",
+          "language": "en",
+          "name": "Soporte",
+          "parent": {
+            "id": "Pr0dUcTo4Rt1",
+            "name": "Producto"
+          },
+          "repository": "cirope/trk",
+          "status": "active",
+          "url": "http://trk.test/boards/TyzgACHc57CG"
+        },
+        {
+          "columns": [
+            {
+              "id": "Cm4tDoXy7Hq2",
+              "name": "To do",
+              "role": "todo"
+            },
+            {
+              "id": "Cd2iNgAcMe5r",
+              "name": "In progress",
+              "role": "doing"
+            },
+            {
+              "id": "Cr3vIeWAcMe6",
+              "name": "Review",
+              "role": "review"
+            },
+            {
+              "id": "Cd0nEAcMe7Qz",
+              "name": "Done",
+              "role": "done"
+            }
+          ],
+          "details": [],
+          "id": "Pr3dUctAcme7",
+          "language": "en",
+          "name": "Implementación Acme",
+          "parent": {
+            "id": "Pr0dUcTo4Rt1",
+            "name": "Producto"
+          },
+          "repository": null,
+          "status": "on_hold",
+          "url": "http://trk.test/boards/Pr3dUctAcme7"
+        }
+      ],
+      "next_page_token": null
+    }
+  }
+}

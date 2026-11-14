@@ -1,0 +1,16 @@
+# Boards as a tree, subprojects under their parent, in the server's order.
+env TRK_TOKEN=test_access_token
+fake-trk boards.list.ok
+exits 0 trk boards
+cmp stdout boards.txt
+! stderr .
+
+exits 0 trk boards --json
+stdout '"items": \['
+stdout '"next_page_token": null'
+stdout '"language": "en"'
+
+-- boards.txt --
+Producto                Pr0dUcTo4Rt1
+  Soporte               TyzgACHc57CG  cirope/trk
+  Implementación Acme   Pr3dUctAcme7              on hold
