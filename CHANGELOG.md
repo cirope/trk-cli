@@ -2,6 +2,17 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk card new --board <board> "Title"` creates a card, with
+  `--description` (or `--description-file -` for stdin), `--type`,
+  `--priority`, `--due`, `--column`, and `--take` to take it right away.
+  It prints the new card's id and URL; `-q` prints only the id.
+- When Trk rejects a field, trk says which one, and exits with 2.
+- `trk card show` lists the board's details (Docs, Website, Tests…) that
+  the team set for whoever works the card; `--json` has them as
+  `board_details`.
+
 ## 0.1.1
 
 - `brew install cirope/tap/trk` works: the Homebrew cask in 0.1.0 could

@@ -1,0 +1,79 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/Nw5cArDx7Qp2/take"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "branch": "trk/card-Nw5cArDx7Qp2",
+      "card": {
+        "agent": false,
+        "archived_at": null,
+        "attachments": [],
+        "attachments_next_page_token": null,
+        "board": {
+          "id": "TyzgACHc57CG",
+          "name": "Soporte",
+          "path": [
+            "Producto",
+            "Soporte"
+          ],
+          "repository": "cirope/trk",
+          "status": "active"
+        },
+        "board_details": [
+          {
+            "board": "Producto",
+            "name": "Docs",
+            "value": "https://docs.example.com"
+          },
+          {
+            "board": "Producto",
+            "name": "Website",
+            "value": "https://example.com"
+          },
+          {
+            "board": "Soporte",
+            "name": "Tests",
+            "value": "mix precommit"
+          }
+        ],
+        "branch": "trk/card-Nw5cArDx7Qp2",
+        "closed_at": null,
+        "column": {
+          "id": "Cd8iNgPr6Ty3",
+          "name": "In progress",
+          "role": "doing"
+        },
+        "customers": [],
+        "description": "Where the docs are, which is the website.",
+        "due_on": null,
+        "due_window": null,
+        "id": "Nw5cArDx7Qp2",
+        "inserted_at": "2026-11-13T12:30:00Z",
+        "messages": [],
+        "messages_next_page_token": null,
+        "owners": [
+          {
+            "id": "Us9rFrancoX2",
+            "name": "Franco Catena"
+          }
+        ],
+        "priority": "normal",
+        "pull_request": null,
+        "state": "open",
+        "tags": [],
+        "title": "Board notes for the agent",
+        "type": "feature",
+        "updated_at": "2026-11-13T12:30:00Z",
+        "url": "http://trk.test/boards/TyzgACHc57CG/cards/Nw5cArDx7Qp2"
+      },
+      "steps": {
+        "agent": "turned_off",
+        "moved": "to_doing",
+        "owner": "added"
+      }
+    }
+  }
+}

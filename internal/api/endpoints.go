@@ -231,3 +231,24 @@ func (c *Client) Download(ctx context.Context, id string, size int64, w io.Write
 	}
 	return n, nil
 }
+
+// NewCard is a card to create. Board (an id or a name) and Title are
+// required; empty options are left out, so the server's defaults apply.
+type NewCard struct {
+	Board       string `json:"board"`
+	Title       string `json:"title"`
+	Description string `json:"description,omitempty"`
+	Type        string `json:"type,omitempty"`
+	Priority    string `json:"priority,omitempty"`
+	DueOn       string `json:"due_on,omitempty"` // YYYY-MM-DD
+	Column      string `json:"column,omitempty"` // A name or a role; default the board's To do.
+}
+
+// CreateCard creates a card. It never starts Trk's agent.
+func (c *Client) CreateCard(ctx context.Context, n NewCard) (*Card, error) {
+	var out Card
+	if err := c.Do(ctx, http.MethodPost, "/cards", nil, n, &out); err != nil {
+		return nil, fmt.Errorf("creating the card: %w", err)
+	}
+	return &out, nil
+}

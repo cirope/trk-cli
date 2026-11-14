@@ -49,7 +49,7 @@ func classify(err error) (int, string) {
 		return ExitOK, ""
 	case errors.As(err, &se):
 		return se.code, ""
-	case errors.As(err, &ue), errors.Is(err, api.ErrBadID):
+	case errors.As(err, &ue), errors.Is(err, api.ErrBadID), errors.Is(err, api.ErrInvalid):
 		return ExitUsage, "usage"
 	case errors.As(err, &ns), errors.Is(err, api.ErrUnauthorized):
 		return ExitAuth, "unauthorized"

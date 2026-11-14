@@ -11,6 +11,11 @@ Tags:         Billing
 Agent:        on
 Branch:       trk/card-BaHtsbhzVDa9
 
+Board details
+  Docs:    https://docs.example.com (Producto)
+  Website: https://example.com (Producto)
+  Tests:   mix precommit (Soporte)
+
 Customers
   Acme: Has the new_export flag on.
 

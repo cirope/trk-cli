@@ -106,6 +106,7 @@ are; `trk logout` revokes the session.
 |---|---|
 | `trk cards` | Your open cards across every board: overdue, this week, later, no date. |
 | `trk card show <card>` | A card as you'd read it in Trk. `--markdown` prints the same document as the web app's Download. `--web` opens it in the browser. |
+| `trk card new --board <board> <title>` | Creates a card (never starts Trk's agent) and prints its id and URL. `--description-file -` reads stdin; `--take` takes it right away. |
 | `trk card pull <card>` | Writes the card and its files to `.trk/cards/<card>/`. |
 | `trk card take <card>` | Makes you an owner, turns Trk's agent off for the card, moves it to In progress, pulls it, and prints the branch to use. `--branch` creates and switches to it. |
 | `trk login`, `logout`, `whoami` | Sign in and out. |

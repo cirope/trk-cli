@@ -30,6 +30,8 @@ func TestJSONContract(t *testing.T) {
 		{"card_show", []string{"card.get.ok"}, []string{"card", "show", "BaHtsbhzVDa9"}},
 		{"card_take", []string{"card.take.ok"}, []string{"card", "take", "BaHtsbhzVDa9", "--no-pull"}},
 		{"logout", []string{"session.delete.ok"}, []string{"logout"}},
+		{"card_new", []string{"card.create.ok"}, []string{"card", "new", "--board", "Soporte", "Board notes for the agent",
+			"--type", "feature", "--priority", "normal", "--description", "Where the docs are, which is the website."}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

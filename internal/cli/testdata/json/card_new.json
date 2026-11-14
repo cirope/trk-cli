@@ -1,0 +1,57 @@
+{
+  "id": "Nw5cArDx7Qp2",
+  "url": "http://trk.test/boards/TyzgACHc57CG/cards/Nw5cArDx7Qp2",
+  "title": "Board notes for the agent",
+  "description": "Where the docs are, which is the website.",
+  "type": "feature",
+  "priority": "normal",
+  "state": "open",
+  "due_on": null,
+  "due_window": null,
+  "closed_at": null,
+  "archived_at": null,
+  "agent": true,
+  "board": {
+    "id": "TyzgACHc57CG",
+    "name": "Soporte",
+    "status": "active",
+    "repository": "cirope/trk",
+    "path": [
+      "Producto",
+      "Soporte"
+    ]
+  },
+  "board_details": [
+    {
+      "name": "Docs",
+      "value": "https://docs.example.com",
+      "board": "Producto"
+    },
+    {
+      "name": "Website",
+      "value": "https://example.com",
+      "board": "Producto"
+    },
+    {
+      "name": "Tests",
+      "value": "mix precommit",
+      "board": "Soporte"
+    }
+  ],
+  "column": {
+    "id": "Cq3mRkT8vWx2",
+    "name": "To do",
+    "role": "todo"
+  },
+  "owners": [],
+  "tags": [],
+  "customers": [],
+  "branch": "trk/card-Nw5cArDx7Qp2",
+  "pull_request": null,
+  "attachments": [],
+  "attachments_next_page_token": null,
+  "messages": [],
+  "messages_next_page_token": null,
+  "inserted_at": "2026-11-13T12:30:00Z",
+  "updated_at": "2026-11-13T12:30:00Z"
+}

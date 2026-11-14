@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards",
+    "body": {
+      "board": "Soporte",
+      "title": ""
+    }
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "validation_failed",
+        "fields": {
+          "title": [
+            "can't be blank"
+          ]
+        },
+        "message": "Some fields are not valid; see fields."
+      }
+    }
+  }
+}

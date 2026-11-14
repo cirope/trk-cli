@@ -156,6 +156,9 @@ func TestCard(t *testing.T) {
 	var b bytes.Buffer
 	Card(&b, &c, Style{Now: now})
 	golden(t, "card", b.Bytes())
+	if !strings.Contains(b.String(), "Board details\n  Docs:    https://docs.example.com (Producto)\n") {
+		t.Errorf("no board details in:\n%s", b.String())
+	}
 
 	// Two files of one name are told apart by their path.
 	second := c.Attachments[0]

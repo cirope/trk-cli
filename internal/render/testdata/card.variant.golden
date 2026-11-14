@@ -10,6 +10,11 @@ Tags:         Billing
 Agent:        on
 Pull request: #12 open, checks failing  https://github.com/cirope/trk/pull/12
 
+Board details
+  Docs:    https://docs.example.com (Producto)
+  Website: https://example.com (Producto)
+  Tests:   mix precommit (Soporte)
+
 Conversation
   Older messages are on the web: trk card show BaHtsbhzVDa9 --web
   agent · Nov 13 09:15

@@ -164,6 +164,19 @@ func Card(w io.Writer, c *api.Card, s Style) {
 		field("Pull request", label+"  "+pr.URL)
 	}
 
+	if len(c.BoardDetails) > 0 {
+		fmt.Fprintln(w)
+		fmt.Fprintln(w, s.paint(bold, "Board details"))
+		width := 0
+		for _, d := range c.BoardDetails {
+			width = max(width, utf8.RuneCountInString(d.Name)+1)
+		}
+		for _, d := range c.BoardDetails {
+			label := d.Name + ":"
+			pad := strings.Repeat(" ", width-utf8.RuneCountInString(label)+1)
+			fmt.Fprintf(w, "  %s%s%s %s\n", label, pad, indent(d.Value, "    "), s.paint(dim, "("+d.Board+")"))
+		}
+	}
 	if len(c.Customers) > 0 {
 		fmt.Fprintln(w)
 		fmt.Fprintln(w, s.paint(bold, "Customers"))

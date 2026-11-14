@@ -14,6 +14,7 @@ stdout '"pull_request": null'
 stdout '"notes": "Has the new_export flag on."'
 
 # --markdown is the server's document, untouched.
+fixture-body card.markdown.ok card.md
 exits 0 trk card show BaHtsbhzVDa9 --markdown
 cmp stdout card.md
 
@@ -50,6 +51,11 @@ Tags:         Billing
 Agent:        on
 Branch:       trk/card-BaHtsbhzVDa9
 
+Board details
+  Docs:    https://docs.example.com (Producto)
+  Website: https://example.com (Producto)
+  Tests:   mix precommit (Soporte)
+
 Customers
   Acme: Has the new_export flag on.
 
@@ -61,41 +67,3 @@ Conversation
 
 Files
   trace.log  35 B
--- card.md --
-# CSV export loses accents
-
-http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9
-
-- **Board:** Soporte › To do
-- **Type:** Bug
-- **Priority:** High
-- **Due:** 2026-11-27
-- **Owners:** Ana Ruiz
-- **Tags:** Billing
-- **Customers:** Acme
-- **Repository:** cirope/trk
-- **Branch:** `trk/card-BaHtsbhzVDa9`
-
-## Description
-
-Rows come out as mojibake in Excel.
-
-## Customers
-
-### Acme
-
-Has the new_export flag on.
-
-## Conversation
-
-### Agent · 11/13/2026 09:15
-
-Which Excel version shows it?
-
-## Files
-
-- [trace.log](attachments/trace.log) (35 B)
-
-## Bringing it back
-
-Work on the branch `trk/card-BaHtsbhzVDa9` of cirope/trk and open the pull request from it: the card finds it by that name. From any other branch, paste the pull request's link into the card.

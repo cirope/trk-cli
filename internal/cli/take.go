@@ -53,57 +53,71 @@ func newTakeCmd(a *app) *cobra.Command {
 				return err
 			}
 
-			// Refuse --branch before anything on the board changes.
-			var repo *gitx.Repo
-			if mkBranch {
-				if repo, err = a.checkBranchable(ctx, c, id); err != nil {
-					return err
-				}
-			}
-
-			res, err := c.Take(ctx, id)
-			if err != nil {
-				return err
-			}
-			out := takeJSON{Card: res.Card, Steps: res.Steps, Branch: res.Branch}
-			if !a.flags.json {
-				a.reportSteps(res)
-			}
-
-			if !noPull {
-				p, err := a.pull(ctx, c, id, f)
-				if err != nil {
-					return fmt.Errorf("the card is yours, with its agent off; %w; run the same command again to finish", err)
-				}
-				out.Pull = p
-			}
-
-			if res.Branch != nil && *res.Branch != branchFor(id) {
-				return fmt.Errorf("the server named an unexpected branch %q for card %s", *res.Branch, id)
-			}
-			if res.Branch != nil && repo != nil {
-				if err := repo.CreateBranch(ctx, *res.Branch); err != nil {
-					return fmt.Errorf("creating branch %s: %w", *res.Branch, err)
-				}
-				out.BranchCreated = true
-			}
-			if a.flags.json {
-				return a.printJSON(out)
-			}
-			switch {
-			case res.Branch == nil:
-			case out.BranchCreated:
-				a.result("\nSwitched to a new branch %s. A pull request from it finds its card.\n", *res.Branch)
-			default:
-				a.result("\nWork on this branch, and the pull request finds its card:\n  git switch -c %s\n", *res.Branch)
-			}
-			return nil
+			return a.take(ctx, c, id, takeOptions{pull: f, noPull: noPull, branch: mkBranch})
 		},
 	}
 	f.add(cmd)
 	cmd.Flags().BoolVar(&noPull, "no-pull", false, "do not pull the card")
 	cmd.Flags().BoolVar(&mkBranch, "branch", false, "create and switch to the card's branch in this checkout")
 	return cmd
+}
+
+// takeOptions are take's flags.
+type takeOptions struct {
+	pull   pullFlags
+	noPull bool
+	branch bool
+}
+
+// take takes card id, pulls it and names (or creates) its branch,
+// reporting each step on stdout, or the result as JSON.
+func (a *app) take(ctx context.Context, c *api.Client, id string, o takeOptions) error {
+	// Refuse --branch before anything on the board changes.
+	var repo *gitx.Repo
+	if o.branch {
+		var err error
+		if repo, err = a.checkBranchable(ctx, c, id); err != nil {
+			return err
+		}
+	}
+
+	res, err := c.Take(ctx, id)
+	if err != nil {
+		return err
+	}
+	out := takeJSON{Card: res.Card, Steps: res.Steps, Branch: res.Branch}
+	if !a.flags.json {
+		a.reportSteps(res)
+	}
+
+	if !o.noPull {
+		p, err := a.pull(ctx, c, id, o.pull)
+		if err != nil {
+			return fmt.Errorf("the card is yours, with its agent off; %w; run the same command again to finish", err)
+		}
+		out.Pull = p
+	}
+
+	if res.Branch != nil && *res.Branch != branchFor(id) {
+		return fmt.Errorf("the server named an unexpected branch %q for card %s", *res.Branch, id)
+	}
+	if res.Branch != nil && repo != nil {
+		if err := repo.CreateBranch(ctx, *res.Branch); err != nil {
+			return fmt.Errorf("creating branch %s: %w", *res.Branch, err)
+		}
+		out.BranchCreated = true
+	}
+	if a.flags.json {
+		return a.printJSON(out)
+	}
+	switch {
+	case res.Branch == nil:
+	case out.BranchCreated:
+		a.result("\nSwitched to a new branch %s. A pull request from it finds its card.\n", *res.Branch)
+	default:
+		a.result("\nWork on this branch, and the pull request finds its card:\n  git switch -c %s\n", *res.Branch)
+	}
+	return nil
 }
 
 func (a *app) reportSteps(res *api.TakeResult) {

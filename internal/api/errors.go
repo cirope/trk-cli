@@ -2,7 +2,10 @@ package api
 
 import (
 	"errors"
+	"maps"
 	"net/http"
+	"slices"
+	"strings"
 )
 
 // Errors to test for with errors.Is. An *Error matches the one for its
@@ -14,6 +17,7 @@ var (
 	ErrConflict        = errors.New("conflict")
 	ErrUpgradeRequired = errors.New("this version of trk is no longer supported")
 	ErrTooLarge        = errors.New("the server's answer is too large")
+	ErrInvalid         = errors.New("the request was not valid")
 )
 
 // Error is an error answer from the server: its HTTP status and the
@@ -25,11 +29,27 @@ type Error struct {
 	Fields  map[string][]string // Per-field messages on 422.
 }
 
-func (e *Error) Error() string { return e.Message }
+// Error is the server's message or, when it names fields, what is wrong
+// with each: "title can't be blank".
+func (e *Error) Error() string {
+	if len(e.Fields) == 0 {
+		return e.Message
+	}
+	names := slices.Sorted(maps.Keys(e.Fields))
+	var parts []string
+	for _, name := range names {
+		for _, msg := range e.Fields[name] {
+			parts = append(parts, name+" "+msg)
+		}
+	}
+	return strings.Join(parts, "; ")
+}
 
 // Is matches the sentinel for the error's status.
 func (e *Error) Is(target error) bool {
 	switch e.Status {
+	case http.StatusBadRequest, http.StatusUnprocessableEntity:
+		return target == ErrInvalid
 	case http.StatusUnauthorized:
 		return target == ErrUnauthorized
 	case http.StatusForbidden:

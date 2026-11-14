@@ -21,6 +21,23 @@
       "Soporte"
     ]
   },
+  "board_details": [
+    {
+      "name": "Docs",
+      "value": "https://docs.example.com",
+      "board": "Producto"
+    },
+    {
+      "name": "Website",
+      "value": "https://example.com",
+      "board": "Producto"
+    },
+    {
+      "name": "Tests",
+      "value": "mix precommit",
+      "board": "Soporte"
+    }
+  ],
   "column": {
     "id": "Cq3mRkT8vWx2",
     "name": "To do",

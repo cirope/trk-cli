@@ -22,6 +22,18 @@
           "repository": null,
           "status": "on_hold"
         },
+        "board_details": [
+          {
+            "board": "Producto",
+            "name": "Docs",
+            "value": "https://docs.example.com"
+          },
+          {
+            "board": "Producto",
+            "name": "Website",
+            "value": "https://example.com"
+          }
+        ],
         "branch": null,
         "closed_at": null,
         "column": {

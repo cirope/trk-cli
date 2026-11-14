@@ -31,6 +31,23 @@
         "repository": "cirope/trk",
         "status": "active"
       },
+      "board_details": [
+        {
+          "board": "Producto",
+          "name": "Docs",
+          "value": "https://docs.example.com"
+        },
+        {
+          "board": "Producto",
+          "name": "Website",
+          "value": "https://example.com"
+        },
+        {
+          "board": "Soporte",
+          "name": "Tests",
+          "value": "mix precommit"
+        }
+      ],
       "branch": "trk/card-BaHtsbhzVDa9",
       "closed_at": null,
       "column": {

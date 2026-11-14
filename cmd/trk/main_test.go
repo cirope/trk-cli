@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -59,8 +60,9 @@ func TestScripts(t *testing.T) {
 			return nil
 		},
 		Cmds: map[string]func(ts *testscript.TestScript, neg bool, args []string){
-			"exits":    exits,
-			"fake-trk": fakeTrk,
+			"exits":        exits,
+			"fake-trk":     fakeTrk,
+			"fixture-body": fixtureBody,
 		},
 	})
 }
@@ -88,6 +90,25 @@ func exits(ts *testscript.TestScript, neg bool, args []string) {
 	}
 	if got != want {
 		ts.Fatalf("exit code = %d, want %d", got, want)
+	}
+}
+
+// fixtureBody writes a fixture's response body to a file, so a script
+// compares output with what trk really sends:
+//
+//	fixture-body card.markdown.ok card.md
+func fixtureBody(ts *testscript.TestScript, neg bool, args []string) {
+	if neg || len(args) != 2 {
+		ts.Fatalf("usage: fixture-body <fixture> <file>")
+	}
+	f := apitest.Load(&scriptT{ts: ts}, args[0])
+	body := []byte(f.Response.Body)
+	var s string
+	if json.Unmarshal(f.Response.Body, &s) == nil {
+		body = []byte(s) // A text body, as the server sends it.
+	}
+	if err := os.WriteFile(ts.MkAbs(args[1]), body, 0o600); err != nil {
+		ts.Fatalf("fixture-body: %v", err)
 	}
 }
 

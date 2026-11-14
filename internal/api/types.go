@@ -68,17 +68,22 @@ type Card struct {
 	DueOn       *string `json:"due_on"`               // YYYY-MM-DD
 	// DueWindow is overdue, week or later, computed by the server as the
 	// web's "My cards" does, in the app's time zone; nil without a date.
-	DueWindow   *string      `json:"due_window"`
-	ClosedAt    *time.Time   `json:"closed_at"`
-	ArchivedAt  *time.Time   `json:"archived_at"`
-	Agent       bool         `json:"agent"`
-	Board       Board        `json:"board"`
-	Column      Column       `json:"column"`
-	Owners      []Person     `json:"owners"`
-	Tags        []Tag        `json:"tags"`
-	Customers   []Customer   `json:"customers,omitzero"` // Absent in lists.
-	Branch      *string      `json:"branch"`             // nil on a board without a repository.
-	PullRequest *PullRequest `json:"pull_request"`
+	DueWindow  *string    `json:"due_window"`
+	ClosedAt   *time.Time `json:"closed_at"`
+	ArchivedAt *time.Time `json:"archived_at"`
+	Agent      bool       `json:"agent"`
+	Board      Board      `json:"board"`
+	// BoardDetails are named items the team set on the board and its
+	// parents for whoever works the card (Docs, Website, Tests...),
+	// outermost board first, the nearest board winning a shared name.
+	// Absent in lists.
+	BoardDetails []BoardDetail `json:"board_details,omitzero"`
+	Column       Column        `json:"column"`
+	Owners       []Person      `json:"owners"`
+	Tags         []Tag         `json:"tags"`
+	Customers    []Customer    `json:"customers,omitzero"` // Absent in lists.
+	Branch       *string       `json:"branch"`             // nil on a board without a repository.
+	PullRequest  *PullRequest  `json:"pull_request"`
 
 	Attachments              []Attachment `json:"attachments,omitzero"` // Absent in lists.
 	AttachmentsNextPageToken *string      `json:"attachments_next_page_token"`
@@ -96,6 +101,14 @@ type Board struct {
 	Status     string   `json:"status"`     // active, on_hold, completed
 	Repository *string  `json:"repository"` // owner/name
 	Path       []string `json:"path"`       // Names, outermost first, ending in this board.
+}
+
+// BoardDetail is one named item set on a board for whoever works its
+// cards.
+type BoardDetail struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+	Board string `json:"board"` // The board that set it.
 }
 
 // Column is a board's column; Role is todo, doing, review, done or "".

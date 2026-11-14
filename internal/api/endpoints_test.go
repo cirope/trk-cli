@@ -346,3 +346,53 @@ func TestMeUpgradeRequired(t *testing.T) {
 		t.Errorf("err = %v, want ErrUpgradeRequired", err)
 	}
 }
+
+func TestCreateCard(t *testing.T) {
+	c, srv := fixtureClient(t, "test_access_token", "card.create.ok")
+	card, err := c.CreateCard(context.Background(), NewCard{
+		Board: "Soporte", Title: "Board notes for the agent",
+		Description: "Where the docs are, which is the website.",
+		Type:        "feature", Priority: "normal",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if card.ID != "Nw5cArDx7Qp2" {
+		t.Errorf("id = %q", card.ID)
+	}
+	r := srv.Requests()[0]
+	if r.Header.Get("Content-Type") != "application/json" {
+		t.Errorf("content type = %q", r.Header.Get("Content-Type"))
+	}
+	// Absent options are left out, not sent empty.
+	for _, k := range []string{"due_on", "column"} {
+		if strings.Contains(string(r.Body), `"`+k+`"`) {
+			t.Errorf("body sent %s: %s", k, r.Body)
+		}
+	}
+}
+
+func TestCreateCardInvalid(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.create.invalid")
+	_, err := c.CreateCard(context.Background(), NewCard{Board: "Soporte", Title: ""})
+	var apiErr *Error
+	if !errors.As(err, &apiErr) || apiErr.Status != 422 || len(apiErr.Fields["title"]) != 1 {
+		t.Errorf("err = %#v, want a 422 with fields", err)
+	}
+}
+
+func TestCardBoardDetails(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.get.ok")
+	card, err := c.Card(context.Background(), "BaHtsbhzVDa9")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []BoardDetail{
+		{Name: "Docs", Value: "https://docs.example.com", Board: "Producto"},
+		{Name: "Website", Value: "https://example.com", Board: "Producto"},
+		{Name: "Tests", Value: "mix precommit", Board: "Soporte"},
+	}
+	if diff := cmp.Diff(want, card.BoardDetails); diff != "" {
+		t.Errorf("board details (-want +got):\n%s", diff)
+	}
+}
