@@ -502,3 +502,32 @@ func TestOwners(t *testing.T) {
 		t.Errorf("unknown person: %v", err)
 	}
 }
+
+func TestUpdateCard(t *testing.T) {
+	c, srv := fixtureClient(t, "test_access_token", "card.update.ok", "card.update.invalid")
+	title := "La exportación a CSV pierde los acentos"
+	card, err := c.UpdateCard(context.Background(), "BaHtsbhzVDa9", CardUpdate{Title: &title})
+	if err != nil || card.Title != title {
+		t.Fatalf("UpdateCard = %+v, %v", card, err)
+	}
+	if body := string(srv.Requests()[0].Body); strings.Contains(body, "priority") || strings.Contains(body, "due_on") {
+		t.Errorf("sent fields not given: %s", body)
+	}
+	empty := ""
+	if _, err := c.UpdateCard(context.Background(), "BaHtsbhzVDa9", CardUpdate{Title: &empty}); !errors.Is(err, ErrInvalid) ||
+		!strings.Contains(err.Error(), "title can't be blank") {
+		t.Errorf("empty title: %v", err)
+	}
+}
+
+// An empty due date is sent, to clear it; an absent one is left out.
+func TestCardUpdateClearsDue(t *testing.T) {
+	empty := ""
+	b, _ := json.Marshal(CardUpdate{DueOn: &empty})
+	if string(b) != `{"due_on":""}` {
+		t.Errorf("clearing the due date sends %s", b)
+	}
+	if b, _ := json.Marshal(CardUpdate{}); string(b) != `{}` {
+		t.Errorf("no change sends %s", b)
+	}
+}

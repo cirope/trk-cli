@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/cards/BaHtsbhzVDa9",
+    "body": {
+      "title": ""
+    }
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "validation_failed",
+        "fields": {
+          "title": [
+            "can't be blank"
+          ]
+        },
+        "message": "Some fields are not valid; see fields."
+      }
+    }
+  }
+}

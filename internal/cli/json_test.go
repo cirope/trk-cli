@@ -36,6 +36,7 @@ func TestJSONContract(t *testing.T) {
 		{"board_new", []string{"board.create.ok"}, []string{"board", "new", "CLI", "--parent", "Soporte", "--repo", "cirope/trk-cli", "--detail", "Docs=SPEC.md"}},
 		{"board_edit", []string{"boards.list.ok", "board.update.ok"}, []string{"board", "edit", "Soporte", "--status", "on_hold", "--detail", "Website=https://trk.hullop.com"}},
 		{"card_own", []string{"card.own.ok"}, []string{"card", "own", "BaHtsbhzVDa9"}},
+		{"card_edit", []string{"card.update.ok"}, []string{"card", "edit", "BaHtsbhzVDa9", "--title", "La exportación a CSV pierde los acentos"}},
 		{"card_new", []string{"card.create.ok"}, []string{"card", "new", "--board", "Soporte", "Board notes for the agent",
 			"--type", "feature", "--priority", "normal", "--description", "Where the docs are, which is the website."}},
 	}

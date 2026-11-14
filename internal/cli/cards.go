@@ -42,7 +42,7 @@ func newCardCmd(a *app) *cobra.Command {
 		RunE: func(cmd *cobra.Command, _ []string) error { return cmd.Help() },
 	}
 	cmd.AddCommand(newCardsCmd(a, "list"), newShowCmd(a), newNewCmd(a), newPullCmd(a), newTakeCmd(a),
-		newMoveCmd(a), newDoneCmd(a), newSayCmd(a), newOwnCmd(a), newUnownCmd(a))
+		newMoveCmd(a), newDoneCmd(a), newSayCmd(a), newOwnCmd(a), newUnownCmd(a), newEditCmd(a))
 	return cmd
 }
 

@@ -1,0 +1,20 @@
+# Editing a card changes only what is given.
+env TRK_TOKEN=test_access_token
+fake-trk card.update.ok
+exits 0 trk card edit BaHtsbhzVDa9 --title 'La exportación a CSV pierde los acentos'
+stdout '^Updated BaHtsbhzVDa9: La exportación a CSV pierde los acentos$'
+exits 0 trk card edit BaHtsbhzVDa9 --title 'La exportación a CSV pierde los acentos' --json
+stdout '"title": "La exportación a CSV pierde los acentos"'
+
+# Caught before asking the server.
+exits 2 trk card edit BaHtsbhzVDa9
+stderr 'nothing to change'
+exits 2 trk card edit BaHtsbhzVDa9 --priority huge
+stderr '--priority must be one of'
+exits 2 trk card edit BaHtsbhzVDa9 --due tomorrow
+stderr '--due must be a date like 2026-12-01'
+
+# The server's validation names the field.
+fake-trk card.update.invalid
+exits 2 trk card edit BaHtsbhzVDa9 --title ''
+stderr 'title can.t be blank'

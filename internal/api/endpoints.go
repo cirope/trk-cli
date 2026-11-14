@@ -321,3 +321,25 @@ func (c *Client) RemoveOwner(ctx context.Context, id, person string) (*Card, err
 	}
 	return &out, nil
 }
+
+// CardUpdate is a change to a card: only the fields that are not nil are
+// sent. An empty DueOn clears the due date.
+type CardUpdate struct {
+	Title       *string `json:"title,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Type        *string `json:"type,omitempty"`
+	Priority    *string `json:"priority,omitempty"`
+	DueOn       *string `json:"due_on,omitempty"`
+}
+
+// UpdateCard changes card id.
+func (c *Client) UpdateCard(ctx context.Context, id string, u CardUpdate) (*Card, error) {
+	if err := checkID(id); err != nil {
+		return nil, err
+	}
+	var out Card
+	if err := c.Do(ctx, http.MethodPatch, "/cards/"+id, nil, u, &out); err != nil {
+		return nil, fmt.Errorf("changing card %s: %w", id, err)
+	}
+	return &out, nil
+}

@@ -4,6 +4,8 @@ What changed in each release of `trk`, for the people who use it.
 
 ## Unreleased
 
+- `trk card edit <card>` changes a card's title, description, type,
+  priority or due date; only what you give changes.
 - `trk card show` shows the response Trk's agent proposes for the
   customer on a question, with its note under it; `--json` has it as
   `messages[].proposed_response`.
