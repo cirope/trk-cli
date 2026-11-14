@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.4.1
 
 - `trk card link <card> <pull request url>` links a pull request
   opened from another branch.
