@@ -1,0 +1,15 @@
+# Weekly pull requests for newer GitHub Actions and Go dependencies,
+# including the tools pinned in tools/go.mod.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: gomod
+    directories: ["/", "/tools"]
+    schedule:
+      interval: weekly
+    groups:
+      go:
+        patterns: ["*"]

@@ -7,8 +7,16 @@ on:
 permissions:
   contents: read
 
+# A newer push to the same branch makes an older run pointless.
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  check:
+  # What can differ by operating system (formatting, vet, the tests with
+  # the race detector) runs on all three. Its cache holds only trk's own
+  # dependencies, so it restores fast, Windows included.
+  test:
     strategy:
       fail-fast: false
       matrix:
@@ -18,8 +26,28 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
-      - run: make check
+          cache-dependency-path: go.sum
+      - run: make check-os
+
+  # Static analysis, govulncheck and the six cross-builds, once. The tools
+  # pinned in tools/go.mod get a cache of their own.
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: |
+            go.sum
+            tools/go.sum
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/golangci-lint
+          key: golangci-lint-${{ hashFiles('tools/go.sum', '.golangci.yml') }}-${{ hashFiles('**/*.go') }}
+          restore-keys: golangci-lint-${{ hashFiles('tools/go.sum', '.golangci.yml') }}-
+      - run: make check-static

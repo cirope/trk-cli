@@ -3,9 +3,19 @@
 TOOL      := go tool -modfile=tools/go.mod
 PLATFORMS := darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 windows/amd64 windows/arm64
 
-.PHONY: check fmt tidy vet staticcheck lint test vulncheck cross build release-check release-snapshot fixtures-sync fixtures-check
+.PHONY: check check-os check-static deps fmt tidy vet staticcheck lint test vulncheck cross build release-check release-snapshot fixtures-sync fixtures-check
 
 check: fmt tidy vet staticcheck lint test vulncheck cross
+
+# CI splits check in two: what can differ by operating system runs on all
+# three, the static analysis and cross-builds once.
+check-os: fmt tidy vet test
+check-static: staticcheck lint vulncheck cross
+
+# Lists the dependencies (and pinned tools) that have newer versions.
+deps:
+	go list -m -u -f '{{if .Update}}{{.Path}} {{.Version}} -> {{.Update.Version}}{{end}}' all
+	cd tools && go list -m -u -f '{{if .Update}}{{.Path}} {{.Version}} -> {{.Update.Version}}{{end}}' all | grep -E 'golangci-lint|honnef.co/go/tools|golang.org/x/vuln|goreleaser' || true
 
 fmt:
 	@out="$$(gofmt -l .)"; if [ -n "$$out" ]; then echo "gofmt needed:"; echo "$$out"; exit 1; fi
