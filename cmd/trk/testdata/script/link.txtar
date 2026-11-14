@@ -16,3 +16,5 @@ stderr 'needs a card and a pull request URL'
 fake-trk card.link.not_this_repository
 exits 2 trk card link BaHtsbhzVDa9 https://github.com/someone/else/pull/3
 stderr 'not a pull request of this board.s repository'
+# Trk refused it: no hint about trk's own usage.
+! stderr 'trk --help'

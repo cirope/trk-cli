@@ -88,7 +88,10 @@ func (a *app) reportError(err error) {
 		return
 	}
 	fmt.Fprintf(w, "trk: %s\n", message(err))
-	if code == ExitUsage {
+	// The hint is for mistakes in the command line, not for data Trk
+	// refused (also exit 2).
+	var ue usageError
+	if code == ExitUsage && errors.As(err, &ue) {
 		fmt.Fprintln(w, "Run 'trk --help' for usage.")
 	}
 }

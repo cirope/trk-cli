@@ -2,6 +2,10 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- When Trk refuses a value, trk no longer suggests `trk --help`.
+
 ## 0.4.1
 
 - `trk card link <card> <pull request url>` links a pull request
