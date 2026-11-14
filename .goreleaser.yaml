@@ -28,7 +28,8 @@ archives:
     format_overrides:
       - goos: windows
         formats: [zip]
-    name_template: "trk_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    # Stable names, so releases/latest/download/<name> always works.
+    name_template: "trk_{{ .Os }}_{{ .Arch }}"
     files:
       - README.md
       - CHANGELOG.md
@@ -45,12 +46,13 @@ nfpms:
     description: Take a Trk card to your terminal and your own coding agent.
     license: Proprietary
     formats: [deb, rpm, apk]
+    file_name_template: "trk_{{ .Os }}_{{ .Arch }}{{ .ConventionalExtension }}"
     bindir: /usr/bin
 
 homebrew_casks:
   - name: trk
     repository:
-      owner: hullop
+      owner: cirope
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
     homepage: https://github.com/cirope/trk-cli

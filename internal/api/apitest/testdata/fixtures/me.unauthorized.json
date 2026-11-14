@@ -8,7 +8,7 @@
     "body": {
       "error": {
         "code": "unauthorized",
-        "message": "Your session expired or was revoked."
+        "message": "Sign in again: run `trk login`."
       }
     }
   }

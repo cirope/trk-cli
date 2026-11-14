@@ -11,14 +11,14 @@
     "body": {
       "items": [
         {
-          "id": "At7sCrEen2Pg",
-          "filename": "trace.log",
-          "path": "attachments/2-trace.log",
-          "content_type": "text/plain",
           "byte_size": 12,
-          "message_id": "Ms9gAgent2Qw",
-          "url": "http://trk.test/api/v1/attachments/At7sCrEen2Pg",
-          "inserted_at": "2026-11-13T12:15:32Z"
+          "content_type": "text/plain",
+          "filename": "trace.log",
+          "id": "At7sCrEen2Pg",
+          "inserted_at": "2026-11-13T12:30:00Z",
+          "message_id": null,
+          "path": "attachments/31-trace.log",
+          "url": "http://trk.test/api/v1/attachments/At7sCrEen2Pg"
         }
       ],
       "next_page_token": null

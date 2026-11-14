@@ -31,6 +31,10 @@
         {
           "id": "Us7rAnaRz2Kp",
           "name": "Ana Ruiz"
+        },
+        {
+          "id": "Us9rFrancoX2",
+          "name": "Franco Catena"
         }
       ],
       "tags": [
@@ -74,7 +78,12 @@
         "name": "To do",
         "role": "todo"
       },
-      "owners": [],
+      "owners": [
+        {
+          "id": "Us9rFrancoX2",
+          "name": "Franco Catena"
+        }
+      ],
       "tags": [],
       "branch": null,
       "pull_request": null,

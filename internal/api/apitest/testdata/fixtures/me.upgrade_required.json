@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/me"
+  },
+  "response": {
+    "status": 426,
+    "body": {
+      "error": {
+        "code": "upgrade_required",
+        "message": "This version of trk is no longer supported. Update trk to 1.4.0 or later."
+      }
+    }
+  }
+}

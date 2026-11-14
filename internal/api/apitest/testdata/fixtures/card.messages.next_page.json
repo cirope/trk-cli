@@ -11,10 +11,10 @@
     "body": {
       "items": [
         {
-          "id": "Ms2gUser9Hk3",
-          "author": "Ana Ruiz",
+          "author": "human",
           "body": "Customer says it started last week.",
-          "inserted_at": "2026-11-12T10:00:00Z"
+          "id": "Ms2gUser9Hk3",
+          "inserted_at": "2026-11-13T12:30:00Z"
         }
       ],
       "next_page_token": null

@@ -74,8 +74,8 @@ func TestDeviceTokenErrors(t *testing.T) {
 	}{
 		{"device.token.pending", "authorization_pending", "authorization_pending"},
 		{"device.token.slow_down", "slow_down", "slow_down"},
-		{"device.token.denied", "access_denied", "The request was denied in the browser."},
-		{"device.token.expired", "expired_token", "The code expired. Run trk login again."},
+		{"device.token.denied", "access_denied", "access_denied"},
+		{"device.token.expired", "expired_token", "expired_token"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.fixture, func(t *testing.T) {
@@ -271,7 +271,7 @@ func TestCardAttachmentsPage(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(page.Items) != 1 || page.Items[0].Path != "attachments/2-trace.log" || page.NextPageToken != nil {
+	if len(page.Items) != 1 || page.Items[0].Path != "attachments/31-trace.log" || page.NextPageToken != nil {
 		t.Errorf("page = %+v", page)
 	}
 }
@@ -282,7 +282,7 @@ func TestCardMessagesPage(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(page.Items) != 1 || page.Items[0].Author != "Ana Ruiz" {
+	if len(page.Items) != 1 || page.Items[0].Author != "human" {
 		t.Errorf("page = %+v", page)
 	}
 }
@@ -336,5 +336,13 @@ func TestNullTypeStaysNull(t *testing.T) {
 	out, _ := json.Marshal(c)
 	if !strings.Contains(string(out), `"type":null`) {
 		t.Errorf("re-encoded type = %s", out)
+	}
+}
+
+func TestMeUpgradeRequired(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "me.upgrade_required")
+	_, err := c.Me(context.Background())
+	if !errors.Is(err, ErrUpgradeRequired) {
+		t.Errorf("err = %v, want ErrUpgradeRequired", err)
 	}
 }

@@ -10,11 +10,11 @@
     "status": 200,
     "body": {
       "device_code": "dc_test_device_code",
+      "expires_in": 900,
+      "interval": 5,
       "user_code": "WDJB-MJHT",
       "verification_uri": "http://trk.test/cli/approve",
-      "verification_uri_complete": "http://trk.test/cli/approve?code=WDJB-MJHT",
-      "expires_in": 900,
-      "interval": 5
+      "verification_uri_complete": "http://trk.test/cli/approve?code=WDJB-MJHT"
     }
   }
 }

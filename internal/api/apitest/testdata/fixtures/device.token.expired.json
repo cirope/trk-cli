@@ -9,8 +9,7 @@
   "response": {
     "status": 400,
     "body": {
-      "error": "expired_token",
-      "error_description": "The code expired. Run trk login again."
+      "error": "expired_token"
     }
   }
 }

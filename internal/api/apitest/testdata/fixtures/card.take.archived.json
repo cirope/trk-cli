@@ -8,7 +8,7 @@
     "body": {
       "error": {
         "code": "archived",
-        "message": "The card is archived."
+        "message": "This card is archived. Restore it in trk first."
       }
     }
   }

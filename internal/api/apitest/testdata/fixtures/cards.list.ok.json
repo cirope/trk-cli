@@ -8,83 +8,92 @@
     "body": {
       "items": [
         {
-          "id": "BaHtsbhzVDa9",
-          "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9",
-          "title": "CSV export loses accents",
-          "type": "bug",
-          "priority": "high",
-          "state": "open",
-          "due_on": "2026-11-27",
-          "due_window": "later",
-          "closed_at": null,
-          "archived_at": null,
           "agent": true,
+          "archived_at": null,
           "board": {
             "id": "TyzgACHc57CG",
             "name": "Soporte",
-            "status": "active",
-            "repository": "cirope/trk",
             "path": [
               "Producto",
               "Soporte"
-            ]
+            ],
+            "repository": "cirope/trk",
+            "status": "active"
           },
+          "branch": "trk/card-BaHtsbhzVDa9",
+          "closed_at": null,
           "column": {
             "id": "Cq3mRkT8vWx2",
             "name": "To do",
             "role": "todo"
           },
+          "due_on": "2026-11-27",
+          "due_window": "later",
+          "id": "BaHtsbhzVDa9",
+          "inserted_at": "2026-11-12T09:00:00Z",
           "owners": [
             {
               "id": "Us7rAnaRz2Kp",
               "name": "Ana Ruiz"
+            },
+            {
+              "id": "Us9rFrancoX2",
+              "name": "Franco Catena"
             }
           ],
+          "priority": "high",
+          "pull_request": null,
+          "state": "open",
           "tags": [
             {
+              "color": "blue",
               "id": "Tg2BiLLing9x",
-              "name": "Billing",
-              "color": "blue"
+              "name": "Billing"
             }
           ],
-          "branch": "trk/card-BaHtsbhzVDa9",
-          "pull_request": null,
-          "inserted_at": "2026-11-12T09:00:00Z",
-          "updated_at": "2026-11-13T12:15:32Z"
+          "title": "CSV export loses accents",
+          "type": "bug",
+          "updated_at": "2026-11-13T12:15:32Z",
+          "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9"
         },
         {
-          "id": "Xk29LmQp77aB",
-          "url": "http://trk.test/boards/Pr3dUctAcme7/cards/Xk29LmQp77aB",
-          "title": "Rework the importer",
-          "type": "feature",
-          "priority": "normal",
-          "state": "open",
-          "due_on": null,
-          "due_window": null,
-          "closed_at": null,
-          "archived_at": null,
           "agent": true,
+          "archived_at": null,
           "board": {
             "id": "Pr3dUctAcme7",
             "name": "Implementación Acme",
-            "status": "on_hold",
-            "repository": null,
             "path": [
               "Producto",
               "Implementación Acme"
-            ]
+            ],
+            "repository": null,
+            "status": "on_hold"
           },
+          "branch": null,
+          "closed_at": null,
           "column": {
             "id": "Cm4tDoXy7Hq2",
             "name": "To do",
             "role": "todo"
           },
-          "owners": [],
-          "tags": [],
-          "branch": null,
-          "pull_request": null,
+          "due_on": null,
+          "due_window": null,
+          "id": "Xk29LmQp77aB",
           "inserted_at": "2026-11-10T15:30:00Z",
-          "updated_at": "2026-11-11T10:00:00Z"
+          "owners": [
+            {
+              "id": "Us9rFrancoX2",
+              "name": "Franco Catena"
+            }
+          ],
+          "priority": "normal",
+          "pull_request": null,
+          "state": "open",
+          "tags": [],
+          "title": "Rework the importer",
+          "type": "feature",
+          "updated_at": "2026-11-11T10:00:00Z",
+          "url": "http://trk.test/boards/Pr3dUctAcme7/cards/Xk29LmQp77aB"
         }
       ],
       "next_page_token": null

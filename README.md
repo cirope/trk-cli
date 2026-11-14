@@ -19,16 +19,64 @@ the card to done merges it.
 
 ## Install
 
+Every release has binaries for macOS, Linux and Windows on amd64 and
+arm64. The commands below are for amd64 (Intel/AMD); on ARM, write
+`arm64` instead.
+
+### macOS
+
 ```sh
-brew install hullop/tap/trk                          # macOS and Linux
-go install github.com/cirope/trk-cli/cmd/trk@latest  # anywhere with Go
+brew install cirope/tap/trk
 ```
 
-Or download from the [releases](https://github.com/cirope/trk-cli/releases):
-archives for macOS, Linux and Windows (amd64 and arm64), and `.deb`,
-`.rpm` and `.apk` packages for Linux. Each release has a `checksums.txt`
-and a signed provenance attestation you can check with
-`gh attestation verify <file> --repo cirope/trk-cli`.
+### Linux
+
+With Homebrew, as on macOS: `brew install cirope/tap/trk`. Or with your
+distribution's package manager:
+
+```sh
+# Debian, Ubuntu and derivatives
+curl -fLO https://github.com/cirope/trk-cli/releases/latest/download/trk_linux_amd64.deb
+sudo apt install ./trk_linux_amd64.deb
+
+# Fedora, RHEL, CentOS Stream, openSUSE
+sudo dnf install https://github.com/cirope/trk-cli/releases/latest/download/trk_linux_amd64.rpm
+# (openSUSE: sudo zypper install <same URL>)
+
+# Alpine
+curl -fLO https://github.com/cirope/trk-cli/releases/latest/download/trk_linux_amd64.apk
+sudo apk add --allow-untrusted trk_linux_amd64.apk
+
+# Any distribution (Arch, NixOS, a container...): the plain binary
+curl -fL https://github.com/cirope/trk-cli/releases/latest/download/trk_linux_amd64.tar.gz | tar -xz trk
+sudo install trk /usr/local/bin/
+```
+
+Packages install `trk` to `/usr/bin`. Upgrade by installing the newer
+package the same way.
+
+### Windows
+
+Download `trk_windows_amd64.zip` from the
+[latest release](https://github.com/cirope/trk-cli/releases/latest), unzip
+it, and put `trk.exe` somewhere on your `PATH`.
+
+### With Go
+
+```sh
+go install github.com/cirope/trk-cli/cmd/trk@latest
+```
+
+### Checking a download
+
+Each release has a `checksums.txt` and a signed provenance attestation:
+
+```sh
+sha256sum --ignore-missing -c checksums.txt
+gh attestation verify trk_linux_amd64.tar.gz --repo cirope/trk-cli
+```
+
+### Afterwards
 
 Shell completions: `trk completion bash|zsh|fish|powershell --help`.
 
@@ -134,4 +182,4 @@ reviewed like code.
 CI then runs every check and publishes the release, the packages, the
 attestation and the Homebrew cask. `make release-snapshot` builds the
 same locally without publishing. The repository needs a
-`HOMEBREW_TAP_TOKEN` secret that can push to `hullop/homebrew-tap`.
+`HOMEBREW_TAP_TOKEN` secret that can push to `cirope/homebrew-tap`.

@@ -10,8 +10,8 @@
     "status": 200,
     "body": {
       "access_token": "test_access_token",
-      "token_type": "Bearer",
-      "expires_at": "2027-02-11T12:00:00Z"
+      "expires_at": "2027-02-11T12:00:00Z",
+      "token_type": "Bearer"
     }
   }
 }

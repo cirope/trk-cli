@@ -23,13 +23,13 @@ stdout '"pull": null'
 # A board without a repository: no branch to name.
 fake-trk card.take.no_repository card.markdown.ok card.get.ok attachment.get.ok
 exits 0 trk card take BaHtsbhzVDa9 --no-pull
-stdout 'no In progress column'
+stdout 'Moved to In progress.'
 ! stdout 'git switch'
 
 # Refused while Trk's agent works on it, or when archived: exit 5.
 fake-trk card.take.agent_working
 exits 5 trk card take BaHtsbhzVDa9
-stderr 'Stop it in the web app first'
+stderr 'Stop it in trk first'
 fake-trk card.take.archived
 exits 5 trk card take BaHtsbhzVDa9
 stderr 'archived'

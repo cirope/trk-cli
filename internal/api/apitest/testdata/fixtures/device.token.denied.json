@@ -9,8 +9,7 @@
   "response": {
     "status": 400,
     "body": {
-      "error": "access_denied",
-      "error_description": "The request was denied in the browser."
+      "error": "access_denied"
     }
   }
 }

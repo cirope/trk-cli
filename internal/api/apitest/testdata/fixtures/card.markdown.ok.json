@@ -11,6 +11,6 @@
     "headers": {
       "Content-Type": "text/markdown; charset=utf-8"
     },
-    "body": "# CSV export loses accents\n\nRows come out as mojibake in Excel.\n\n## Archivos\n\n- [trace.log](attachments/trace.log)\n\n## Cómo traerlo de vuelta\n\nTrabajá en la rama `trk/card-BaHtsbhzVDa9`.\n"
+    "body": "# CSV export loses accents\n\nhttp://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9\n\n- **Board:** Soporte › To do\n- **Type:** Bug\n- **Priority:** High\n- **Due:** 2026-11-27\n- **Owners:** Ana Ruiz\n- **Tags:** Billing\n- **Customers:** Acme\n- **Repository:** cirope/trk\n- **Branch:** `trk/card-BaHtsbhzVDa9`\n\n## Description\n\nRows come out as mojibake in Excel.\n\n## Customers\n\n### Acme\n\nHas the new_export flag on.\n\n## Conversation\n\n### Agent · 11/13/2026 09:15\n\nWhich Excel version shows it?\n\n## Files\n\n- [trace.log](attachments/trace.log) (35 B)\n\n## Bringing it back\n\nWork on the branch `trk/card-BaHtsbhzVDa9` of cirope/trk and open the pull request from it: the card finds it by that name. From any other branch, paste the pull request's link into the card.\n"
   }
 }

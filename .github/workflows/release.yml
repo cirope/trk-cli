@@ -3,7 +3,7 @@ name: release
 # Pushing a tag like v1.2.3 builds and publishes a release: binaries for
 # macOS, Linux and Windows (amd64, arm64), .deb/.rpm/.apk packages,
 # checksums, a signed provenance attestation, and the Homebrew cask in
-# hullop/homebrew-tap. Release notes are the tag's section of CHANGELOG.md.
+# cirope/homebrew-tap. Release notes are the tag's section of CHANGELOG.md.
 
 on:
   push:

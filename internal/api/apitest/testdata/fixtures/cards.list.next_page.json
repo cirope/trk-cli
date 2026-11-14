@@ -12,38 +12,43 @@
     "body": {
       "items": [
         {
-          "id": "Xk29LmQp77aB",
-          "url": "http://trk.test/boards/Pr3dUctAcme7/cards/Xk29LmQp77aB",
-          "title": "Rework the importer",
-          "type": "feature",
-          "priority": "normal",
-          "state": "open",
-          "due_on": null,
-          "due_window": null,
-          "closed_at": null,
-          "archived_at": null,
           "agent": true,
+          "archived_at": null,
           "board": {
             "id": "Pr3dUctAcme7",
             "name": "Implementación Acme",
-            "status": "on_hold",
-            "repository": null,
             "path": [
               "Producto",
               "Implementación Acme"
-            ]
+            ],
+            "repository": null,
+            "status": "on_hold"
           },
+          "branch": null,
+          "closed_at": null,
           "column": {
             "id": "Cm4tDoXy7Hq2",
             "name": "To do",
             "role": "todo"
           },
-          "owners": [],
-          "tags": [],
-          "branch": null,
-          "pull_request": null,
+          "due_on": null,
+          "due_window": null,
+          "id": "Xk29LmQp77aB",
           "inserted_at": "2026-11-10T15:30:00Z",
-          "updated_at": "2026-11-11T10:00:00Z"
+          "owners": [
+            {
+              "id": "Us9rFrancoX2",
+              "name": "Franco Catena"
+            }
+          ],
+          "priority": "normal",
+          "pull_request": null,
+          "state": "open",
+          "tags": [],
+          "title": "Rework the importer",
+          "type": "feature",
+          "updated_at": "2026-11-11T10:00:00Z",
+          "url": "http://trk.test/boards/Pr3dUctAcme7/cards/Xk29LmQp77aB"
         }
       ],
       "next_page_token": null

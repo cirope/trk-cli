@@ -6,18 +6,18 @@
   "response": {
     "status": 200,
     "body": {
-      "user": {
-        "id": "Us9rFrancoX2",
-        "name": "Franco Catena",
-        "email": "franco@example.com"
-      },
       "organization": {
         "id": "Or9HuLLop2Zx",
         "name": "Hullop"
       },
       "session": {
-        "name": "trk CLI on test-host",
-        "expires_at": "2027-02-11T12:00:00Z"
+        "expires_at": "2027-02-11T12:00:00Z",
+        "name": "trk CLI on test-host"
+      },
+      "user": {
+        "email": "franco@example.com",
+        "id": "Us9rFrancoX2",
+        "name": "Franco Catena"
       }
     }
   }

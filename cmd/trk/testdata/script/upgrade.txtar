@@ -1,0 +1,7 @@
+# A server that no longer supports this version says so, and trk shows
+# its message as given.
+env TRK_TOKEN=test_access_token
+fake-trk me.upgrade_required
+exits 1 trk whoami
+stderr 'This version of trk is no longer supported. Update trk to 1.4.0 or later.'
+! stdout .

@@ -51,12 +51,38 @@ Wrote .trk/cards/BaHtsbhzVDa9/attachments/trace.log (35 B)
 -- card.md --
 # CSV export loses accents
 
+http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9
+
+- **Board:** Soporte › To do
+- **Type:** Bug
+- **Priority:** High
+- **Due:** 2026-11-27
+- **Owners:** Ana Ruiz
+- **Tags:** Billing
+- **Customers:** Acme
+- **Repository:** cirope/trk
+- **Branch:** `trk/card-BaHtsbhzVDa9`
+
+## Description
+
 Rows come out as mojibake in Excel.
 
-## Archivos
+## Customers
 
-- [trace.log](attachments/trace.log)
+### Acme
 
-## Cómo traerlo de vuelta
+Has the new_export flag on.
 
-Trabajá en la rama `trk/card-BaHtsbhzVDa9`.
+## Conversation
+
+### Agent · 11/13/2026 09:15
+
+Which Excel version shows it?
+
+## Files
+
+- [trace.log](attachments/trace.log) (35 B)
+
+## Bringing it back
+
+Work on the branch `trk/card-BaHtsbhzVDa9` of cirope/trk and open the pull request from it: the card finds it by that name. From any other branch, paste the pull request's link into the card.
