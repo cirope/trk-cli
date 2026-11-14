@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.2.1
 
 - `trk card move <card> <column>` moves a card, by column name or role.
   Moving into done closes the card and merges its pull request, so trk
