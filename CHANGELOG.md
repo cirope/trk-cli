@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.4.3
 
 - `trk card rate <card> good|bad` rates Trk's agent's latest answer,
   with `--note` and `--sent`.
