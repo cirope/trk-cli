@@ -3,7 +3,7 @@
 TOOL      := go tool -modfile=tools/go.mod
 PLATFORMS := darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 windows/amd64 windows/arm64
 
-.PHONY: check check-os check-static deps update fmt tidy vet staticcheck lint test vulncheck cross build release-check release-snapshot fixtures-sync fixtures-check
+.PHONY: check check-os check-static deps update fmt tidy vet staticcheck lint test vulncheck cross build release release-check release-snapshot fixtures-sync fixtures-check
 
 check: fmt tidy vet staticcheck lint test vulncheck cross
 
@@ -56,6 +56,20 @@ cross:
 
 build:
 	go build -o bin/trk ./cmd/trk
+
+# Cuts a release: make release V=0.3.0. Renames CHANGELOG.md's
+# "## Unreleased" to the version, commits, tags and pushes; CI publishes.
+release:
+	@echo "$(V)" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$$' || { echo "usage: make release V=1.2.3"; exit 1; }
+	@test "$$(git branch --show-current)" = master || { echo "not on master"; exit 1; }
+	@test -z "$$(git status --porcelain --untracked-files=no)" || { echo "commit or stash your changes first"; exit 1; }
+	@! git rev-parse -q --verify "refs/tags/v$(V)" >/dev/null || { echo "v$(V) already exists"; exit 1; }
+	@grep -q '^## Unreleased$$' CHANGELOG.md || { echo "CHANGELOG.md has no '## Unreleased' section"; exit 1; }
+	sed -i.bak 's/^## Unreleased$$/## $(V)/' CHANGELOG.md && rm CHANGELOG.md.bak
+	git commit -qm "Release v$(V)" CHANGELOG.md
+	git tag "v$(V)"
+	git push -q origin master "v$(V)"
+	@echo "Pushed v$(V); CI publishes it: gh run watch"
 
 # Releases are made by CI from a tag; these check them locally.
 release-check:
