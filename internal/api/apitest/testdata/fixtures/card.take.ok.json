@@ -57,6 +57,8 @@
           "name": "In progress",
           "role": "doing"
         },
+        "commits": [],
+        "commits_next_page_token": null,
         "customers": [
           {
             "id": "Cu5tAcme7Qx3",

@@ -43,6 +43,7 @@ func TestJSONContract(t *testing.T) {
 		{"mail_file", []string{"mail.file.ok"}, []string{"mail", "file", "Mx7tHrEad2Qx", "--board", "Soporte"}},
 		{"mail_discard", []string{"mail.discard.ok"}, []string{"mail", "discard", "Mx7tHrEad2Qx", "--block"}},
 		{"card_attach", []string{"card.attach.ok"}, []string{"card", "attach", "BaHtsbhzVDa9", "testdata/notes.txt"}},
+		{"card_link_commit", []string{"card.commit.link.ok"}, []string{"card", "link", "BaHtsbhzVDa9", "4f2a9c1"}},
 		{"card_new", []string{"card.create.ok"}, []string{"card", "new", "--board", "Soporte", "Board notes for the agent",
 			"--type", "feature", "--priority", "normal", "--description", "Where the docs are, which is the website."}},
 	}

@@ -46,6 +46,8 @@
           "name": "In progress",
           "role": "doing"
         },
+        "commits": [],
+        "commits_next_page_token": null,
         "customers": [],
         "description": "Where the docs are, which is the website.",
         "due_on": null,

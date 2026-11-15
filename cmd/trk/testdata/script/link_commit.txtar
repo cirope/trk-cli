@@ -1,0 +1,15 @@
+# Linking a commit whose message did not name the card.
+env TRK_TOKEN=test_access_token
+fake-trk card.commit.link.ok
+exits 0 trk card link BaHtsbhzVDa9 4f2a9c1
+stdout '^Linked commit 4f2a9c1 \(Keep accents in the CSV export\) to BaHtsbhzVDa9\.$'
+exits 0 trk card link BaHtsbhzVDa9 4f2a9c1 --json
+stdout '"via": "link"'
+
+fake-trk card.commit.link.not_found
+exits 2 trk card link BaHtsbhzVDa9 deadbee
+stderr 'GitHub knows no such commit'
+
+# A ref git does not know here.
+exits 2 trk card link BaHtsbhzVDa9 no-such-branch
+stderr 'not a pull request URL, a commit or a git ref'

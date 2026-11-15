@@ -112,6 +112,19 @@ func (r *Repo) SwitchBranch(ctx context.Context, name string) error {
 	return err
 }
 
+// ResolveCommit is the full sha of a commit-ish (HEAD, a branch, a short
+// sha). Option-like refs are refused.
+func (r *Repo) ResolveCommit(ctx context.Context, ref string) (string, error) {
+	if strings.HasPrefix(ref, "-") {
+		return "", fmt.Errorf("%q is not a git ref", ref)
+	}
+	out, err := run(ctx, r.Root, "rev-parse", "--verify", "--quiet", "--end-of-options", ref+"^{commit}")
+	if err != nil {
+		return "", fmt.Errorf("git knows no commit %q here", ref)
+	}
+	return strings.TrimSpace(out), nil
+}
+
 // HasRemoteFor reports whether a remote points at repository
 // ("owner/name", compared without case).
 func (r *Repo) HasRemoteFor(ctx context.Context, repository string) (bool, error) {

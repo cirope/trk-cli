@@ -228,3 +228,18 @@ func TestCardFromEmail(t *testing.T) {
 		}
 	}
 }
+
+func TestCardCommits(t *testing.T) {
+	c := fixtureCard(t)
+	checks := "passing"
+	c.Commits = []api.Commit{
+		{Sha: "4f2a9c1e8b7d6a5f", Subject: "Keep accents in the CSV export", Author: api.CommitAuthor{Name: "Ana Ruiz", Login: "anaruiz"}, Closes: true, Checks: &checks},
+		{Sha: "9b8c7d6e5f4a3b2c", Subject: "Test the export", Author: api.CommitAuthor{Name: "Ana Ruiz"}},
+	}
+	var b bytes.Buffer
+	Card(&b, &c, Style{Now: now})
+	want := "Commits\n  4f2a9c1  Keep accents in the CSV export (anaruiz) · closes the card · checks passing\n  9b8c7d6  Test the export (Ana Ruiz)\n"
+	if !strings.Contains(b.String(), want) {
+		t.Errorf("card:\n%s\nwant:\n%s", b.String(), want)
+	}
+}

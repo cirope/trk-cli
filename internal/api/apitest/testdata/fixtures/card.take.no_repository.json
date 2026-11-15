@@ -41,6 +41,8 @@
           "name": "In progress",
           "role": "doing"
         },
+        "commits": [],
+        "commits_next_page_token": null,
         "customers": [],
         "description": null,
         "due_on": null,

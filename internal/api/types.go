@@ -91,6 +91,8 @@ type Card struct {
 	AttachmentsNextPageToken *string      `json:"attachments_next_page_token"`
 	Messages                 []Message    `json:"messages,omitzero"` // The newest page, oldest first; absent in lists.
 	MessagesNextPageToken    *string      `json:"messages_next_page_token"`
+	Commits                  []Commit     `json:"commits,omitzero"` // Newest first; absent in lists.
+	CommitsNextPageToken     *string      `json:"commits_next_page_token"`
 
 	InsertedAt time.Time `json:"inserted_at"`
 	UpdatedAt  time.Time `json:"updated_at"`

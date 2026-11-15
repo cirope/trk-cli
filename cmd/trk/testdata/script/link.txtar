@@ -8,7 +8,7 @@ stdout '"opened_by": "outside"'
 
 # Not a pull request URL: wrong usage, the server is never asked.
 exits 2 trk card link BaHtsbhzVDa9 https://github.com/cirope/trk/issues/12
-stderr 'not a GitHub pull request URL'
+stderr 'not a pull request URL, a commit or a git ref'
 exits 2 trk card link BaHtsbhzVDa9
 stderr 'needs a card and a pull request URL'
 

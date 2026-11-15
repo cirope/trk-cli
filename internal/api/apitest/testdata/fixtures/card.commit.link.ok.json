@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/commits",
+    "body": {
+      "commit": "4f2a9c1"
+    }
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "author": {
+        "login": "anaruiz",
+        "name": "Ana Ruiz"
+      },
+      "checks": null,
+      "closes": false,
+      "committed_at": "2026-11-13T12:30:00Z",
+      "sha": "4f2a9c1e8b7d6a5f4e3d2c1b0a9f8e7d6c5b4a39",
+      "subject": "Keep accents in the CSV export",
+      "url": "https://github.com/cirope/trk/commit/4f2a9c1e8b7d6a5f4e3d2c1b0a9f8e7d6c5b4a39",
+      "via": "link"
+    }
+  }
+}

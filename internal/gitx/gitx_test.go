@@ -187,3 +187,21 @@ func TestRepoName(t *testing.T) {
 		}
 	}
 }
+
+func TestResolveCommit(t *testing.T) {
+	dir := newRepo(t)
+	r, _ := Find(context.Background(), dir)
+	want := strings.TrimSpace(git(t, dir, "rev-parse", "HEAD"))
+	for _, ref := range []string{"HEAD", "main", want[:7]} {
+		got, err := r.ResolveCommit(context.Background(), ref)
+		if err != nil || got != want {
+			t.Errorf("ResolveCommit(%q) = %q, %v; want %s", ref, got, err, want)
+		}
+	}
+	if _, err := r.ResolveCommit(context.Background(), "no-such-ref"); err == nil {
+		t.Error("an unknown ref resolved")
+	}
+	if _, err := r.ResolveCommit(context.Background(), "--output=/tmp/x"); err == nil {
+		t.Error("an option-like ref resolved")
+	}
+}

@@ -53,6 +53,8 @@
   "attachments_next_page_token": null,
   "messages": [],
   "messages_next_page_token": null,
+  "commits": [],
+  "commits_next_page_token": null,
   "inserted_at": "2026-11-13T12:30:00Z",
   "updated_at": "2026-11-13T12:30:00Z"
 }

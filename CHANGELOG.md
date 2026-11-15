@@ -2,6 +2,11 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk card link <card> <commit>` links a commit (a sha, a commit URL or
+  a git ref such as `HEAD`); `trk card show` lists a card's commits.
+
 ## 0.4.4
 
 - `trk card attach <card> <file>…` attaches files; `trk card say --attach`

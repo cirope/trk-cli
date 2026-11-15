@@ -167,6 +167,27 @@ func Card(w io.Writer, c *api.Card, s Style) {
 		field("Pull request", label+"  "+pr.URL)
 	}
 
+	if len(c.Commits) > 0 {
+		fmt.Fprintln(w)
+		fmt.Fprintln(w, s.paint(bold, "Commits"))
+		for _, cm := range c.Commits {
+			who := cm.Author.Login
+			if who == "" {
+				who = cm.Author.Name
+			}
+			line := fmt.Sprintf("  %s  %s (%s)", s.paint(dim, short(cm.Sha)), cm.Subject, who)
+			if cm.Closes {
+				line += " · closes the card"
+			}
+			if cm.Checks != nil {
+				line += " · checks " + *cm.Checks
+			}
+			fmt.Fprintln(w, line)
+		}
+		if c.CommitsNextPageToken != nil {
+			fmt.Fprintln(w, s.paint(dim, "  Older commits are on the web: trk card show "+c.ID+" --web"))
+		}
+	}
 	if len(c.BoardDetails) > 0 {
 		fmt.Fprintln(w)
 		fmt.Fprintln(w, s.paint(bold, "Board details"))
@@ -383,4 +404,12 @@ func deref(s *string) string {
 		return ""
 	}
 	return *s
+}
+
+// short is a sha's first 7 characters.
+func short(sha string) string {
+	if len(sha) > 7 {
+		return sha[:7]
+	}
+	return sha
 }

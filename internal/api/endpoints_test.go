@@ -640,3 +640,30 @@ func TestPostMessageWithFiles(t *testing.T) {
 		t.Errorf("posted = %+v", got)
 	}
 }
+
+func TestLinkCommit(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.commit.link.ok", "card.commit.link.not_found")
+	got, err := c.LinkCommit(context.Background(), "BaHtsbhzVDa9", "4f2a9c1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Sha[:7] != "4f2a9c1" || got.Subject != "Keep accents in the CSV export" || got.Author.Login != "anaruiz" || got.Closes || got.Via != "link" {
+		t.Errorf("commit = %+v", got)
+	}
+	_, err = c.LinkCommit(context.Background(), "BaHtsbhzVDa9", "deadbee")
+	var apiErr *Error
+	if !errors.As(err, &apiErr) || apiErr.Code != "commit_not_found" {
+		t.Errorf("unknown commit: %v", err)
+	}
+}
+
+func TestCardCommitsPage(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.commits.list.ok")
+	page, err := c.CardCommits(context.Background(), "BaHtsbhzVDa9", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(page.Items) == 0 || page.Items[0].Sha == "" {
+		t.Errorf("page = %+v", page)
+	}
+}

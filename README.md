@@ -111,7 +111,7 @@ are; `trk logout` revokes the session.
 | `trk card say <card> "text"` | Posts on the card's conversation (also `trk card reply`; `--file -` reads stdin). When Trk's agent will answer (a board with a repository, the card's agent on), the card goes back to In progress and the agent takes a turn: take the card first to avoid that. Otherwise it's a note and the card stays put. |
 | `trk card own <card> [person…]`, `unown` | Adds or removes owners: you by default, or people by email or id. |
 | `trk card edit <card>` | Changes only what you give: `--title`, `--description` (or `--description-file -`), `--type`, `--priority`, `--due` (`""` clears it). |
-| `trk card link <card> <pull request url>` | Links a pull request opened from another branch; one from `trk/card-<id>` links itself. |
+| `trk card link <card> <pull request \| commit>` | Links a pull request or a commit (a sha, a commit URL, or a git ref like `HEAD`) that didn't find its card by itself. A pull request from `trk/card-<id>`, or a commit on the default branch naming `#<card id>`, links itself; `Closes #<card id>` also closes the card. |
 | `trk card rate <card> good\|bad` | Rates Trk's agent's latest answer; `--note` says what was wrong and `--sent` what you sent instead (`--note-file`, `--sent-file`, `-` for stdin). The agent reads a bad rating on its next turn. |
 | `trk card attach <card> <file>…` | Attaches files to a card (20 MB each, 100 MB per upload). `trk card say --attach <file>` sends files with a message. |
 | `trk card pull <card>` | Writes the card and its files to `.trk/cards/<card>/`. |

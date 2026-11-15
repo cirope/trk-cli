@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/commits",
+    "body": {
+      "commit": "deadbee"
+    }
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "commit_not_found",
+        "message": "GitHub knows no such commit."
+      }
+    }
+  }
+}
