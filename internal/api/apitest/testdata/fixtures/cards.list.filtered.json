@@ -18,6 +18,7 @@
         {
           "agent": true,
           "archived_at": null,
+          "area": null,
           "board": {
             "id": "TyzgACHc57CG",
             "name": "Soporte",

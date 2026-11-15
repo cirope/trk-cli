@@ -17,6 +17,7 @@
   "response": {
     "status": 201,
     "body": {
+      "areas": [],
       "columns": [
         {
           "id": "Ct3oDoCk3Aa3",

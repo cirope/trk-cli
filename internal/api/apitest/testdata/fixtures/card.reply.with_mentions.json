@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cards/BaHtsbhzVDa9/messages",
+    "body": {
+      "body": "Can you check the encoding?",
+      "mentions": [
+        "ana@example.com"
+      ]
+    }
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "agent_turn": false,
+      "attachments": [],
+      "message": {
+        "author": "human",
+        "author_name": "Franco Catena",
+        "body": "Can you check the encoding?",
+        "id": "Ms7rEpLy3Kq9",
+        "inserted_at": "2026-11-13T12:30:00Z",
+        "mentions": [
+          "Ana Ruiz"
+        ],
+        "proposed_response": null
+      }
+    }
+  }
+}

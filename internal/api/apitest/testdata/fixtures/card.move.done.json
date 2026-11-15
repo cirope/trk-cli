@@ -12,6 +12,7 @@
     "body": {
       "agent": true,
       "archived_at": null,
+      "area": null,
       "attachments": [
         {
           "byte_size": 35,

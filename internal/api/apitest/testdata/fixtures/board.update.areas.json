@@ -1,0 +1,69 @@
+{
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/boards/TyzgACHc57CG",
+    "body": {
+      "areas": [
+        {
+          "covers": "Access and leaks",
+          "name": "Security",
+          "people": [
+            "ana@example.com"
+          ]
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "areas": [
+        {
+          "covers": "Access and leaks",
+          "name": "Security",
+          "people": [
+            "Us7rAnaRz2Kp"
+          ]
+        }
+      ],
+      "columns": [
+        {
+          "id": "Cq3mRkT8vWx2",
+          "name": "To do",
+          "role": "todo"
+        },
+        {
+          "id": "Cd8iNgPr6Ty3",
+          "name": "In progress",
+          "role": "doing"
+        },
+        {
+          "id": "Cs3rEvJwSup3",
+          "name": "Review",
+          "role": "review"
+        },
+        {
+          "id": "Cd8nEsUp4Rt7",
+          "name": "Done",
+          "role": "done"
+        }
+      ],
+      "details": [
+        {
+          "name": "Tests",
+          "value": "mix precommit"
+        }
+      ],
+      "id": "TyzgACHc57CG",
+      "language": "en",
+      "name": "Soporte",
+      "parent": {
+        "id": "Pr8dUcTo4Rt3",
+        "name": "Producto"
+      },
+      "repository": "cirope/trk",
+      "status": "active",
+      "url": "http://trk.test/boards/TyzgACHc57CG"
+    }
+  }
+}

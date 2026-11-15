@@ -1,0 +1,33 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/inbox/BaHtsbhzVDa9/done"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "card": {
+        "area": null,
+        "board": {
+          "id": "TyzgACHc57CG",
+          "name": "Soporte"
+        },
+        "id": "BaHtsbhzVDa9",
+        "priority": "high",
+        "title": "CSV export loses accents",
+        "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9"
+      },
+      "reason": {
+        "area": null,
+        "by": "Ana Ruiz",
+        "why": [
+          "person"
+        ]
+      },
+      "seen": false,
+      "snoozed_until": null,
+      "state": "done",
+      "tagged_at": "2026-11-13T12:30:00Z"
+    }
+  }
+}

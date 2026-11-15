@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/inbox/BaHtsbhzVDa9/snooze",
+    "body": {
+      "until": "whenever"
+    }
+  },
+  "response": {
+    "status": 400,
+    "body": {
+      "error": {
+        "code": "bad_request",
+        "message": "`until` is later_today, tomorrow, next_week, or a future ISO 8601 date or date-time."
+      }
+    }
+  }
+}

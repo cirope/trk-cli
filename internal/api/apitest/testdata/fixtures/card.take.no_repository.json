@@ -10,6 +10,7 @@
       "card": {
         "agent": false,
         "archived_at": null,
+        "area": null,
         "attachments": [],
         "attachments_next_page_token": null,
         "board": {

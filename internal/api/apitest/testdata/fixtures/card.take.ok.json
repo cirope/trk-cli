@@ -10,6 +10,7 @@
       "card": {
         "agent": false,
         "archived_at": null,
+        "area": null,
         "attachments": [
           {
             "byte_size": 35,
