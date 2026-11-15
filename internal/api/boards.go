@@ -18,6 +18,7 @@ type BoardInfo struct {
 	Parent     *BoardRef   `json:"parent"`     // nil for a top-level board.
 	Columns    []Column    `json:"columns"`    // In the board's order.
 	Details    []NameValue `json:"details"`    // The board's own, not its parents'.
+	Areas      []Area      `json:"areas"`      // Its own: who is in charge of what.
 	URL        string      `json:"url"`
 }
 
@@ -65,6 +66,7 @@ type NewBoard struct {
 	Language string      `json:"language,omitempty"` // en, es
 	Status   string      `json:"status,omitempty"`
 	Details  []NameValue `json:"details,omitempty"`
+	Areas    []Area      `json:"areas,omitempty"`
 }
 
 // CreateBoard creates a board.
@@ -86,6 +88,7 @@ type BoardUpdate struct {
 	Language *string      `json:"language,omitempty"`
 	Status   *string      `json:"status,omitempty"`
 	Details  *[]NameValue `json:"details,omitempty"`
+	Areas    *[]Area      `json:"areas,omitempty"` // The whole new list.
 }
 
 // UpdateBoard changes board (an id or a name).

@@ -39,6 +39,7 @@
           "value": "https://example.com"
         }
       ],
+      "areas": [],
       "url": "http://trk.test/boards/Pr8dUcTo4Rt3"
     },
     {
@@ -79,6 +80,7 @@
           "value": "mix precommit"
         }
       ],
+      "areas": [],
       "url": "http://trk.test/boards/TyzgACHc57CG"
     },
     {
@@ -114,6 +116,7 @@
         }
       ],
       "details": [],
+      "areas": [],
       "url": "http://trk.test/boards/Pr3dUctAcme7"
     }
   ],

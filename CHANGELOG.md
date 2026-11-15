@@ -2,6 +2,15 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk inbox`, `trk inbox done` and `trk inbox snooze`: the cards waiting
+  for you, and why.
+- `trk card say --mention <person>` calls people to a card with a note.
+- Areas: `trk board new|edit --area <name> --covers … --people …`,
+  `--remove-area`; `trk card new|edit --area`; `card show` shows the area.
+- `trk card show` names who wrote each message.
+
 ## 0.4.5
 
 - `trk card link <card> <commit>` links a commit (a sha, a commit URL or

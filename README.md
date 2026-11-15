@@ -108,7 +108,7 @@ are; `trk logout` revokes the session.
 | `trk card show <card>` | A card as you'd read it in Trk. `--markdown` prints the same document as the web app's Download. `--web` opens it in the browser. |
 | `trk card new --board <board> <title>` | Creates a card (never starts Trk's agent) and prints its id and URL. `--description-file -` reads stdin; `--take` takes it right away. |
 | `trk card move <card> <column>` | Moves a card, by column name or role. Into done it closes the card and **merges its pull request**: trk asks first, or needs `--yes`. `trk card done <card>` is the same as moving to done. |
-| `trk card say <card> "text"` | Posts on the card's conversation (also `trk card reply`; `--file -` reads stdin). When Trk's agent will answer (a board with a repository, the card's agent on), the card goes back to In progress and the agent takes a turn: take the card first to avoid that. Otherwise it's a note and the card stays put. |
+| `trk card say <card> "text"` | Posts on the card's conversation (also `trk card reply`; `--file -` reads stdin). `--mention <person>` makes it a note to the team that calls those people, with no agent turn. When Trk's agent will answer (a board with a repository, the card's agent on), the card goes back to In progress and the agent takes a turn: take the card first to avoid that. Otherwise it's a note and the card stays put. |
 | `trk card own <card> [person…]`, `unown` | Adds or removes owners: you by default, or people by email or id. |
 | `trk card edit <card>` | Changes only what you give: `--title`, `--description` (or `--description-file -`), `--type`, `--priority`, `--due` (`""` clears it). |
 | `trk card link <card> <pull request \| commit>` | Links a pull request or a commit (a sha, a commit URL, or a git ref like `HEAD`) that didn't find its card by itself. A pull request from `trk/card-<id>`, or a commit on the default branch naming `#<card id>`, links itself; `Closes #<card id>` also closes the card. |
@@ -118,8 +118,9 @@ are; `trk logout` revokes the session.
 | `trk card take <card>` | Makes you an owner, turns Trk's agent off for the card, moves it to In progress, pulls it, and prints the branch to use. `--branch` creates and switches to it. |
 | `trk boards` | The boards as a tree, subprojects under their parent, with repository and status. |
 | `trk board new <name>` | Creates a board; `--parent` makes it a subproject. `--repo`, `--language`, `--status`, `--detail Name=Value`. |
-| `trk board edit <board>` | Changes only what you give; `--detail` adds or replaces one detail, `--remove-detail` removes one. |
+| `trk board edit <board>` | Changes only what you give; `--detail` adds or replaces one detail, `--remove-detail` removes one. `--area <name> --covers <text> --people <me,email…>` adds or updates an area (who is in charge of what); `--remove-area` removes one. |
 | `trk mail` | Email Trk held instead of filing it (`--discarded` for the discarded). `trk mail file <thread> --board <b>` files it as a card; `trk mail discard <thread> [--block]` discards it. trk never emails customers. |
+| `trk inbox` | The cards waiting for you and why (`--snoozed`, `--done`). `trk inbox done <card>`; `trk inbox snooze <card> <later_today\|tomorrow\|next_week\|date>`. |
 | `trk login`, `logout`, `whoami` | Sign in and out. |
 
 `<card>` is a card id (`BaHtsbhzVDa9`) or its URL, as copied from the

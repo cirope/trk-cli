@@ -111,6 +111,7 @@ func newNewCmd(a *app) *cobra.Command {
 	f.StringVar(&n.Priority, "priority", "", "low, normal, high or urgent")
 	f.StringVar(&due, "due", "", "the due date, YYYY-MM-DD")
 	f.StringVar(&n.Column, "column", "", "the column, by name or role (default the board's To do)")
+	f.StringVar(&n.Area, "area", "", "one of the board's areas, by name")
 	f.BoolVar(&take, "take", false, "then take the card, as trk card take does")
 	f.BoolVar(&t.noPull, "no-pull", false, "with --take, do not pull the card")
 	t.pull.add(cmd)

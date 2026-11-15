@@ -44,6 +44,11 @@ func TestJSONContract(t *testing.T) {
 		{"mail_discard", []string{"mail.discard.ok"}, []string{"mail", "discard", "Mx7tHrEad2Qx", "--block"}},
 		{"card_attach", []string{"card.attach.ok"}, []string{"card", "attach", "BaHtsbhzVDa9", "testdata/notes.txt"}},
 		{"card_link_commit", []string{"card.commit.link.ok"}, []string{"card", "link", "BaHtsbhzVDa9", "4f2a9c1"}},
+		{"inbox", []string{"inbox.list.ok"}, []string{"inbox"}},
+		{"inbox_done", []string{"inbox.done.ok"}, []string{"inbox", "done", "BaHtsbhzVDa9"}},
+		{"inbox_snooze", []string{"inbox.snooze.ok"}, []string{"inbox", "snooze", "BaHtsbhzVDa9", "2027-02-11T12:00:00Z"}},
+		{"card_say_mention", []string{"card.reply.with_mentions"}, []string{"card", "say", "BaHtsbhzVDa9", "Can you check the encoding?", "--mention", "ana@example.com"}},
+		{"board_edit_area", []string{"boards.list.ok", "board.update.areas"}, []string{"board", "edit", "Soporte", "--area", "Security", "--covers", "Access and leaks", "--people", "ana@example.com"}},
 		{"card_new", []string{"card.create.ok"}, []string{"card", "new", "--board", "Soporte", "Board notes for the agent",
 			"--type", "feature", "--priority", "normal", "--description", "Where the docs are, which is the website."}},
 	}

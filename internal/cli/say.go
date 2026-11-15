@@ -11,8 +11,9 @@ import (
 
 func newSayCmd(a *app) *cobra.Command {
 	var (
-		file   string
-		attach []string
+		file    string
+		attach  []string
+		mention []string
 	)
 	cmd := &cobra.Command{
 		Use:     "say <card> [message]",
@@ -26,7 +27,8 @@ func newSayCmd(a *app) *cobra.Command {
 		Example: "  trk card say BaHtsbhzVDa9 \"Fixed in #12; the export keeps accents now.\"\n" +
 			"  trk card reply BaHtsbhzVDa9 --file notes.md\n" +
 			"  git log -1 --format=%B | trk card say BaHtsbhzVDa9 --file -\n" +
-			"  trk card say BaHtsbhzVDa9 \"The log from this morning.\" --attach morning.log",
+			"  trk card say BaHtsbhzVDa9 \"The log from this morning.\" --attach morning.log\n" +
+			"  trk card say BaHtsbhzVDa9 \"Can you check the encoding?\" --mention ana@example.com",
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) < 1 || len(args) > 2 {
 				return usageError{fmt.Errorf("%s needs a card, then the message or --file", cmd.CommandPath())}
@@ -61,14 +63,18 @@ func newSayCmd(a *app) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			card, err := c.Card(cmd.Context(), id)
-			if err != nil {
-				return err
+			// A note that mentions people never starts an agent turn; only
+			// otherwise is the card read, to warn when one will start.
+			if len(mention) == 0 {
+				card, err := c.Card(cmd.Context(), id)
+				if err != nil {
+					return err
+				}
+				if card.Agent && card.Board.Repository != nil {
+					a.progress("Trk's agent is on for this card: it will answer with a new turn.\n")
+				}
 			}
-			if card.Agent && card.Board.Repository != nil {
-				a.progress("Trk's agent is on for this card: it will answer with a new turn.\n")
-			}
-			posted, err := c.PostMessage(cmd.Context(), id, body, files...)
+			posted, err := c.PostMessage(cmd.Context(), id, body, mention, files...)
 			if err != nil {
 				return err
 			}
@@ -81,6 +87,7 @@ func newSayCmd(a *app) *cobra.Command {
 	}
 	cmd.Flags().StringVar(&file, "file", "", "read the message from a file; - reads stdin")
 	cmd.Flags().StringArrayVar(&attach, "attach", nil, "send this file with the message (repeatable; 20 MB each)")
+	cmd.Flags().StringArrayVar(&mention, "mention", nil, "call this person to the card: me, an email or an id (repeatable); makes it a note, with no agent turn")
 	return cmd
 }
 
@@ -93,6 +100,10 @@ func (a *app) reportPosted(id string, p *api.Posted) {
 		with = " with 1 file"
 	default:
 		with = fmt.Sprintf(" with %d files", n)
+	}
+	if len(p.Message.Mentions) > 0 {
+		a.result("Posted a note on %s%s, calling %s.\n", id, with, strings.Join(p.Message.Mentions, ", "))
+		return
 	}
 	if p.AgentTurn {
 		a.result("Posted on %s%s. Trk's agent is answering; the card is back in In progress.\n", id, with)

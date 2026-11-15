@@ -1,0 +1,22 @@
+# Your inbox: cards waiting for you, and why.
+env TRK_TOKEN=test_access_token
+fake-trk inbox.list.ok inbox.done.ok inbox.snooze.ok inbox.snooze.bad_until
+exits 0 trk inbox
+cmp stdout inbox.txt
+exits 0 trk inbox --json
+stdout '"why": \['
+
+exits 0 trk inbox done BaHtsbhzVDa9
+stdout '^Done: BaHtsbhzVDa9 is out of your inbox\.$'
+exits 0 trk inbox snooze BaHtsbhzVDa9 2027-02-11T12:00:00Z
+stdout '^Snoozed BaHtsbhzVDa9 until Feb 11, 2027 12:00\.$'
+
+# Trk says what it takes.
+exits 2 trk inbox snooze BaHtsbhzVDa9 whenever
+stderr 'later_today, tomorrow, next_week'
+exits 2 trk inbox --snoozed --done
+stderr 'either --snoozed or --done'
+
+-- inbox.txt --
+BaHtsbhzVDa9  CSV export loses accents  Soporte  high
+  Ana Ruiz called you · Nov 13 12:30 · new

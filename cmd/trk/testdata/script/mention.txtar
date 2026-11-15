@@ -1,0 +1,6 @@
+# Mentioning people makes a note to the team that calls them: no agent turn.
+env TRK_TOKEN=test_access_token
+fake-trk card.reply.with_mentions
+exits 0 trk card say BaHtsbhzVDa9 'Can you check the encoding?' --mention ana@example.com
+stdout '^Posted a note on BaHtsbhzVDa9, calling Ana Ruiz\.$'
+! stderr 'agent'

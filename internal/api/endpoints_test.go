@@ -418,7 +418,7 @@ func TestMoveCardUnknownColumn(t *testing.T) {
 
 func TestPostMessage(t *testing.T) {
 	c, _ := fixtureClient(t, "test_access_token", "card.reply.ok")
-	got, err := c.PostMessage(context.Background(), "BaHtsbhzVDa9", "Fixed in #12; the export keeps accents now.")
+	got, err := c.PostMessage(context.Background(), "BaHtsbhzVDa9", "Fixed in #12; the export keeps accents now.", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -631,7 +631,7 @@ func TestAttachTooLarge(t *testing.T) {
 
 func TestPostMessageWithFiles(t *testing.T) {
 	c, _ := fixtureClient(t, "test_access_token", "card.reply.with_file")
-	got, err := c.PostMessage(context.Background(), "BaHtsbhzVDa9", "The log from this morning.",
+	got, err := c.PostMessage(context.Background(), "BaHtsbhzVDa9", "The log from this morning.", nil,
 		textUpload("morning.log", "09:02:11 ERROR export: bad bytes\n"))
 	if err != nil {
 		t.Fatal(err)
@@ -665,5 +665,74 @@ func TestCardCommitsPage(t *testing.T) {
 	}
 	if len(page.Items) == 0 || page.Items[0].Sha == "" {
 		t.Errorf("page = %+v", page)
+	}
+}
+
+func TestInbox(t *testing.T) {
+	c, srv := fixtureClient(t, "test_access_token", "inbox.list.ok", "inbox.done.ok", "inbox.snooze.ok", "inbox.snooze.bad_until")
+	page, err := c.Inbox(context.Background(), "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	it := page.Items[0]
+	if it.Card.ID != "BaHtsbhzVDa9" || it.State != "waiting" || it.Reason.By == nil || *it.Reason.By != "Ana Ruiz" ||
+		len(it.Reason.Why) != 1 || it.Reason.Why[0] != "person" || it.Seen || it.Card.Board.Name != "Soporte" {
+		t.Errorf("item = %+v", it)
+	}
+	done, err := c.InboxDone(context.Background(), "BaHtsbhzVDa9")
+	if err != nil || done.State != "done" {
+		t.Errorf("done = %+v, %v", done, err)
+	}
+	snoozed, err := c.InboxSnooze(context.Background(), "BaHtsbhzVDa9", "2027-02-11T12:00:00Z")
+	if err != nil || snoozed.State != "snoozed" || snoozed.SnoozedUntil == nil {
+		t.Errorf("snooze = %+v, %v", snoozed, err)
+	}
+	if _, err := c.InboxSnooze(context.Background(), "BaHtsbhzVDa9", "whenever"); !errors.Is(err, ErrInvalid) {
+		t.Errorf("bad until: %v", err)
+	}
+	if q := srv.Requests()[0].Query; q != "" {
+		t.Errorf("default list sent %q", q)
+	}
+}
+
+func TestPostMessageWithMentions(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "card.reply.with_mentions")
+	got, err := c.PostMessage(context.Background(), "BaHtsbhzVDa9", "Can you check the encoding?", []string{"ana@example.com"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := got.Message
+	if got.AgentTurn || m.AuthorName != "Franco Catena" || len(m.Mentions) != 1 || m.Mentions[0] != "Ana Ruiz" {
+		t.Errorf("posted = %+v", got)
+	}
+}
+
+func TestBoardAreas(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "board.update.areas")
+	areas := []Area{{Name: "Security", Covers: "Access and leaks", People: []string{"ana@example.com"}}}
+	b, err := c.UpdateBoard(context.Background(), "TyzgACHc57CG", BoardUpdate{Areas: &areas})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(b.Areas) != 1 || b.Areas[0].People[0] != "Us7rAnaRz2Kp" {
+		t.Errorf("areas = %+v", b.Areas)
+	}
+}
+
+// A card's area is sent when given, "" included (no area), and left out
+// otherwise.
+func TestCardAreaFields(t *testing.T) {
+	none := ""
+	for _, tt := range []struct {
+		v    any
+		want string
+	}{
+		{NewCard{Board: "B", Title: "T", Area: "Security"}, `{"board":"B","title":"T","area":"Security"}`},
+		{NewCard{Board: "B", Title: "T"}, `{"board":"B","title":"T"}`},
+		{CardUpdate{Area: &none}, `{"area":""}`},
+	} {
+		if b, _ := json.Marshal(tt.v); string(b) != tt.want {
+			t.Errorf("%T sends %s, want %s", tt.v, b, tt.want)
+		}
 	}
 }

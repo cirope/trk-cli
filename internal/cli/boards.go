@@ -139,10 +139,18 @@ var repoPattern = regexp.MustCompile(`^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$`)
 type boardFlags struct {
 	parent, repo, language, status string
 	details                        []string
+	// One area: its name, what it covers and its people.
+	area, covers string
+	people       []string
+	cmd          *cobra.Command
 }
 
 func (f *boardFlags) add(cmd *cobra.Command, parentHelp string) {
+	f.cmd = cmd
 	fl := cmd.Flags()
+	fl.StringVar(&f.area, "area", "", "an area of the board, by name: added, or replacing the one of that name")
+	fl.StringVar(&f.covers, "covers", "", "with --area: what the area covers")
+	fl.StringSliceVar(&f.people, "people", nil, "with --area: who is in charge, comma-separated (me, emails or ids)")
 	fl.StringVar(&f.parent, "parent", "", parentHelp)
 	fl.StringVar(&f.repo, "repo", "", "its GitHub repository, owner/name")
 	fl.StringVar(&f.language, "language", "", "en or es: the language of its Markdown and Trk's agent")
@@ -162,8 +170,60 @@ func (f *boardFlags) check() ([]api.NameValue, error) {
 	if f.repo != "" && !repoPattern.MatchString(f.repo) {
 		return nil, usageError{fmt.Errorf("--repo must be owner/name, got %q", f.repo)}
 	}
+	if f.area == "" && (f.changed("covers") || f.changed("people")) {
+		return nil, usageError{errors.New("--covers and --people need --area: the area's name")}
+	}
 	details, err := parseDetails(f.details)
 	return details, err
+}
+
+func (f *boardFlags) changed(flag string) bool {
+	return f.cmd != nil && f.cmd.Flags().Changed(flag)
+}
+
+// newArea is the area the flags give, for a new board.
+func (f *boardFlags) newArea() []api.Area {
+	if f.area == "" {
+		return nil
+	}
+	return []api.Area{{Name: f.area, Covers: f.covers, People: nonNil(f.people)}}
+}
+
+// mergeAreas is b's areas with the flags' area put in (replacing the one
+// of that name, keeping what the flags leave out) and remove taken out.
+func (f *boardFlags) mergeAreas(b *api.BoardInfo, remove []string) ([]api.Area, error) {
+	out := append([]api.Area{}, b.Areas...)
+	for _, name := range remove {
+		i := slices.IndexFunc(out, func(a api.Area) bool { return strings.EqualFold(a.Name, name) })
+		if i < 0 {
+			return nil, usageError{fmt.Errorf("%s has no area %q", b.Name, name)}
+		}
+		out = slices.Delete(out, i, i+1)
+	}
+	if f.area == "" {
+		return out, nil
+	}
+	i := slices.IndexFunc(out, func(a api.Area) bool { return strings.EqualFold(a.Name, f.area) })
+	if i < 0 {
+		return append(out, f.newArea()...), nil
+	}
+	a := out[i]
+	a.Name = f.area
+	if f.changed("covers") {
+		a.Covers = f.covers
+	}
+	if f.changed("people") {
+		a.People = nonNil(f.people)
+	}
+	out[i] = a
+	return out, nil
+}
+
+func nonNil(s []string) []string {
+	if s == nil {
+		return []string{}
+	}
+	return s
 }
 
 func parseDetails(raw []string) ([]api.NameValue, error) {
@@ -205,7 +265,7 @@ func newBoardNewCmd(a *app) *cobra.Command {
 			}
 			b, err := c.CreateBoard(cmd.Context(), api.NewBoard{
 				Name: args[0], Parent: f.parent, Repo: f.repo,
-				Language: f.language, Status: f.status, Details: details,
+				Language: f.language, Status: f.status, Details: details, Areas: f.newArea(),
 			})
 			if err != nil {
 				return err
@@ -271,9 +331,10 @@ func findBoard(ctx context.Context, c *api.Client, ref string) (*api.BoardInfo, 
 
 func newBoardEditCmd(a *app) *cobra.Command {
 	var (
-		f      boardFlags
-		name   string
-		remove []string
+		f           boardFlags
+		name        string
+		remove      []string
+		removeAreas []string
 	)
 	cmd := &cobra.Command{
 		Use:   "edit <board>",
@@ -308,7 +369,7 @@ func newBoardEditCmd(a *app) *cobra.Command {
 			set("repo", &f.repo, &u.Repo)
 			set("language", &f.language, &u.Language)
 			set("status", &f.status, &u.Status)
-			if u == (api.BoardUpdate{}) && len(add) == 0 && len(remove) == 0 {
+			if u == (api.BoardUpdate{}) && len(add) == 0 && len(remove) == 0 && f.area == "" && len(removeAreas) == 0 {
 				return usageError{errors.New("nothing to change: give a flag, see trk board edit --help")}
 			}
 
@@ -326,6 +387,13 @@ func newBoardEditCmd(a *app) *cobra.Command {
 					return err
 				}
 				u.Details = &details
+			}
+			if f.area != "" || len(removeAreas) > 0 {
+				areas, err := f.mergeAreas(b, removeAreas)
+				if err != nil {
+					return err
+				}
+				u.Areas = &areas
 			}
 			// By id: exact, even if a rename races another board's name.
 			updated, err := c.UpdateBoard(cmd.Context(), b.ID, u)
@@ -346,6 +414,7 @@ func newBoardEditCmd(a *app) *cobra.Command {
 	f.add(cmd, `move it under this board (an id or a name); "" makes it top-level`)
 	cmd.Flags().StringVar(&name, "name", "", "rename it")
 	cmd.Flags().StringArrayVar(&remove, "remove-detail", nil, "remove the detail of this name (repeatable)")
+	cmd.Flags().StringArrayVar(&removeAreas, "remove-area", nil, "remove the area of this name (repeatable)")
 	return cmd
 }
 

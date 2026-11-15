@@ -139,6 +139,9 @@ func Card(w io.Writer, c *api.Card, s Style) {
 		}
 		field("Due", label)
 	}
+	if c.Area != nil {
+		field("Area", *c.Area)
+	}
 	if e := c.Email; e != nil {
 		field("Email", "from "+strings.Join(e.From, ", ")+": "+e.Subject)
 	}
@@ -224,6 +227,12 @@ func Card(w io.Writer, c *api.Card, s Style) {
 		}
 		for _, m := range c.Messages {
 			who := m.Author
+			switch {
+			case m.AuthorName != "":
+				who = m.AuthorName
+			case m.Author == "system":
+				who = "Trk"
+			}
 			if m.From != nil {
 				who = m.From.Name + " <" + m.From.Address + ">"
 				if m.From.Name == "" {
@@ -231,6 +240,9 @@ func Card(w io.Writer, c *api.Card, s Style) {
 				}
 			}
 			head := who + " · " + m.InsertedAt.In(s.Now.Location()).Format("Jan 2 15:04")
+			if len(m.Mentions) > 0 {
+				head += " · calls " + strings.Join(m.Mentions, ", ")
+			}
 			if m.ProposedResponse == nil {
 				fmt.Fprintf(w, "  %s\n", s.paint(dim, head))
 				fmt.Fprintf(w, "  %s\n", indent(strings.TrimRight(m.Body, "\n"), "  "))

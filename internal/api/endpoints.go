@@ -244,6 +244,7 @@ type NewCard struct {
 	Priority    string `json:"priority,omitempty"`
 	DueOn       string `json:"due_on,omitempty"` // YYYY-MM-DD
 	Column      string `json:"column,omitempty"` // A name or a role; default the board's To do.
+	Area        string `json:"area,omitempty"`   // One of the board's areas, by name.
 }
 
 // CreateCard creates a card. It never starts Trk's agent.
@@ -285,9 +286,14 @@ type Posted struct {
 // PostMessage posts body (Markdown) on card id's conversation, as a reply
 // in the web app does: the card goes back to In progress.
 // With files, it sends them with the message; body may then be empty.
-func (c *Client) PostMessage(ctx context.Context, id, body string, files ...Upload) (*Posted, error) {
+// With mentions ("me", emails or ids), it is a note to the team calling
+// those people: no agent turn.
+func (c *Client) PostMessage(ctx context.Context, id, body string, mentions []string, files ...Upload) (*Posted, error) {
 	if err := checkID(id); err != nil {
 		return nil, err
+	}
+	if len(mentions) > 0 && len(files) > 0 {
+		return nil, errors.New("mentioning people in a message with files is not supported yet; send them separately")
 	}
 	var out Posted
 	var err error
@@ -298,7 +304,11 @@ func (c *Client) PostMessage(ctx context.Context, id, body string, files ...Uplo
 		}
 		err = c.sendMultipart(ctx, "/cards/"+id+"/messages", fields, files, &out)
 	} else {
-		err = c.Do(ctx, http.MethodPost, "/cards/"+id+"/messages", nil, map[string]string{"body": body}, &out)
+		in := struct {
+			Body     string   `json:"body"`
+			Mentions []string `json:"mentions,omitempty"`
+		}{body, mentions}
+		err = c.Do(ctx, http.MethodPost, "/cards/"+id+"/messages", nil, in, &out)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("posting on card %s: %w", id, err)
@@ -341,6 +351,7 @@ type CardUpdate struct {
 	Type        *string `json:"type,omitempty"`
 	Priority    *string `json:"priority,omitempty"`
 	DueOn       *string `json:"due_on,omitempty"`
+	Area        *string `json:"area,omitempty"` // "" takes the card out of its area.
 }
 
 // UpdateCard changes card id.

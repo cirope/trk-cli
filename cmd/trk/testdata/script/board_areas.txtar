@@ -1,0 +1,10 @@
+# One area per command: added, or replacing the one of that name.
+env TRK_TOKEN=test_access_token
+fake-trk boards.list.ok board.update.areas
+exits 0 trk board edit Soporte --area Security --covers 'Access and leaks' --people ana@example.com
+stdout '^Updated TyzgACHc57CG: Producto › Soporte$'
+
+exits 2 trk board edit Soporte --covers 'x'
+stderr '--covers and --people need --area'
+exits 2 trk board edit Soporte --remove-area Billing
+stderr 'Soporte has no area "Billing"'

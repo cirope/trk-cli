@@ -1,0 +1,15 @@
+{
+  "message": {
+    "id": "Ms7rEpLy3Kq9",
+    "author": "human",
+    "author_name": "Franco Catena",
+    "body": "Can you check the encoding?",
+    "proposed_response": null,
+    "mentions": [
+      "Ana Ruiz"
+    ],
+    "inserted_at": "2026-11-13T12:30:00Z"
+  },
+  "agent_turn": false,
+  "attachments": []
+}

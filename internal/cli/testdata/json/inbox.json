@@ -1,0 +1,29 @@
+{
+  "items": [
+    {
+      "card": {
+        "id": "BaHtsbhzVDa9",
+        "title": "CSV export loses accents",
+        "priority": "high",
+        "area": null,
+        "board": {
+          "id": "TyzgACHc57CG",
+          "name": "Soporte"
+        },
+        "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9"
+      },
+      "state": "waiting",
+      "snoozed_until": null,
+      "tagged_at": "2026-11-13T12:30:00Z",
+      "seen": false,
+      "reason": {
+        "why": [
+          "person"
+        ],
+        "area": null,
+        "by": "Ana Ruiz"
+      }
+    }
+  ],
+  "next_page_token": null
+}

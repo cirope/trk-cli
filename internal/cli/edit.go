@@ -11,11 +11,11 @@ import (
 
 func newEditCmd(a *app) *cobra.Command {
 	var (
-		title, desc, descFile, typ, prio, due string
+		title, desc, descFile, typ, prio, due, area string
 	)
 	cmd := &cobra.Command{
 		Use:   "edit <card>",
-		Short: "Change a card's title, description, type, priority or due date",
+		Short: "Change a card's title, description, type, priority, due date or area",
 		Long: "Change a card. Only what you give changes. --due \"\" clears the due date.\n" +
 			"Its column, owners and agent have their own commands: move, own, take.",
 		Example: "  trk card edit BaHtsbhzVDa9 --title \"La exportación a CSV pierde los acentos\"\n" +
@@ -58,6 +58,7 @@ func newEditCmd(a *app) *cobra.Command {
 			set(flags.Changed("type"), &typ, &u.Type)
 			set(flags.Changed("priority"), &prio, &u.Priority)
 			set(flags.Changed("due"), &due, &u.DueOn)
+			set(flags.Changed("area"), &area, &u.Area)
 			if u == (api.CardUpdate{}) {
 				return usageError{errors.New("nothing to change: give a flag, see trk card edit --help")}
 			}
@@ -88,5 +89,6 @@ func newEditCmd(a *app) *cobra.Command {
 	f.StringVar(&typ, "type", "", "question, feature, bug or security")
 	f.StringVar(&prio, "priority", "", "low, normal, high or urgent")
 	f.StringVar(&due, "due", "", `the due date, YYYY-MM-DD; "" clears it`)
+	f.StringVar(&area, "area", "", `one of the board's areas, by name; "" takes it out of its area`)
 	return cmd
 }

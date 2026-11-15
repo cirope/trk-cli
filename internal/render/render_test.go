@@ -243,3 +243,24 @@ func TestCardCommits(t *testing.T) {
 		t.Errorf("card:\n%s\nwant:\n%s", b.String(), want)
 	}
 }
+
+func TestCardAreaAndAuthors(t *testing.T) {
+	c := fixtureCard(t)
+	c.Area = ptr("Security")
+	at := time.Date(2026, 11, 13, 12, 30, 0, 0, time.UTC)
+	c.Messages = []api.Message{
+		{Author: "human", AuthorName: "Franco Catena", Body: "Can you check the encoding?", Mentions: []string{"Ana Ruiz"}, InsertedAt: at},
+		{Author: "system", Body: "Called Ana Ruiz.", InsertedAt: at},
+	}
+	var b bytes.Buffer
+	Card(&b, &c, Style{Now: now})
+	for _, want := range []string{
+		"Area:         Security\n",
+		"  Franco Catena · Nov 13 09:30 · calls Ana Ruiz\n  Can you check the encoding?\n",
+		"  Trk · Nov 13 09:30\n  Called Ana Ruiz.\n",
+	} {
+		if !strings.Contains(b.String(), want) {
+			t.Errorf("card:\n%s\nwant it to contain %q", b.String(), want)
+		}
+	}
+}

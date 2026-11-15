@@ -78,6 +78,7 @@ type Card struct {
 	// outermost board first, the nearest board winning a shared name.
 	// Absent in lists.
 	BoardDetails []BoardDetail `json:"board_details,omitzero"`
+	Area         *string       `json:"area"` // One of the board's areas, by name.
 	Column       Column        `json:"column"`
 	Owners       []Person      `json:"owners"`
 	Tags         []Tag         `json:"tags"`
@@ -168,15 +169,18 @@ type Attachment struct {
 
 // Message is one message in a card's conversation.
 type Message struct {
-	ID     string `json:"id"`
-	Author string `json:"author"`
-	Body   string `json:"body"`
+	ID         string `json:"id"`
+	Author     string `json:"author"`
+	AuthorName string `json:"author_name,omitzero"` // Who wrote a human message.
+	Body       string `json:"body"`
 	// ProposedResponse is, on an agent's message from a question turn, the
 	// response it proposes for the customer (Markdown); Body is then its
 	// note about it. nil on every other message.
 	ProposedResponse *string `json:"proposed_response"`
 	// From is the sender of a customer's message (Author "customer").
-	From       *Address  `json:"from,omitzero"`
+	From *Address `json:"from,omitzero"`
+	// Mentions are the names of the people a note to the team called.
+	Mentions   []string  `json:"mentions,omitzero"`
 	InsertedAt time.Time `json:"inserted_at"`
 }
 
