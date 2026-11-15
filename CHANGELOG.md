@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.4.5
 
 - `trk card link <card> <commit>` links a commit (a sha, a commit URL or
   a git ref such as `HEAD`); `trk card show` lists a card's commits.
