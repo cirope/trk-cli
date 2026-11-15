@@ -13,6 +13,7 @@
       "attachments": [],
       "message": {
         "author": "human",
+        "author_name": "Franco Catena",
         "body": "Fixed in #12; the export keeps accents now.",
         "id": "Ms7rEpLy3Kq9",
         "inserted_at": "2026-11-13T12:30:00Z",
