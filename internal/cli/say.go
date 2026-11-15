@@ -81,7 +81,7 @@ func newSayCmd(a *app) *cobra.Command {
 			if a.flags.json {
 				return a.printJSON(posted)
 			}
-			a.reportPosted(id, posted)
+			a.reportPosted(id, posted, mention)
 			return nil
 		},
 	}
@@ -92,7 +92,17 @@ func newSayCmd(a *app) *cobra.Command {
 }
 
 // reportPosted says what posting did: an agent turn, or a note.
-func (a *app) reportPosted(id string, p *api.Posted) {
+// asked are the people the command asked Trk to mention.
+func (a *app) reportPosted(id string, p *api.Posted, asked []string) {
+	// Trk answers with who it actually called; it never calls you for your
+	// own message, and calls only members.
+	switch called := len(p.Message.Mentions); {
+	case len(asked) == 0:
+	case called == 0:
+		fmt.Fprintln(a.env.Stderr, "trk: noted, but nobody was called: Trk never calls you for your own message, and calls only members.")
+	case called < len(asked):
+		fmt.Fprintf(a.env.Stderr, "trk: Trk called %d of the %d people named: never you, and only members.\n", called, len(asked))
+	}
 	with := ""
 	switch n := len(p.Attachments); n {
 	case 0:

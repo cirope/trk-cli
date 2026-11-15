@@ -2,6 +2,12 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk inbox --snoozed` and `--done` say which list is empty.
+- `trk card say --mention` warns when Trk called fewer people than named
+  (never you, only members).
+
 ## 0.4.6
 
 - `trk inbox`, `trk inbox done` and `trk inbox snooze`: the cards waiting

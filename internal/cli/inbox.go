@@ -52,7 +52,7 @@ func newInboxCmd(a *app) *cobra.Command {
 				}
 				return a.printJSON(page)
 			}
-			a.inboxList(a.env.Stdout, page.Items)
+			a.inboxList(a.env.Stdout, page.Items, state)
 			if page.NextPageToken != nil {
 				a.progress("More: trk inbox --page-token %s\n", *page.NextPageToken)
 			}
@@ -94,9 +94,16 @@ func inboxReason(it api.InboxItem) string {
 	return strings.Join(parts, ", ")
 }
 
-func (a *app) inboxList(w io.Writer, items []api.InboxItem) {
+func (a *app) inboxList(w io.Writer, items []api.InboxItem, state string) {
 	if len(items) == 0 {
-		fmt.Fprintln(w, "Nothing in your inbox.")
+		switch state {
+		case "snoozed":
+			fmt.Fprintln(w, "No snoozed cards.")
+		case "done":
+			fmt.Fprintln(w, "No cards marked done.")
+		default:
+			fmt.Fprintln(w, "Nothing waiting in your inbox.")
+		}
 		return
 	}
 	for _, it := range items {

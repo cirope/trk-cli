@@ -67,7 +67,7 @@ func TestReportPosted(t *testing.T) {
 	} {
 		var out bytes.Buffer
 		a := &app{env: withDefaults(Env{Stdout: &out})}
-		a.reportPosted("BaHtsbhzVDa9", &api.Posted{AgentTurn: tt.turn})
+		a.reportPosted("BaHtsbhzVDa9", &api.Posted{AgentTurn: tt.turn}, nil)
 		if out.String() != tt.want {
 			t.Errorf("agent turn %v: got %q", tt.turn, out.String())
 		}
