@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.4.6
 
 - `trk inbox`, `trk inbox done` and `trk inbox snooze`: the cards waiting
   for you, and why.
