@@ -31,18 +31,31 @@ brew install cirope/tap/trk
 
 ### Linux
 
-With Homebrew, as on macOS: `brew install cirope/tap/trk`. Or with your
-distribution's package manager:
+On Debian, Ubuntu and derivatives, add Hullop's apt repository once, and
+`sudo apt upgrade` brings each new release:
 
 ```sh
-# Debian, Ubuntu and derivatives
-curl -fLO https://github.com/cirope/trk-cli/releases/latest/download/trk_linux_amd64.deb
-sudo apt install ./trk_linux_amd64.deb
+curl -fsSL https://cirope.github.io/packages/hullop.gpg | sudo tee /usr/share/keyrings/hullop.gpg >/dev/null
+echo "deb [signed-by=/usr/share/keyrings/hullop.gpg] https://cirope.github.io/packages/apt stable main" | sudo tee /etc/apt/sources.list.d/hullop.list
+sudo apt update && sudo apt install trk
+```
 
-# Fedora, RHEL, CentOS Stream, openSUSE
-sudo dnf install https://github.com/cirope/trk-cli/releases/latest/download/trk_linux_amd64.rpm
-# (openSUSE: sudo zypper install <same URL>)
+On Fedora, RHEL and CentOS Stream, add the dnf repository, and
+`sudo dnf upgrade` brings each new release:
 
+```sh
+sudo curl -fsSLo /etc/yum.repos.d/hullop.repo https://cirope.github.io/packages/rpm/hullop.repo
+sudo dnf install trk
+```
+
+On openSUSE: `sudo zypper addrepo https://cirope.github.io/packages/rpm/hullop.repo`
+and `sudo zypper install trk`. Packages and repositories are signed; see
+[cirope/packages](https://github.com/cirope/packages).
+
+Elsewhere, with Homebrew as on macOS (`brew install cirope/tap/trk`), or
+by hand:
+
+```sh
 # Alpine
 curl -fLO https://github.com/cirope/trk-cli/releases/latest/download/trk_linux_amd64.apk
 sudo apk add --allow-untrusted trk_linux_amd64.apk
@@ -52,8 +65,7 @@ curl -fL https://github.com/cirope/trk-cli/releases/latest/download/trk_linux_am
 sudo install trk /usr/local/bin/
 ```
 
-Packages install `trk` to `/usr/bin`. Upgrade by installing the newer
-package the same way.
+Packages install `trk` to `/usr/bin`.
 
 ### Windows
 

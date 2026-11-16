@@ -3,7 +3,8 @@ name: release
 # Pushing a tag like v1.2.3 builds and publishes a release: binaries for
 # macOS, Linux and Windows (amd64, arm64), .deb/.rpm/.apk packages,
 # checksums, a signed provenance attestation, and the Homebrew cask in
-# cirope/homebrew-tap. Release notes are the tag's section of CHANGELOG.md.
+# cirope/homebrew-tap, then has cirope/packages rebuild the apt and dnf
+# repositories. Release notes are the tag's section of CHANGELOG.md.
 
 on:
   push:
@@ -52,3 +53,10 @@ jobs:
       - uses: actions/attest-build-provenance@v4
         with:
           subject-checksums: dist/checksums.txt
+      # Rebuilds the apt and dnf repositories in cirope/packages, so Linux
+      # users get this release with their usual upgrade. The tap's token
+      # also has Contents write on cirope/packages.
+      - name: Update the apt and dnf repositories
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: gh api repos/cirope/packages/dispatches -f event_type=release

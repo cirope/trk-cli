@@ -2,6 +2,11 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- Linux: apt and dnf repositories, so `apt upgrade` and `dnf upgrade`
+  bring new releases of trk.
+
 ## 0.4.7
 
 - `trk inbox --snoozed` and `--done` say which list is empty.
