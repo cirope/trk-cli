@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.4.8
 
 - Linux: apt and dnf repositories, so `apt upgrade` and `dnf upgrade`
   bring new releases of trk.
