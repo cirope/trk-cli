@@ -15,9 +15,18 @@ The pull request, opened from `trk/card-BaHtsbhzVDa9`, attaches to its card
 by itself: the card moves to review and shows the pull request, and moving
 the card to done merges it.
 
-> **Status:** ready for its first release; not published yet.
-
 ## Install
+
+On Linux or macOS, the quickest way:
+
+```sh
+curl -fsSL https://packages.hullop.com/trk/install.sh | sh
+```
+
+On Debian, Ubuntu, Fedora, RHEL, CentOS Stream and openSUSE it adds
+Hullop's package repository, so your usual system upgrade brings each new
+release. On macOS it uses Homebrew when you have it. Elsewhere it installs
+the release binary, checked against the release's checksums.
 
 Every release has binaries for macOS, Linux and Windows on amd64 and
 arm64. The commands below are for amd64 (Intel/AMD); on ARM, write
@@ -29,14 +38,14 @@ arm64. The commands below are for amd64 (Intel/AMD); on ARM, write
 brew install cirope/tap/trk
 ```
 
-### Linux
+### Linux, by hand
 
 On Debian, Ubuntu and derivatives, add Hullop's apt repository once, and
 `sudo apt upgrade` brings each new release:
 
 ```sh
-curl -fsSL https://cirope.github.io/packages/hullop.gpg | sudo tee /usr/share/keyrings/hullop.gpg >/dev/null
-echo "deb [signed-by=/usr/share/keyrings/hullop.gpg] https://cirope.github.io/packages/apt stable main" | sudo tee /etc/apt/sources.list.d/hullop.list
+curl -fsSL https://packages.hullop.com/hullop.gpg | sudo tee /usr/share/keyrings/hullop.gpg >/dev/null
+echo "deb [signed-by=/usr/share/keyrings/hullop.gpg] https://packages.hullop.com/apt stable main" | sudo tee /etc/apt/sources.list.d/hullop.list
 sudo apt update && sudo apt install trk
 ```
 
@@ -44,11 +53,11 @@ On Fedora, RHEL and CentOS Stream, add the dnf repository, and
 `sudo dnf upgrade` brings each new release:
 
 ```sh
-sudo curl -fsSLo /etc/yum.repos.d/hullop.repo https://cirope.github.io/packages/rpm/hullop.repo
+sudo curl -fsSLo /etc/yum.repos.d/hullop.repo https://packages.hullop.com/rpm/hullop.repo
 sudo dnf install trk
 ```
 
-On openSUSE: `sudo zypper addrepo https://cirope.github.io/packages/rpm/hullop.repo`
+On openSUSE: `sudo zypper addrepo https://packages.hullop.com/rpm/hullop.repo`
 and `sudo zypper install trk`. Packages and repositories are signed; see
 [cirope/packages](https://github.com/cirope/packages).
 

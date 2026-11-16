@@ -2,9 +2,9 @@
 # one can see it, and says who you are.
 fake-trk device.code.fast device.token.pending device.token.ok me.ok
 exits 0 trk login
-stderr 'Open this page to approve:'
-stderr '  http://trk.test/cli/approve\?code=WDJB-MJHT'
-stderr 'WDJB-MJHT'
+stderr '^Approve trk on this computer:$'
+stderr '^  http://trk.test/cli/approve\?code=WDJB-MJHT$'
+stderr '^Check that the page shows the code WDJB-MJHT\.$'
 stderr 'session is kept in .*credentials.json'
 stdout '^Signed in as Franco Catena \(Hullop\)\.$'
 ! stdout test_access_token
@@ -26,8 +26,8 @@ exits 0 trk login --no-browser
 exits 0 trk login --no-browser --json
 stdout '"user"'
 stdout '"organization"'
-stderr 'Open this page'
-! stdout 'Open this page'
+stderr 'Approve trk on this computer'
+! stdout 'Approve trk on this computer'
 
 # Extra arguments are wrong usage.
 exits 2 trk login extra

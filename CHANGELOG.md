@@ -2,6 +2,13 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk login` says it approves trk on this computer, to match Trk's new
+  approval page.
+- `curl -fsSL https://packages.hullop.com/trk/install.sh | sh` installs
+  trk the best way for your system.
+
 ## 0.4.8
 
 - Linux: apt and dnf repositories, so `apt upgrade` and `dnf upgrade`

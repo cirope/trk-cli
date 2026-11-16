@@ -36,7 +36,8 @@ func newLoginCmd(a *app) *cobra.Command {
 		Use:   "login",
 		Short: "Sign this machine in, by approving in the browser",
 		Long: "Sign this machine in to Trk. trk shows a page to open (and opens it when\n" +
-			"it can); approve there, picking the organization if you have several.\n" +
+			"it can) to approve trk on this computer, picking the organization if you\n" +
+			"have several; sign in to Trk there first if you need to.\n" +
 			"No password or token is typed. Signing in again replaces the session.",
 		Example: "  trk login\n" +
 			"  trk login --no-browser                 # over SSH or in a container\n" +
@@ -61,8 +62,8 @@ func newLoginCmd(a *app) *cobra.Command {
 			}
 
 			grant, err := auth.Login(cmd.Context(), c, name, func(dc *api.DeviceCode) {
-				fmt.Fprintf(a.env.Stderr, "Open this page to approve:\n  %s\n\n", dc.VerificationURIComplete)
-				fmt.Fprintf(a.env.Stderr, "Check that it shows the code %s.\n", dc.UserCode)
+				fmt.Fprintf(a.env.Stderr, "Approve trk on this computer:\n  %s\n\n", dc.VerificationURIComplete)
+				fmt.Fprintf(a.env.Stderr, "Check that the page shows the code %s.\n", dc.UserCode)
 				if !noBrowser {
 					_ = a.env.OpenBrowser(dc.VerificationURIComplete)
 				}
