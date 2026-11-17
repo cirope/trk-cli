@@ -133,6 +133,7 @@ func TestUpdateNotice(t *testing.T) {
 				CacheDir:         t.TempDir(),
 				UpdateURL:        srv.URL,
 				Executable:       "/opt/homebrew/Caskroom/trk/1.2.0/trk",
+				GOOS:             "darwin",
 				StdoutIsTerminal: tt.stdout,
 				StderrIsTerminal: tt.stderr,
 			})
@@ -258,6 +259,7 @@ func TestVersionCheck(t *testing.T) {
 			CacheDir:   t.TempDir(),
 			UpdateURL:  url,
 			Executable: "/opt/homebrew/Caskroom/trk/1.2.0/trk",
+			GOOS:       "darwin",
 		})
 		return code, stdout.String(), stderr.String()
 	}
