@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.5.0
 
 - The once-a-day notice of a newer trk is one line that says how to update
   for the way you installed it, shows with stdout piped too, and never
