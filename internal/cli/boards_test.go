@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/cirope/trk-cli/internal/api"
@@ -26,5 +27,23 @@ func TestMergeDetails(t *testing.T) {
 	}
 	if _, err := mergeDetails(b, nil, []string{"Nope"}); exitCode(err) != ExitUsage {
 		t.Errorf("removing a missing detail: %v", err)
+	}
+}
+
+// A board that sets its own agent time says so; inherited time is not
+// repeated on every row.
+func TestBoardTreeAgentTime(t *testing.T) {
+	twenty, sixty := 20, 60
+	var out strings.Builder
+	boardTree(&out, []api.BoardInfo{
+		{ID: "P", Name: "Product", AgentMaxMinutes: &sixty, AgentTime: &api.AgentTime{Minutes: 15, MaxMinutes: 60}},
+		{ID: "S", Name: "Support", Parent: &api.BoardRef{ID: "P"}, AgentMinutes: &twenty, AgentTime: &api.AgentTime{Minutes: 20, MaxMinutes: 60}},
+		{ID: "A", Name: "Acme", Parent: &api.BoardRef{ID: "P"}, Status: "on_hold", AgentTime: &api.AgentTime{Minutes: 15, MaxMinutes: 60}},
+	})
+	want := "Product     P             agent 15–60 min\n" +
+		"  Support   S             agent 20–60 min\n" +
+		"  Acme      A    on hold\n"
+	if diff := cmp.Diff(want, out.String()); diff != "" {
+		t.Errorf("(-want +got):\n%s", diff)
 	}
 }

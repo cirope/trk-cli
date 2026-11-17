@@ -1,0 +1,60 @@
+{
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/boards/TyzgACHc57CG",
+    "body": {
+      "agent_max_minutes": 60,
+      "agent_minutes": 20
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "agent_max_minutes": 60,
+      "agent_minutes": 20,
+      "agent_time": {
+        "max_minutes": 60,
+        "minutes": 20
+      },
+      "areas": [],
+      "columns": [
+        {
+          "id": "Cq3mRkT8vWx2",
+          "name": "To do",
+          "role": "todo"
+        },
+        {
+          "id": "Cd8iNgPr6Ty3",
+          "name": "In progress",
+          "role": "doing"
+        },
+        {
+          "id": "Cs3rEvJwSup3",
+          "name": "Review",
+          "role": "review"
+        },
+        {
+          "id": "Cd8nEsUp4Rt7",
+          "name": "Done",
+          "role": "done"
+        }
+      ],
+      "details": [
+        {
+          "name": "Tests",
+          "value": "mix precommit"
+        }
+      ],
+      "id": "TyzgACHc57CG",
+      "language": "en",
+      "name": "Support",
+      "parent": {
+        "id": "Pr8dUcTo4Rt3",
+        "name": "Product"
+      },
+      "repository": "cirope/trk",
+      "status": "active",
+      "url": "http://trk.test/boards/TyzgACHc57CG"
+    }
+  }
+}

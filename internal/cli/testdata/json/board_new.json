@@ -37,5 +37,11 @@
     }
   ],
   "areas": [],
-  "url": "http://trk.test/boards/Bc3iSuBpRj83"
+  "url": "http://trk.test/boards/Bc3iSuBpRj83",
+  "agent_minutes": null,
+  "agent_max_minutes": null,
+  "agent_time": {
+    "minutes": 15,
+    "max_minutes": 45
+  }
 }

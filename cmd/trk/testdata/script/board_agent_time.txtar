@@ -1,0 +1,16 @@
+# How long Trk's agent works a turn on a board: the minutes it starts with
+# and the most it can grow to.
+env TRK_TOKEN=test_access_token
+fake-trk boards.list.ok board.update.agent_time
+exits 0 trk board edit Support --agent-minutes 20 --agent-max-minutes 60
+stdout '^Updated TyzgACHc57CG: Product › Support$'
+stdout '^Trk''s agent: 20 minutes a turn, up to 60\.$'
+exits 0 trk board edit Support --agent-minutes 20 --agent-max-minutes 60 --json
+stdout '"agent_minutes": 20'
+stdout '"agent_time": \{'
+
+# Whole minutes only; the server checks the range.
+exits 2 trk board edit Support --agent-minutes 1h
+stderr '--agent-minutes must be a whole number of minutes, like 20, or "" to inherit'
+exits 2 trk board new X --agent-max-minutes ''
+stderr '--agent-max-minutes needs a number of minutes'

@@ -751,3 +751,37 @@ func TestCardAreaFields(t *testing.T) {
 		}
 	}
 }
+
+func TestBoardAgentTime(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "board.update.agent_time")
+	minutes, most := 20, 60
+	pm, pmost := &minutes, &most
+	b, err := c.UpdateBoard(context.Background(), "TyzgACHc57CG", BoardUpdate{AgentMinutes: &pm, AgentMaxMinutes: &pmost})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.AgentMinutes == nil || *b.AgentMinutes != 20 || b.AgentTime == nil ||
+		*b.AgentTime != (AgentTime{Minutes: 20, MaxMinutes: 60}) {
+		t.Errorf("board = %+v", b)
+	}
+}
+
+// The agent's minutes are sent when given, null clearing them (the board
+// then inherits), and left out otherwise.
+func TestBoardAgentTimeFields(t *testing.T) {
+	twenty := 20
+	var unset *int
+	for _, tt := range []struct {
+		v    any
+		want string
+	}{
+		{NewBoard{Name: "B", AgentMinutes: &twenty}, `{"name":"B","agent_minutes":20}`},
+		{NewBoard{Name: "B"}, `{"name":"B"}`},
+		{BoardUpdate{AgentMaxMinutes: &unset}, `{"agent_max_minutes":null}`},
+		{BoardUpdate{}, `{}`},
+	} {
+		if b, _ := json.Marshal(tt.v); string(b) != tt.want {
+			t.Errorf("%T sends %s, want %s", tt.v, b, tt.want)
+		}
+	}
+}

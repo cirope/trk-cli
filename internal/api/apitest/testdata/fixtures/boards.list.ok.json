@@ -8,6 +8,12 @@
     "body": {
       "items": [
         {
+          "agent_max_minutes": null,
+          "agent_minutes": null,
+          "agent_time": {
+            "max_minutes": 45,
+            "minutes": 15
+          },
           "areas": [],
           "columns": [
             {
@@ -50,6 +56,12 @@
           "url": "http://trk.test/boards/Pr8dUcTo4Rt3"
         },
         {
+          "agent_max_minutes": null,
+          "agent_minutes": null,
+          "agent_time": {
+            "max_minutes": 45,
+            "minutes": 15
+          },
           "areas": [],
           "columns": [
             {
@@ -91,6 +103,12 @@
           "url": "http://trk.test/boards/TyzgACHc57CG"
         },
         {
+          "agent_max_minutes": null,
+          "agent_minutes": null,
+          "agent_time": {
+            "max_minutes": 45,
+            "minutes": 15
+          },
           "areas": [],
           "columns": [
             {

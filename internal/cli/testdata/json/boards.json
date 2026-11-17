@@ -40,7 +40,13 @@
         }
       ],
       "areas": [],
-      "url": "http://trk.test/boards/Pr8dUcTo4Rt3"
+      "url": "http://trk.test/boards/Pr8dUcTo4Rt3",
+      "agent_minutes": null,
+      "agent_max_minutes": null,
+      "agent_time": {
+        "minutes": 15,
+        "max_minutes": 45
+      }
     },
     {
       "id": "TyzgACHc57CG",
@@ -81,7 +87,13 @@
         }
       ],
       "areas": [],
-      "url": "http://trk.test/boards/TyzgACHc57CG"
+      "url": "http://trk.test/boards/TyzgACHc57CG",
+      "agent_minutes": null,
+      "agent_max_minutes": null,
+      "agent_time": {
+        "minutes": 15,
+        "max_minutes": 45
+      }
     },
     {
       "id": "Pr3dUctAcme7",
@@ -117,7 +129,13 @@
       ],
       "details": [],
       "areas": [],
-      "url": "http://trk.test/boards/Pr3dUctAcme7"
+      "url": "http://trk.test/boards/Pr3dUctAcme7",
+      "agent_minutes": null,
+      "agent_max_minutes": null,
+      "agent_time": {
+        "minutes": 15,
+        "max_minutes": 45
+      }
     }
   ],
   "next_page_token": null

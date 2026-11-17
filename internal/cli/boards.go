@@ -7,6 +7,7 @@ import (
 	"io"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 
@@ -78,7 +79,7 @@ func boardTree(w io.Writer, boards []api.BoardInfo) {
 			roots = append(roots, b)
 		}
 	}
-	type row struct{ name, id, repo, status string }
+	type row struct{ name, id, repo, status, agent string }
 	var rows []row
 	var walk func(b api.BoardInfo, depth int)
 	walk = func(b api.BoardInfo, depth int) {
@@ -89,6 +90,11 @@ func boardTree(w io.Writer, boards []api.BoardInfo) {
 		if b.Status != "" && b.Status != "active" {
 			r.status = strings.ReplaceAll(b.Status, "_", " ")
 		}
+		// Only where the board sets its own: inherited time is not
+		// repeated on every row.
+		if b.AgentTime != nil && (b.AgentMinutes != nil || b.AgentMaxMinutes != nil) {
+			r.agent = fmt.Sprintf("agent %d–%d min", b.AgentTime.Minutes, b.AgentTime.MaxMinutes)
+		}
 		rows = append(rows, r)
 		for _, c := range children[b.ID] {
 			walk(c, depth+1)
@@ -97,15 +103,16 @@ func boardTree(w io.Writer, boards []api.BoardInfo) {
 	for _, b := range roots {
 		walk(b, 0)
 	}
-	nameW, repoW := 0, 0
+	nameW, repoW, statusW := 0, 0, 0
 	for _, r := range rows {
 		nameW = max(nameW, utf8.RuneCountInString(r.name))
 		repoW = max(repoW, utf8.RuneCountInString(r.repo))
+		statusW = max(statusW, utf8.RuneCountInString(r.status))
 	}
 	for _, r := range rows {
 		line := pad(r.name, nameW+3) + r.id
-		if r.repo != "" || r.status != "" {
-			line += "  " + pad(r.repo, repoW+2) + r.status
+		if r.repo != "" || r.status != "" || r.agent != "" {
+			line += "  " + pad(r.repo, repoW+2) + pad(r.status, statusW+2) + r.agent
 		}
 		fmt.Fprintln(w, strings.TrimRight(line, " "))
 	}
@@ -142,7 +149,9 @@ type boardFlags struct {
 	// One area: its name, what it covers and its people.
 	area, covers string
 	people       []string
-	cmd          *cobra.Command
+	// Trk's agent's minutes a turn, as typed: "" inherits.
+	agentMinutes, agentMax string
+	cmd                    *cobra.Command
 }
 
 func (f *boardFlags) add(cmd *cobra.Command, parentHelp string) {
@@ -156,6 +165,36 @@ func (f *boardFlags) add(cmd *cobra.Command, parentHelp string) {
 	fl.StringVar(&f.language, "language", "", "en or es: the language of its Markdown and Trk's agent")
 	fl.StringVar(&f.status, "status", "", "active, on_hold or completed")
 	fl.StringArrayVar(&f.details, "detail", nil, "a detail for whoever works its cards, Name=Value (repeatable)")
+	fl.StringVar(&f.agentMinutes, "agent-minutes", "", "`minutes` Trk's agent starts each turn with (default the boards above say, or 15)")
+	fl.StringVar(&f.agentMax, "agent-max-minutes", "", "the most `minutes` a turn can grow to when the agent asks (default the boards above say, or 45)")
+}
+
+// agentTime is the agent's minutes the flags give: for each flag given, a
+// number, or nil for "" (inherit from the boards above). Flags not given
+// are left nil. Only edit may clear.
+func (f *boardFlags) agentTime(canClear bool) (minutes, most **int, err error) {
+	parse := func(flag, v string) (**int, error) {
+		if !f.changed(flag) {
+			return nil, nil
+		}
+		if v == "" {
+			if !canClear {
+				return nil, usageError{fmt.Errorf("--%s needs a number of minutes", flag)}
+			}
+			return new(*int), nil
+		}
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 1 {
+			return nil, usageError{fmt.Errorf(`--%s must be a whole number of minutes, like 20, or "" to inherit`, flag)}
+		}
+		p := &n
+		return &p, nil
+	}
+	if minutes, err = parse("agent-minutes", f.agentMinutes); err != nil {
+		return nil, nil, err
+	}
+	most, err = parse("agent-max-minutes", f.agentMax)
+	return minutes, most, err
 }
 
 // check validates the flags given, before asking the server.
@@ -259,6 +298,10 @@ func newBoardNewCmd(a *app) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			minutes, most, err := f.agentTime(false)
+			if err != nil {
+				return err
+			}
 			_, c, err := a.signedIn()
 			if err != nil {
 				return err
@@ -266,6 +309,7 @@ func newBoardNewCmd(a *app) *cobra.Command {
 			b, err := c.CreateBoard(cmd.Context(), api.NewBoard{
 				Name: args[0], Parent: f.parent, Repo: f.repo,
 				Language: f.language, Status: f.status, Details: details, Areas: f.newArea(),
+				AgentMinutes: deref(minutes), AgentMaxMinutes: deref(most),
 			})
 			if err != nil {
 				return err
@@ -277,12 +321,30 @@ func newBoardNewCmd(a *app) *cobra.Command {
 				a.result("%s\n", b.ID)
 			default:
 				a.result("Created %s: %s\n%s\n", b.ID, boardPath(b), b.URL)
+				if minutes != nil || most != nil {
+					a.result("%s\n", agentTimeLine(b))
+				}
 			}
 			return nil
 		},
 	}
 	f.add(cmd, "make it a subproject of this board (an id or a name)")
 	return cmd
+}
+
+func deref(p **int) *int {
+	if p == nil {
+		return nil
+	}
+	return *p
+}
+
+// agentTimeLine says how long Trk's agent works a turn on b, as in effect.
+func agentTimeLine(b *api.BoardInfo) string {
+	if b.AgentTime == nil {
+		return "Trk's agent: this Trk does not say how long a turn takes."
+	}
+	return fmt.Sprintf("Trk's agent: %d minutes a turn, up to %d.", b.AgentTime.Minutes, b.AgentTime.MaxMinutes)
 }
 
 // boardPath is "Soporte › CLI" for a subproject, the name otherwise.
@@ -338,14 +400,16 @@ func newBoardEditCmd(a *app) *cobra.Command {
 	)
 	cmd := &cobra.Command{
 		Use:   "edit <board>",
-		Short: "Change a board: its name, parent, repository, language, status, details",
+		Short: "Change a board: its name, parent, repository, language, status, details, agent time",
 		Long: "Change a board, given by id or name. Only what you give changes.\n" +
 			"--detail adds a detail or replaces the one of that name, keeping the\n" +
 			"others; --remove-detail removes one. --parent \"\" makes it a top-level\n" +
-			"board.",
+			"board. --agent-minutes and --agent-max-minutes set how long Trk's agent\n" +
+			"works a turn on its cards; \"\" goes back to what the boards above say.",
 		Example: "  trk board edit CLI --detail Tests=\"make check\" --detail Docs=README.md\n" +
 			"  trk board edit Soporte --status on_hold --remove-detail Website\n" +
-			"  trk board edit \"Implementación Acme\" --parent \"\"",
+			"  trk board edit \"Implementación Acme\" --parent \"\"\n" +
+			"  trk board edit CLI --agent-minutes 20 --agent-max-minutes 60",
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) != 1 {
 				return usageError{fmt.Errorf("%s needs one board", cmd.CommandPath())}
@@ -369,6 +433,9 @@ func newBoardEditCmd(a *app) *cobra.Command {
 			set("repo", &f.repo, &u.Repo)
 			set("language", &f.language, &u.Language)
 			set("status", &f.status, &u.Status)
+			if u.AgentMinutes, u.AgentMaxMinutes, err = f.agentTime(true); err != nil {
+				return err
+			}
 			if u == (api.BoardUpdate{}) && len(add) == 0 && len(remove) == 0 && f.area == "" && len(removeAreas) == 0 {
 				return usageError{errors.New("nothing to change: give a flag, see trk board edit --help")}
 			}
@@ -407,6 +474,9 @@ func newBoardEditCmd(a *app) *cobra.Command {
 				a.result("%s\n", updated.ID)
 			default:
 				a.result("Updated %s: %s\n", updated.ID, boardPath(updated))
+				if u.AgentMinutes != nil || u.AgentMaxMinutes != nil {
+					a.result("%s\n", agentTimeLine(updated))
+				}
 			}
 			return nil
 		},

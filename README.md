@@ -144,7 +144,7 @@ are; `trk logout` revokes the session.
 | `trk card take <card>` | Makes you an owner, turns Trk's agent off for the card, moves it to In progress, pulls it, and prints the branch to use. `--branch` creates and switches to it. |
 | `trk boards` | The boards as a tree, subprojects under their parent, with repository and status. |
 | `trk board new <name>` | Creates a board; `--parent` makes it a subproject. `--repo`, `--language`, `--status`, `--detail Name=Value`. |
-| `trk board edit <board>` | Changes only what you give; `--detail` adds or replaces one detail, `--remove-detail` removes one. `--area <name> --covers <text> --people <me,email…>` adds or updates an area (who is in charge of what); `--remove-area` removes one. |
+| `trk board edit <board>` | Changes only what you give; `--detail` adds or replaces one detail, `--remove-detail` removes one. `--area <name> --covers <text> --people <me,email…>` adds or updates an area (who is in charge of what); `--remove-area` removes one. `--agent-minutes N --agent-max-minutes N` set how long Trk's agent works a turn (`""` inherits). |
 | `trk mail` | Email Trk held instead of filing it (`--discarded` for the discarded). `trk mail file <thread> --board <b>` files it as a card; `trk mail discard <thread> [--block]` discards it. trk never emails customers. |
 | `trk inbox` | The cards waiting for you and why (`--snoozed`, `--done`). `trk inbox done <card>`; `trk inbox snooze <card> <later_today\|tomorrow\|next_week\|date>`. |
 | `trk login`, `logout`, `whoami` | Sign in and out. |

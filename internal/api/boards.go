@@ -20,6 +20,20 @@ type BoardInfo struct {
 	Details    []NameValue `json:"details"`    // The board's own, not its parents'.
 	Areas      []Area      `json:"areas"`      // Its own: who is in charge of what.
 	URL        string      `json:"url"`
+	// The minutes Trk's agent starts a turn with and the most it can grow
+	// to, as the board itself sets them: nil inherits from the boards
+	// above.
+	AgentMinutes    *int `json:"agent_minutes"`
+	AgentMaxMinutes *int `json:"agent_max_minutes"`
+	// AgentTime is the time in effect, inherited where the board sets
+	// none; nil from a server that predates it.
+	AgentTime *AgentTime `json:"agent_time"`
+}
+
+// AgentTime is how long Trk's agent works a turn on a board.
+type AgentTime struct {
+	Minutes    int `json:"minutes"`
+	MaxMinutes int `json:"max_minutes"`
 }
 
 // BoardRef names a board.
@@ -67,6 +81,9 @@ type NewBoard struct {
 	Status   string      `json:"status,omitempty"`
 	Details  []NameValue `json:"details,omitempty"`
 	Areas    []Area      `json:"areas,omitempty"`
+	// Unset inherits from the boards above.
+	AgentMinutes    *int `json:"agent_minutes,omitempty"`
+	AgentMaxMinutes *int `json:"agent_max_minutes,omitempty"`
 }
 
 // CreateBoard creates a board.
@@ -89,6 +106,10 @@ type BoardUpdate struct {
 	Status   *string      `json:"status,omitempty"`
 	Details  *[]NameValue `json:"details,omitempty"`
 	Areas    *[]Area      `json:"areas,omitempty"` // The whole new list.
+	// The agent's minutes: a nil *int sends null, which clears the
+	// board's own so it inherits from the boards above.
+	AgentMinutes    **int `json:"agent_minutes,omitempty"`
+	AgentMaxMinutes **int `json:"agent_max_minutes,omitempty"`
 }
 
 // UpdateBoard changes board (an id or a name).

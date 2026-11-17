@@ -2,6 +2,14 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk board new` and `trk board edit` take `--agent-minutes` and
+  `--agent-max-minutes`: how long Trk's agent works a turn on the board's
+  cards, and the most a turn can grow to. `""` goes back to what the boards
+  above say. `trk boards` shows it on boards that set their own; the board
+  JSON gains `agent_minutes`, `agent_max_minutes` and `agent_time`.
+
 ## 0.5.0
 
 - The once-a-day notice of a newer trk is one line that says how to update

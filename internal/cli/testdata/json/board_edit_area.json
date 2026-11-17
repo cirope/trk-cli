@@ -45,5 +45,11 @@
       ]
     }
   ],
-  "url": "http://trk.test/boards/TyzgACHc57CG"
+  "url": "http://trk.test/boards/TyzgACHc57CG",
+  "agent_minutes": null,
+  "agent_max_minutes": null,
+  "agent_time": {
+    "minutes": 15,
+    "max_minutes": 45
+  }
 }

@@ -19,6 +19,12 @@
   "response": {
     "status": 200,
     "body": {
+      "agent_max_minutes": null,
+      "agent_minutes": null,
+      "agent_time": {
+        "max_minutes": 45,
+        "minutes": 15
+      },
       "areas": [],
       "columns": [
         {
