@@ -2,7 +2,7 @@
 
 What changed in each release of `trk`, for the people who use it.
 
-## Unreleased
+## 0.5.1
 
 - `trk board new` and `trk board edit` take `--agent-minutes` and
   `--agent-max-minutes`: how long Trk's agent works a turn on the board's
