@@ -26,6 +26,11 @@ exits 0 trk cards --limit 1 --page-token pt_next_page
 stdout 'Xk29LmQp77aB'
 ! stderr 'More cards'
 
+# By column, and idle for a while: no edit, move or message since.
+fake-trk cards.list.idle
+exits 0 trk cards --column todo --idle 2d
+stdout 'Xk29LmQp77aB .* idle 2d$'
+
 # Wrong values are wrong usage, caught before asking the server.
 exits 2 trk cards --state closed
 stderr 'state must be one of open, review, waiting'
@@ -33,12 +38,16 @@ exits 2 trk cards --limit 0
 stderr 'limit must be between 1 and 100'
 exits 2 trk cards --all
 stderr '--all needs --board'
+exits 2 trk cards --idle 3x
+stderr 'idle must be a number of hours, days or weeks, like 36h, 2d or 1w'
+exits 2 trk cards --idle 0d
+stderr 'idle must be'
 exits 2 trk cards extra
 exits 2 trk card frobnicate
 stderr 'unknown command "frobnicate"'
 
 -- cards.txt --
 LATER
-  BaHtsbhzVDa9  CSV export loses accents  Producto › Soporte · To do              due Nov 27  high
+  BaHtsbhzVDa9  CSV export loses accents  Product › Support · To do       due Nov 27  high
 NO DATE
-  Xk29LmQp77aB  Rework the importer       Producto › Implementación Acme · To do
+  Xk29LmQp77aB  Rework the importer       Product › Acme rollout · To do              idle 2d

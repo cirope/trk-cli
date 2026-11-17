@@ -1,12 +1,12 @@
 # Creating a board: a subproject, with its repository and details.
 env TRK_TOKEN=test_access_token
 fake-trk board.create.ok
-exits 0 trk board new CLI --parent Soporte --repo cirope/trk-cli --detail Docs=SPEC.md
-stdout '^Created Bc3iSuBpRj83: Soporte › CLI$'
+exits 0 trk board new CLI --parent Support --repo cirope/trk-cli --detail Docs=SPEC.md
+stdout '^Created Bc3iSuBpRj83: Support › CLI$'
 stdout '^http://trk.test/boards/Bc3iSuBpRj83$'
-exits 0 trk board new -q CLI --parent Soporte --repo cirope/trk-cli --detail Docs=SPEC.md
+exits 0 trk board new -q CLI --parent Support --repo cirope/trk-cli --detail Docs=SPEC.md
 stdout '^Bc3iSuBpRj83$'
-exits 0 trk board new --json CLI --parent Soporte --repo cirope/trk-cli --detail Docs=SPEC.md
+exits 0 trk board new --json CLI --parent Support --repo cirope/trk-cli --detail Docs=SPEC.md
 stdout '"id": "Bc3iSuBpRj83"'
 
 # Wrong usage, caught before asking the server.

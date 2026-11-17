@@ -1,7 +1,7 @@
 {
   "id": "BaHtsbhzVDa9",
   "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9",
-  "title": "La exportación a CSV pierde los acentos",
+  "title": "CSV export drops the accents",
   "description": "Rows come out as mojibake in Excel.",
   "type": "bug",
   "priority": "high",
@@ -13,29 +13,29 @@
   "agent": true,
   "board": {
     "id": "TyzgACHc57CG",
-    "name": "Soporte",
+    "name": "Support",
     "status": "active",
     "repository": "cirope/trk",
     "path": [
-      "Producto",
-      "Soporte"
+      "Product",
+      "Support"
     ]
   },
   "board_details": [
     {
       "name": "Docs",
       "value": "https://docs.example.com",
-      "board": "Producto"
+      "board": "Product"
     },
     {
       "name": "Website",
       "value": "https://example.com",
-      "board": "Producto"
+      "board": "Product"
     },
     {
       "name": "Tests",
       "value": "mix precommit",
-      "board": "Soporte"
+      "board": "Support"
     }
   ],
   "area": null,
@@ -93,5 +93,6 @@
   "commits": [],
   "commits_next_page_token": null,
   "inserted_at": "2026-11-12T09:00:00Z",
-  "updated_at": "2026-11-13T12:30:00Z"
+  "updated_at": "2026-11-13T12:30:00Z",
+  "active_at": "2026-11-13T12:30:00Z"
 }

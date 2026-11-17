@@ -143,7 +143,7 @@ func TestCards(t *testing.T) {
 		second.Board.Repository != nil || second.Board.Status != "on_hold" {
 		t.Errorf("second card = %+v", second)
 	}
-	if diff := cmp.Diff([]string{"Producto", "Implementación Acme"}, second.Board.Path); diff != "" {
+	if diff := cmp.Diff([]string{"Product", "Acme rollout"}, second.Board.Path); diff != "" {
 		t.Errorf("board path (-want +got):\n%s", diff)
 	}
 }
@@ -165,6 +165,21 @@ func TestCardsFiltersAndPaging(t *testing.T) {
 	}
 	if len(page.Items) != 1 || page.Items[0].ID != "Xk29LmQp77aB" {
 		t.Errorf("second page = %+v", page.Items)
+	}
+}
+
+func TestCardsByColumnAndIdle(t *testing.T) {
+	c, _ := fixtureClient(t, "test_access_token", "cards.list.idle")
+	page, err := c.Cards(context.Background(), CardsQuery{Column: "todo", Idle: "2d"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(page.Items) != 2 {
+		t.Fatalf("got %d cards, want 2", len(page.Items))
+	}
+	want := time.Date(2026, 11, 13, 12, 15, 32, 0, time.UTC)
+	if got := page.Items[0].ActiveAt; !got.Equal(want) {
+		t.Errorf("active_at = %v, want %v", got, want)
 	}
 }
 
@@ -350,7 +365,7 @@ func TestMeUpgradeRequired(t *testing.T) {
 func TestCreateCard(t *testing.T) {
 	c, srv := fixtureClient(t, "test_access_token", "card.create.ok")
 	card, err := c.CreateCard(context.Background(), NewCard{
-		Board: "Soporte", Title: "Board notes for the agent",
+		Board: "Support", Title: "Board notes for the agent",
 		Description: "Where the docs are, which is the website.",
 		Type:        "feature", Priority: "normal",
 	})
@@ -374,7 +389,7 @@ func TestCreateCard(t *testing.T) {
 
 func TestCreateCardInvalid(t *testing.T) {
 	c, _ := fixtureClient(t, "test_access_token", "card.create.invalid")
-	_, err := c.CreateCard(context.Background(), NewCard{Board: "Soporte", Title: ""})
+	_, err := c.CreateCard(context.Background(), NewCard{Board: "Support", Title: ""})
 	var apiErr *Error
 	if !errors.As(err, &apiErr) || apiErr.Status != 422 || len(apiErr.Fields["title"]) != 1 {
 		t.Errorf("err = %#v, want a 422 with fields", err)
@@ -388,9 +403,9 @@ func TestCardBoardDetails(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := []BoardDetail{
-		{Name: "Docs", Value: "https://docs.example.com", Board: "Producto"},
-		{Name: "Website", Value: "https://example.com", Board: "Producto"},
-		{Name: "Tests", Value: "mix precommit", Board: "Soporte"},
+		{Name: "Docs", Value: "https://docs.example.com", Board: "Product"},
+		{Name: "Website", Value: "https://example.com", Board: "Product"},
+		{Name: "Tests", Value: "mix precommit", Board: "Support"},
 	}
 	if diff := cmp.Diff(want, card.BoardDetails); diff != "" {
 		t.Errorf("board details (-want +got):\n%s", diff)
@@ -436,17 +451,17 @@ func TestBoards(t *testing.T) {
 	if len(page.Items) != 3 || page.NextPageToken != nil {
 		t.Fatalf("page = %+v", page)
 	}
-	soporte := page.Items[1]
-	if soporte.Parent == nil || soporte.Parent.Name != "Producto" || soporte.Repository == nil ||
-		*soporte.Repository != "cirope/trk" || len(soporte.Columns) != 4 || soporte.Details[0].Name != "Tests" {
-		t.Errorf("Soporte = %+v", soporte)
+	support := page.Items[1]
+	if support.Parent == nil || support.Parent.Name != "Product" || support.Repository == nil ||
+		*support.Repository != "cirope/trk" || len(support.Columns) != 4 || support.Details[0].Name != "Tests" {
+		t.Errorf("Support = %+v", support)
 	}
 }
 
 func TestCreateBoard(t *testing.T) {
 	c, _ := fixtureClient(t, "test_access_token", "board.create.ok")
 	b, err := c.CreateBoard(context.Background(), NewBoard{
-		Name: "CLI", Parent: "Soporte", Repo: "cirope/trk-cli",
+		Name: "CLI", Parent: "Support", Repo: "cirope/trk-cli",
 		Details: []NameValue{{Name: "Docs", Value: "SPEC.md"}},
 	})
 	if err != nil {
@@ -505,7 +520,7 @@ func TestOwners(t *testing.T) {
 
 func TestUpdateCard(t *testing.T) {
 	c, srv := fixtureClient(t, "test_access_token", "card.update.ok", "card.update.invalid")
-	title := "La exportación a CSV pierde los acentos"
+	title := "CSV export drops the accents"
 	card, err := c.UpdateCard(context.Background(), "BaHtsbhzVDa9", CardUpdate{Title: &title})
 	if err != nil || card.Title != title {
 		t.Fatalf("UpdateCard = %+v, %v", card, err)
@@ -575,7 +590,7 @@ func TestMail(t *testing.T) {
 		t.Errorf("thread = %+v", th)
 	}
 
-	card, err := c.FileMail(context.Background(), "Mx7tHrEad2Qx", "Soporte")
+	card, err := c.FileMail(context.Background(), "Mx7tHrEad2Qx", "Support")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -676,7 +691,7 @@ func TestInbox(t *testing.T) {
 	}
 	it := page.Items[0]
 	if it.Card.ID != "BaHtsbhzVDa9" || it.State != "waiting" || it.Reason.By == nil || *it.Reason.By != "Ana Ruiz" ||
-		len(it.Reason.Why) != 1 || it.Reason.Why[0] != "person" || it.Seen || it.Card.Board.Name != "Soporte" {
+		len(it.Reason.Why) != 1 || it.Reason.Why[0] != "person" || it.Seen || it.Card.Board.Name != "Support" {
 		t.Errorf("item = %+v", it)
 	}
 	done, err := c.InboxDone(context.Background(), "BaHtsbhzVDa9")

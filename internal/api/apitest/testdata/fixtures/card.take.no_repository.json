@@ -8,6 +8,7 @@
     "body": {
       "branch": null,
       "card": {
+        "active_at": "2026-11-13T12:30:00Z",
         "agent": false,
         "archived_at": null,
         "area": null,
@@ -15,22 +16,22 @@
         "attachments_next_page_token": null,
         "board": {
           "id": "Pr3dUctAcme7",
-          "name": "Implementación Acme",
+          "name": "Acme rollout",
           "path": [
-            "Producto",
-            "Implementación Acme"
+            "Product",
+            "Acme rollout"
           ],
           "repository": null,
           "status": "on_hold"
         },
         "board_details": [
           {
-            "board": "Producto",
+            "board": "Product",
             "name": "Docs",
             "value": "https://docs.example.com"
           },
           {
-            "board": "Producto",
+            "board": "Product",
             "name": "Website",
             "value": "https://example.com"
           }

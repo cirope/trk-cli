@@ -14,12 +14,12 @@
       "agent": true,
       "board": {
         "id": "TyzgACHc57CG",
-        "name": "Soporte",
+        "name": "Support",
         "status": "active",
         "repository": "cirope/trk",
         "path": [
-          "Producto",
-          "Soporte"
+          "Product",
+          "Support"
         ]
       },
       "area": null,
@@ -52,7 +52,8 @@
       "messages_next_page_token": null,
       "commits_next_page_token": null,
       "inserted_at": "2026-11-12T09:00:00Z",
-      "updated_at": "2026-11-13T12:15:32Z"
+      "updated_at": "2026-11-13T12:15:32Z",
+      "active_at": "2026-11-13T12:15:32Z"
     },
     {
       "id": "Xk29LmQp77aB",
@@ -68,12 +69,12 @@
       "agent": true,
       "board": {
         "id": "Pr3dUctAcme7",
-        "name": "Implementación Acme",
+        "name": "Acme rollout",
         "status": "on_hold",
         "repository": null,
         "path": [
-          "Producto",
-          "Implementación Acme"
+          "Product",
+          "Acme rollout"
         ]
       },
       "area": null,
@@ -96,7 +97,8 @@
       "messages_next_page_token": null,
       "commits_next_page_token": null,
       "inserted_at": "2026-11-10T15:30:00Z",
-      "updated_at": "2026-11-11T10:00:00Z"
+      "updated_at": "2026-11-11T10:00:00Z",
+      "active_at": "2026-11-11T10:00:00Z"
     }
   ],
   "next_page_token": null

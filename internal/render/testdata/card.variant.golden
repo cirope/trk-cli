@@ -1,5 +1,5 @@
 CSV export loses accents
-BaHtsbhzVDa9 · Producto › Soporte · To do
+BaHtsbhzVDa9 · Product › Support · To do
 http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9
 
 Priority:     high
@@ -11,9 +11,9 @@ Agent:        on
 Pull request: #12 open, checks failing  https://github.com/cirope/trk/pull/12
 
 Board details
-  Docs:    https://docs.example.com (Producto)
-  Website: https://example.com (Producto)
-  Tests:   mix precommit (Soporte)
+  Docs:    https://docs.example.com (Product)
+  Website: https://example.com (Product)
+  Tests:   mix precommit (Support)
 
 Conversation
   Older messages are on the web: trk card show BaHtsbhzVDa9 --web

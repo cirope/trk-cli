@@ -10,7 +10,7 @@
         }
       ],
       "name": "CLI",
-      "parent": "Soporte",
+      "parent": "Support",
       "repo": "cirope/trk-cli"
     }
   },
@@ -51,7 +51,7 @@
       "name": "CLI",
       "parent": {
         "id": "TyzgACHc57CG",
-        "name": "Soporte"
+        "name": "Support"
       },
       "repository": "cirope/trk-cli",
       "status": "active",

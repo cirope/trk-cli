@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/cirope/trk-cli/internal/api"
 )
@@ -76,22 +78,43 @@ func message(err error) string {
 
 // reportError writes err to stderr: one line, or a JSON object under
 // --json.
-func (a *app) reportError(err error) {
+func (a *app) reportError(ctx context.Context, err error) {
 	code, kind := classify(err)
 	if kind == "" {
 		return
 	}
+	// "Run 'trk --help'" is for mistakes in the command line, not for data
+	// Trk refused (also exit 2).
+	var ue usageError
+	cmdLine := code == ExitUsage && errors.As(err, &ue)
+	var hint *updateHint
+	if a.newerMayFix(err) {
+		hint = a.updateHint(ctx)
+	}
 	w := a.env.Stderr
 	if a.flags.json {
-		b, _ := json.Marshal(map[string]string{"code": kind, "message": message(err)})
+		b, _ := json.Marshal(struct {
+			Code    string      `json:"code"`
+			Message string      `json:"message"`
+			Hint    *updateHint `json:"hint,omitempty"`
+		}{kind, message(err), hint})
 		fmt.Fprintf(w, "%s\n", b)
 		return
 	}
 	fmt.Fprintf(w, "trk: %s\n", message(err))
-	// The hint is for mistakes in the command line, not for data Trk
-	// refused (also exit 2).
-	var ue usageError
-	if code == ExitUsage && errors.As(err, &ue) {
+	if cmdLine {
 		fmt.Fprintln(w, "Run 'trk --help' for usage.")
 	}
+	if hint != nil {
+		fmt.Fprintf(w, "Maybe you need trk %s (you have %s): %s\n", hint.Latest, a.env.Build.Version, hint.Upgrade)
+	}
+}
+
+// newerMayFix reports whether err is a failure a newer trk may not have:
+// a mistake in the command line (an unknown flag, command or value), or a
+// request the server calls bad (400).
+func (a *app) newerMayFix(err error) bool {
+	var ue usageError
+	var ae *api.Error
+	return errors.As(err, &ue) || (errors.As(err, &ae) && ae.Status == http.StatusBadRequest)
 }

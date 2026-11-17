@@ -1,10 +1,10 @@
 # Editing a card changes only what is given.
 env TRK_TOKEN=test_access_token
 fake-trk card.update.ok
-exits 0 trk card edit BaHtsbhzVDa9 --title 'La exportación a CSV pierde los acentos'
-stdout '^Updated BaHtsbhzVDa9: La exportación a CSV pierde los acentos$'
-exits 0 trk card edit BaHtsbhzVDa9 --title 'La exportación a CSV pierde los acentos' --json
-stdout '"title": "La exportación a CSV pierde los acentos"'
+exits 0 trk card edit BaHtsbhzVDa9 --title 'CSV export drops the accents'
+stdout '^Updated BaHtsbhzVDa9: CSV export drops the accents$'
+exits 0 trk card edit BaHtsbhzVDa9 --title 'CSV export drops the accents' --json
+stdout '"title": "CSV export drops the accents"'
 
 # Caught before asking the server.
 exits 2 trk card edit BaHtsbhzVDa9

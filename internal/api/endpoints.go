@@ -71,10 +71,16 @@ func (c *Client) RevokeSession(ctx context.Context) error {
 
 // CardsQuery filters and pages GET /cards. Zero values are left out.
 type CardsQuery struct {
-	Board     string
-	State     string
-	Type      string
-	Priority  string
+	Board    string
+	State    string
+	Type     string
+	Priority string
+	// Column is a role (todo, doing, review, done) or, with Board, a
+	// column's name.
+	Column string
+	// Idle keeps cards with no edit, move or message for this long: 36h,
+	// 2d, 1w.
+	Idle      string
 	All       bool
 	Limit     int
 	PageToken string
@@ -91,6 +97,8 @@ func (q CardsQuery) values() url.Values {
 	set("state", q.State)
 	set("type", q.Type)
 	set("priority", q.Priority)
+	set("column", q.Column)
+	set("idle", q.Idle)
 	set("page_token", q.PageToken)
 	if q.All {
 		v.Set("all", "true")

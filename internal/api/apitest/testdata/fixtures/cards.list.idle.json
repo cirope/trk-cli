@@ -1,0 +1,110 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cards",
+    "query": {
+      "column": "todo",
+      "idle": "2d"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "active_at": "2026-11-13T12:15:32Z",
+          "agent": true,
+          "archived_at": null,
+          "area": null,
+          "board": {
+            "id": "TyzgACHc57CG",
+            "name": "Support",
+            "path": [
+              "Product",
+              "Support"
+            ],
+            "repository": "cirope/trk",
+            "status": "active"
+          },
+          "branch": "trk/card-BaHtsbhzVDa9",
+          "closed_at": null,
+          "column": {
+            "id": "Cq3mRkT8vWx2",
+            "name": "To do",
+            "role": "todo"
+          },
+          "due_on": "2026-11-27",
+          "due_window": "later",
+          "id": "BaHtsbhzVDa9",
+          "inserted_at": "2026-11-12T09:00:00Z",
+          "owners": [
+            {
+              "id": "Us7rAnaRz2Kp",
+              "name": "Ana Ruiz"
+            },
+            {
+              "id": "Us9rFrancoX2",
+              "name": "Franco Catena"
+            }
+          ],
+          "priority": "high",
+          "pull_request": null,
+          "state": "open",
+          "tags": [
+            {
+              "color": "blue",
+              "id": "Tg2BiLLing9x",
+              "name": "Billing"
+            }
+          ],
+          "title": "CSV export loses accents",
+          "type": "bug",
+          "updated_at": "2026-11-13T12:15:32Z",
+          "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9"
+        },
+        {
+          "active_at": "2026-11-11T10:00:00Z",
+          "agent": true,
+          "archived_at": null,
+          "area": null,
+          "board": {
+            "id": "Pr3dUctAcme7",
+            "name": "Acme rollout",
+            "path": [
+              "Product",
+              "Acme rollout"
+            ],
+            "repository": null,
+            "status": "on_hold"
+          },
+          "branch": null,
+          "closed_at": null,
+          "column": {
+            "id": "Cm4tDoXy7Hq2",
+            "name": "To do",
+            "role": "todo"
+          },
+          "due_on": null,
+          "due_window": null,
+          "id": "Xk29LmQp77aB",
+          "inserted_at": "2026-11-10T15:30:00Z",
+          "owners": [
+            {
+              "id": "Us9rFrancoX2",
+              "name": "Franco Catena"
+            }
+          ],
+          "priority": "normal",
+          "pull_request": null,
+          "state": "open",
+          "tags": [],
+          "title": "Rework the importer",
+          "type": "feature",
+          "updated_at": "2026-11-11T10:00:00Z",
+          "url": "http://trk.test/boards/Pr3dUctAcme7/cards/Xk29LmQp77aB"
+        }
+      ],
+      "next_page_token": null
+    }
+  }
+}

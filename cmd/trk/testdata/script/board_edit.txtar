@@ -2,19 +2,19 @@
 # one detail, keeping the others.
 env TRK_TOKEN=test_access_token
 fake-trk boards.list.ok board.update.ok
-exits 0 trk board edit Soporte --status on_hold --detail Website=https://trk.hullop.com
-stdout '^Updated TyzgACHc57CG: Producto › Soporte$'
+exits 0 trk board edit Support --status on_hold --detail Website=https://trk.hullop.com
+stdout '^Updated TyzgACHc57CG: Product › Support$'
 
 # By id too, and -q, --json.
 exits 0 trk board edit TyzgACHc57CG --status on_hold --detail Website=https://trk.hullop.com -q
 stdout '^TyzgACHc57CG$'
-exits 0 trk board edit soporte --status on_hold --detail Website=https://trk.hullop.com --json
+exits 0 trk board edit support --status on_hold --detail Website=https://trk.hullop.com --json
 stdout '"status": "on_hold"'
 
 # Mistakes caught before changing anything.
 exits 3 trk board edit Nope --status on_hold
 stderr 'no board "Nope"'
-exits 2 trk board edit Soporte --remove-detail Docs
-stderr 'Soporte has no detail "Docs"'
-exits 2 trk board edit Soporte
+exits 2 trk board edit Support --remove-detail Docs
+stderr 'Support has no detail "Docs"'
+exits 2 trk board edit Support
 stderr 'nothing to change'

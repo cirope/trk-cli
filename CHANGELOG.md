@@ -4,6 +4,17 @@ What changed in each release of `trk`, for the people who use it.
 
 ## Unreleased
 
+- The once-a-day notice of a newer trk is one line that says how to update
+  for the way you installed it, shows with stdout piped too, and never
+  under `--quiet`.
+- When a command fails in a way a newer trk may fix (an unknown flag,
+  command or value, or the server's 400), trk says which version to get
+  and how, in pipes too, and as `hint` in the `--json` error.
+- `trk version`, and `trk version --check` to ask now whether a newer trk
+  exists (`--json`: `version`, `latest`, `outdated`, `upgrade`).
+- `trk cards --column <role or name> --idle <36h|2d|1w>` finds cards in a
+  column, and cards nobody has touched for a while. Lists show how long a
+  card has been idle, from a day on (`idle 3d`); the JSON gains `active_at`.
 - `trk login` says it approves trk on this computer, to match Trk's new
   approval page.
 - `curl -fsSL https://packages.hullop.com/trk/install.sh | sh` installs

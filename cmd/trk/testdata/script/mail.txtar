@@ -7,9 +7,9 @@ exits 0 trk mail --json
 stdout '"reason": "no_board"'
 
 fake-trk mail.file.ok
-exits 0 trk mail file Mx7tHrEad2Qx --board Soporte
-stdout '^Filed as CaRdFrMaiL3x in Producto › Soporte · To do$'
-exits 0 trk mail file Mx7tHrEad2Qx --board Soporte -q
+exits 0 trk mail file Mx7tHrEad2Qx --board Support
+stdout '^Filed as CaRdFrMaiL3x in Product › Support · To do$'
+exits 0 trk mail file Mx7tHrEad2Qx --board Support -q
 stdout '^CaRdFrMaiL3x$'
 
 fake-trk mail.discard.ok

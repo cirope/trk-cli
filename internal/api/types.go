@@ -97,6 +97,9 @@ type Card struct {
 
 	InsertedAt time.Time `json:"inserted_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
+	// ActiveAt is the later of UpdatedAt and the newest message; zero from
+	// a server that predates it.
+	ActiveAt time.Time `json:"active_at"`
 }
 
 // Board is where a card lives.

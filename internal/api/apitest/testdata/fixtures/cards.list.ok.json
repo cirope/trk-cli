@@ -8,15 +8,16 @@
     "body": {
       "items": [
         {
+          "active_at": "2026-11-13T12:15:32Z",
           "agent": true,
           "archived_at": null,
           "area": null,
           "board": {
             "id": "TyzgACHc57CG",
-            "name": "Soporte",
+            "name": "Support",
             "path": [
-              "Producto",
-              "Soporte"
+              "Product",
+              "Support"
             ],
             "repository": "cirope/trk",
             "status": "active"
@@ -58,15 +59,16 @@
           "url": "http://trk.test/boards/TyzgACHc57CG/cards/BaHtsbhzVDa9"
         },
         {
+          "active_at": "2026-11-11T10:00:00Z",
           "agent": true,
           "archived_at": null,
           "area": null,
           "board": {
             "id": "Pr3dUctAcme7",
-            "name": "Implementación Acme",
+            "name": "Acme rollout",
             "path": [
-              "Producto",
-              "Implementación Acme"
+              "Product",
+              "Acme rollout"
             ],
             "repository": null,
             "status": "on_hold"

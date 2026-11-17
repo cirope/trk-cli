@@ -18,5 +18,5 @@ exits 2 trk inbox --snoozed --done
 stderr 'either --snoozed or --done'
 
 -- inbox.txt --
-BaHtsbhzVDa9  CSV export loses accents  Soporte  high
+BaHtsbhzVDa9  CSV export loses accents  Support  high
   Ana Ruiz called you · Nov 13 12:30 · new

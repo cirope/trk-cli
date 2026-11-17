@@ -8,7 +8,7 @@ import (
 )
 
 func TestMergeDetails(t *testing.T) {
-	b := &api.BoardInfo{Name: "Soporte", Details: []api.NameValue{
+	b := &api.BoardInfo{Name: "Support", Details: []api.NameValue{
 		{Name: "Docs", Value: "old"}, {Name: "Tests", Value: "mix test"}, {Name: "Website", Value: "x"},
 	}}
 	got, err := mergeDetails(b,

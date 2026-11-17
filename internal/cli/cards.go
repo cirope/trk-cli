@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"slices"
 	"strings"
 
@@ -56,6 +57,7 @@ func newCardsCmd(a *app, use string) *cobra.Command {
 			"cards, not only yours.",
 		Example: "  trk cards\n" +
 			"  trk cards --board Soporte --state waiting\n" +
+			"  trk cards --column doing --idle 2d         # stuck in progress\n" +
 			"  trk cards --json | jq -r '.items[].id'",
 		Args: noArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
@@ -68,6 +70,9 @@ func newCardsCmd(a *app, use string) *cobra.Command {
 			}
 			if q.Limit < 1 || q.Limit > 100 {
 				return usageError{errors.New("--limit must be between 1 and 100")}
+			}
+			if q.Idle != "" && !idlePattern.MatchString(q.Idle) {
+				return usageError{errors.New("--idle must be a number of hours, days or weeks, like 36h, 2d or 1w")}
 			}
 			if q.All && q.Board == "" {
 				return usageError{errors.New("--all needs --board: closed cards are listed one board at a time")}
@@ -102,10 +107,15 @@ func newCardsCmd(a *app, use string) *cobra.Command {
 	f.StringVar(&q.State, "state", "", "open, review or waiting")
 	f.StringVar(&q.Type, "type", "", "question, feature, bug or security")
 	f.StringVar(&q.Priority, "priority", "", "low, normal, high or urgent")
+	f.StringVar(&q.Column, "column", "", "todo, doing, review or done; with --board, also a column's name")
+	f.StringVar(&q.Idle, "idle", "", "only cards with no edit, move or message for this long: 36h, 2d, 1w")
 	f.IntVar(&q.Limit, "limit", 30, "cards per page, 1 to 100")
 	f.StringVar(&q.PageToken, "page-token", "", "the page to show, as printed after a full page")
 	return cmd
 }
+
+// idlePattern is what --idle takes: 1 to 9999 hours, days or weeks.
+var idlePattern = regexp.MustCompile(`^[1-9][0-9]{0,3}[hdw]$`)
 
 // nextPageArgs repeats the command and the flags given, but the page
 // token, so the hint for the next page keeps the same filters.

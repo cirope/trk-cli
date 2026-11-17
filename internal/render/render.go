@@ -82,7 +82,7 @@ func CardList(w io.Writer, groups []Group, s Style) {
 	rows := make([][]row, len(groups))
 	for gi, g := range groups {
 		for _, c := range g.Cards {
-			r := row{[5]string{c.ID, c.Title, where(c), dueLabel(c, s.Now), extras(c)}}
+			r := row{[5]string{c.ID, c.Title, where(c), dueLabel(c, s.Now), extras(c, s.Now)}}
 			for i, cell := range r.cells {
 				widths[i] = max(widths[i], utf8.RuneCountInString(cell))
 			}
@@ -312,7 +312,7 @@ func dueLabel(c api.Card, now time.Time) string {
 	return "due " + due.Format("Jan 2")
 }
 
-func extras(c api.Card) string {
+func extras(c api.Card, now time.Time) string {
 	var parts []string
 	if c.Priority != "" && c.Priority != "normal" {
 		parts = append(parts, c.Priority)
@@ -320,7 +320,26 @@ func extras(c api.Card) string {
 	if l := stateLabel(&c); l != "" && l != "open" {
 		parts = append(parts, l)
 	}
+	if l := idleLabel(c, now); l != "" {
+		parts = append(parts, l)
+	}
 	return strings.Join(parts, "  ")
+}
+
+// idleLabel says how long a card has gone without an edit, move or
+// message, from a day on: "idle 3d", then weeks from two of them.
+func idleLabel(c api.Card, now time.Time) string {
+	if c.ActiveAt.IsZero() || c.ClosedAt != nil {
+		return ""
+	}
+	days := int(now.Sub(c.ActiveAt) / (24 * time.Hour))
+	switch {
+	case days < 1:
+		return ""
+	case days < 14:
+		return fmt.Sprintf("idle %dd", days)
+	}
+	return fmt.Sprintf("idle %dw", days/7)
 }
 
 func paintExtras(c api.Card, s Style) string {
@@ -330,6 +349,9 @@ func paintExtras(c api.Card, s Style) string {
 	}
 	if l := stateLabel(&c); l != "" && l != "open" {
 		parts = append(parts, l)
+	}
+	if l := idleLabel(c, s.Now); l != "" {
+		parts = append(parts, s.paint(dim, l))
 	}
 	return strings.Join(parts, "  ")
 }

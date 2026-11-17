@@ -2,43 +2,43 @@
 env TRK_TOKEN=test_access_token
 fake-trk card.create.ok card.take.ok card.markdown.ok card.get.ok attachment.get.ok
 stdin description.txt
-exits 0 trk card new --board Soporte 'Board notes for the agent' --type feature --priority normal --description-file -
-stdout '^Created Nw5cArDx7Qp2 in Producto › Soporte · To do$'
+exits 0 trk card new --board Support 'Board notes for the agent' --type feature --priority normal --description-file -
+stdout '^Created Nw5cArDx7Qp2 in Product › Support · To do$'
 stdout '^http://trk.test/boards/TyzgACHc57CG/cards/Nw5cArDx7Qp2$'
 
-exits 0 trk card new -q --board Soporte 'Board notes for the agent' --type feature --priority normal --description 'Where the docs are, which is the website.'
+exits 0 trk card new -q --board Support 'Board notes for the agent' --type feature --priority normal --description 'Where the docs are, which is the website.'
 stdout '^Nw5cArDx7Qp2$'
 ! stdout http
 
-exits 0 trk card new --json --board Soporte 'Board notes for the agent' --type feature --priority normal --description 'Where the docs are, which is the website.'
+exits 0 trk card new --json --board Support 'Board notes for the agent' --type feature --priority normal --description 'Where the docs are, which is the website.'
 stdout '"id": "Nw5cArDx7Qp2"'
 
 # --take takes it right away.
 fake-trk card.create.ok card.take.created
-exits 0 trk card new --board Soporte 'Board notes for the agent' --type feature --priority normal --description 'Where the docs are, which is the website.' --take --no-pull
+exits 0 trk card new --board Support 'Board notes for the agent' --type feature --priority normal --description 'Where the docs are, which is the website.' --take --no-pull
 stdout '^Created Nw5cArDx7Qp2'
 stdout 'You own it now.'
 stdout 'git switch -c trk/card-Nw5cArDx7Qp2'
 
 # With -q, only the id, --take or not: id=$(trk card new -q ...) works.
-exits 0 trk card new -q --board Soporte 'Board notes for the agent' --type feature --priority normal --description 'Where the docs are, which is the website.' --take --no-pull
+exits 0 trk card new -q --board Support 'Board notes for the agent' --type feature --priority normal --description 'Where the docs are, which is the website.' --take --no-pull
 cmp stdout id.txt
 
 # Wrong usage is caught before asking the server.
 exits 2 trk card new 'No board'
 stderr 'needs --board'
-exits 2 trk card new --board Soporte
+exits 2 trk card new --board Support
 stderr 'needs one title'
-exits 2 trk card new --board Soporte T --type chore
+exits 2 trk card new --board Support T --type chore
 stderr '--type must be one of'
-exits 2 trk card new --board Soporte T --due 27/11/2026
+exits 2 trk card new --board Support T --due 27/11/2026
 stderr '--due must be a date like 2026-12-01'
-exits 2 trk card new --board Soporte T --description x --description-file -
+exits 2 trk card new --board Support T --description x --description-file -
 stderr 'either --description or --description-file'
 
 # The server's validation errors name the field: exit 2.
 fake-trk card.create.invalid
-exits 2 trk card new --board Soporte ''
+exits 2 trk card new --board Support ''
 stderr 'title can.t be blank'
 
 -- description.txt --

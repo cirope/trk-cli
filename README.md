@@ -101,9 +101,14 @@ gh attestation verify trk_linux_amd64.tar.gz --repo cirope/trk-cli
 
 Shell completions: `trk completion bash|zsh|fish|powershell --help`.
 
-`trk` tells you, at most once a day, when a newer version exists (never
-under `--json` or in a pipe; `TRK_NO_UPDATE_NOTIFIER=1` turns it off). It
-never updates itself.
+`trk` tells you, at most once a day, when a newer version exists, and how
+to update for the way you installed it. It says so on stderr, only when
+stderr is a terminal, never under `--json` or `--quiet`;
+When a command fails in a way a newer version may fix (an unknown flag,
+command or value, or a request the server calls bad), it says so too, in
+pipes and `--json` as well. `trk version --check` asks right away, for
+scripts and agents. `TRK_NO_UPDATE_NOTIFIER=1` turns the notice and the
+hint off. It never updates itself.
 
 ## Sign in
 

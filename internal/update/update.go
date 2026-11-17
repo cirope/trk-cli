@@ -5,6 +5,7 @@ package update
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -20,7 +21,7 @@ const LatestURL = "https://api.github.com/repos/cirope/trk-cli/releases/latest"
 
 const (
 	interval = 24 * time.Hour
-	timeout  = 2 * time.Second
+	timeout  = 1 * time.Second // Once a day at most; a slow answer is no answer.
 )
 
 // Checker checks for a newer release than Current.
@@ -42,8 +43,59 @@ type state struct {
 // asks the network at most once a day, says so at most once a day, and
 // is silent on any failure.
 func (c *Checker) Notice(ctx context.Context) string {
+	st, line := c.check(ctx)
+	if line == "" || c.Now().Sub(st.NotifiedAt) < interval {
+		c.save(st)
+		return ""
+	}
+	st.NotifiedAt = c.Now()
+	c.save(st)
+	return line
+}
+
+// Newer is for every time it is asked, as when a command fails in a way
+// a newer trk may fix: the newer release's version (no "v"), or "". It
+// still asks the network at most once a day.
+func (c *Checker) Newer(ctx context.Context) string {
+	st, line := c.check(ctx)
+	c.save(st)
+	if line == "" {
+		return ""
+	}
+	return strings.TrimPrefix(st.Latest, "v")
+}
+
+// Latest asks for the latest release now, whatever the day's check said,
+// and remembers it for the notice. It returns the version without a "v";
+// ErrDevelopment for a development build, which is not checked.
+func (c *Checker) Latest(ctx context.Context) (string, error) {
 	if _, ok := parse(c.Current); !ok {
-		return "" // A development build.
+		return "", ErrDevelopment
+	}
+	latest, err := c.fetch(ctx)
+	if err != nil {
+		return "", err
+	}
+	if _, ok := parse(latest); !ok {
+		return "", fmt.Errorf("the latest release is %q, not a version", latest)
+	}
+	st := c.load()
+	st.CheckedAt, st.Latest = c.Now(), latest
+	c.save(st)
+	return strings.TrimPrefix(latest, "v"), nil
+}
+
+// Outdated reports whether latest is newer than this build.
+func (c *Checker) Outdated(latest string) bool { return newer(latest, c.Current) }
+
+// ErrDevelopment is Latest's answer for a development build.
+var ErrDevelopment = errors.New("a development build is not checked")
+
+// check refreshes the remembered latest release when a day has passed
+// and says whether it is newer than this one.
+func (c *Checker) check(ctx context.Context) (state, string) {
+	if _, ok := parse(c.Current); !ok {
+		return c.load(), "" // A development build.
 	}
 	now := c.Now()
 	st := c.load()
@@ -53,14 +105,10 @@ func (c *Checker) Notice(ctx context.Context) string {
 			st.Latest = latest
 		}
 	}
-	notice := ""
-	if newer(st.Latest, c.Current) && now.Sub(st.NotifiedAt) >= interval {
-		st.NotifiedAt = now
-		notice = fmt.Sprintf("A new version of trk is available: %s (you have %s).",
-			strings.TrimPrefix(st.Latest, "v"), c.Current)
+	if !newer(st.Latest, c.Current) {
+		return st, ""
 	}
-	c.save(st)
-	return notice
+	return st, fmt.Sprintf("trk %s is out (you have %s)", strings.TrimPrefix(st.Latest, "v"), c.Current)
 }
 
 func (c *Checker) fetch(ctx context.Context) (string, error) {

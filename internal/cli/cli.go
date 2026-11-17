@@ -9,6 +9,9 @@ import (
 	"io"
 	"net/http"
 	"path/filepath"
+	"runtime"
+	"slices"
+	"strings"
 	"time"
 
 	"github.com/cirope/trk-cli/internal/auth"
@@ -47,6 +50,10 @@ type Env struct {
 
 	CacheDir  string // The platform's user cache directory; "" disables the update notice.
 	UpdateURL string // Where to ask for the latest release; "" is update.LatestURL.
+	// Executable is this binary's path, symlinks resolved; it says how trk
+	// was installed, and so how to update it.
+	Executable string
+	GOOS       string // "" is runtime.GOOS.
 }
 
 // Run executes the command line args (without the program name) and
@@ -58,9 +65,17 @@ func Run(ctx context.Context, args []string, env Env) int {
 	root.SetArgs(args)
 	err := root.ExecuteContext(ctx)
 	if err != nil {
-		a.reportError(err)
+		// A flag error stops parsing before --json is read; it still asks
+		// for a JSON error.
+		if slices.Contains(args, "--json") {
+			a.flags.json = true
+		}
+		a.reportError(ctx, err)
 	}
-	a.updateNotice(ctx)
+	// An error a newer trk may fix already said whether one exists.
+	if !a.checked && !a.newerMayFix(err) {
+		a.updateNotice(ctx)
+	}
 	return exitCode(err)
 }
 
@@ -135,7 +150,8 @@ func newRootCmd(a *app) *cobra.Command {
 	f.BoolVarP(&a.flags.verbose, "verbose", "v", false, "requests and timings on stderr (also $TRK_DEBUG=1)")
 
 	root.AddCommand(newLoginCmd(a), newLogoutCmd(a), newWhoamiCmd(a),
-		newCardsCmd(a, "cards"), newCardCmd(a), newBoardsCmd(a), newBoardCmd(a), newMailCmd(a), newInboxCmd(a))
+		newCardsCmd(a, "cards"), newCardCmd(a), newBoardsCmd(a), newBoardCmd(a), newMailCmd(a), newInboxCmd(a),
+		newVersionCmd(a))
 	return root
 }
 
@@ -156,20 +172,65 @@ func oneCard(cmd *cobra.Command, args []string) error {
 }
 
 // updateNotice says, at most once a day, when a newer trk exists: only to
-// a person at a terminal, never under --json or in a pipe.
+// a person at a terminal, never under --json or --quiet, or with stderr
+// not a terminal.
 func (a *app) updateNotice(ctx context.Context) {
-	if a.flags.json || !a.env.StdoutIsTerminal || !a.env.StderrIsTerminal ||
+	if a.flags.json || a.flags.quiet || !a.env.StderrIsTerminal ||
 		a.env.CacheDir == "" || a.env.Getenv("TRK_NO_UPDATE_NOTIFIER") != "" {
 		return
 	}
-	u := &update.Checker{
+	if n := a.updateChecker().Notice(ctx); n != "" {
+		fmt.Fprintf(a.env.Stderr, "\n%s: %s\n", n, a.howToUpdate())
+	}
+}
+
+// updateChecker checks for a newer trk; nil when the notice is off.
+func (a *app) updateChecker() *update.Checker {
+	return &update.Checker{
 		Current:   a.env.Build.Version,
 		StatePath: filepath.Join(a.env.CacheDir, "trk", "update.json"),
 		URL:       cmp.Or(a.env.UpdateURL, update.LatestURL),
 		HTTP:      a.env.HTTPClient,
 		Now:       a.env.Now,
 	}
-	if n := u.Notice(ctx); n != "" {
-		fmt.Fprintf(a.env.Stderr, "\n%s\nUpdate with: brew upgrade trk, or see https://github.com/cirope/trk-cli/releases\n", n)
+}
+
+// updateHint is the newer trk to suggest with an error it may fix.
+type updateHint struct {
+	Latest  string `json:"latest"`
+	Upgrade string `json:"upgrade"`
+}
+
+// updateHint returns the newer trk, when there is one, for an error it
+// may fix: whatever the terminal, since it goes with an error already
+// shown, and agents never see the notice. nil when trk is up to date, the
+// check fails, or the notice is off.
+func (a *app) updateHint(ctx context.Context) *updateHint {
+	if a.env.CacheDir == "" || a.env.Getenv("TRK_NO_UPDATE_NOTIFIER") != "" {
+		return nil
 	}
+	latest := a.updateChecker().Newer(ctx)
+	if latest == "" {
+		return nil
+	}
+	return &updateHint{Latest: latest, Upgrade: a.howToUpdate()}
+}
+
+func (a *app) howToUpdate() string {
+	return howToUpdate(cmp.Or(a.env.GOOS, runtime.GOOS), a.env.Executable)
+}
+
+// howToUpdate says how to update trk, by where its binary is: Homebrew's,
+// a system package's, or the install script's (or a hand-placed one).
+func howToUpdate(goos, exe string) string {
+	exe = filepath.ToSlash(exe)
+	switch {
+	case goos == "windows":
+		return "https://github.com/cirope/trk-cli/releases/latest"
+	case strings.Contains(exe, "/Caskroom/") || strings.Contains(exe, "/Cellar/"):
+		return "brew upgrade trk"
+	case goos == "linux" && exe == "/usr/bin/trk":
+		return "upgrade it with your package manager (apt, dnf, zypper, apk)"
+	}
+	return "curl -fsSL https://packages.hullop.com/trk/install.sh | sh"
 }

@@ -20,6 +20,8 @@ type app struct {
 	env    Env
 	flags  globalFlags
 	logger *slog.Logger
+	// checked is set once this run has said whether a newer trk exists.
+	checked bool
 }
 
 type globalFlags struct {

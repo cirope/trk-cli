@@ -79,7 +79,7 @@ func listCards(t *testing.T) []api.Card {
 		}),
 		mk("Qw3rTy7uPa2s", "Today's card", "2026-11-13", "week", "high", nil),
 		mk("Xk29LmQp77aB", "Rework the importer", "2026-11-15", "week", "normal", func(c *api.Card) {
-			c.Board.Path = []string{"Producto", "Implementación Acme"}
+			c.Board.Path = []string{"Product", "Acme rollout"}
 			c.State = "waiting"
 		}),
 		mk("Zx8cVb2nMm4k", "Next week", "2026-11-16", "later", "low", nil),
@@ -156,7 +156,7 @@ func TestCard(t *testing.T) {
 	var b bytes.Buffer
 	Card(&b, &c, Style{Now: now})
 	golden(t, "card", b.Bytes())
-	if !strings.Contains(b.String(), "Board details\n  Docs:    https://docs.example.com (Producto)\n") {
+	if !strings.Contains(b.String(), "Board details\n  Docs:    https://docs.example.com (Product)\n") {
 		t.Errorf("no board details in:\n%s", b.String())
 	}
 

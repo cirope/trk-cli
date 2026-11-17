@@ -3,12 +3,13 @@
     "method": "POST",
     "path": "/api/v1/mail/Mx7tHrEad2Qx/file",
     "body": {
-      "board": "Soporte"
+      "board": "Support"
     }
   },
   "response": {
     "status": 200,
     "body": {
+      "active_at": "2026-11-13T12:30:00Z",
       "agent": true,
       "archived_at": null,
       "area": null,
@@ -27,27 +28,27 @@
       "attachments_next_page_token": null,
       "board": {
         "id": "TyzgACHc57CG",
-        "name": "Soporte",
+        "name": "Support",
         "path": [
-          "Producto",
-          "Soporte"
+          "Product",
+          "Support"
         ],
         "repository": "cirope/trk",
         "status": "active"
       },
       "board_details": [
         {
-          "board": "Producto",
+          "board": "Product",
           "name": "Docs",
           "value": "https://docs.example.com"
         },
         {
-          "board": "Producto",
+          "board": "Product",
           "name": "Website",
           "value": "https://example.com"
         },
         {
-          "board": "Soporte",
+          "board": "Support",
           "name": "Tests",
           "value": "mix precommit"
         }

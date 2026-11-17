@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"time"
 
 	"github.com/cirope/trk-cli/internal/auth"
@@ -56,6 +57,13 @@ func run(args []string, d deps) int {
 	if err != nil {
 		cacheDir = "" // No update notice.
 	}
+	exe, err := os.Executable()
+	if err == nil {
+		exe, err = filepath.EvalSymlinks(exe)
+	}
+	if err != nil {
+		exe = "" // The update notice suggests the install script.
+	}
 	return cli.Run(ctx, args, cli.Env{
 		Stdout:           os.Stdout,
 		Stderr:           os.Stderr,
@@ -73,6 +81,7 @@ func run(args []string, d deps) int {
 		StdoutIsTerminal: term.IsTerminal(int(os.Stdout.Fd())), //nolint:gosec // Fd fits in an int.
 		StderrIsTerminal: term.IsTerminal(int(os.Stderr.Fd())), //nolint:gosec // Fd fits in an int.
 		CacheDir:         cacheDir,
+		Executable:       exe,
 		Workdir:          os.Getwd,
 	})
 }

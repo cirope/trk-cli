@@ -43,7 +43,7 @@
           ],
           "id": "Pr8dUcTo4Rt3",
           "language": "en",
-          "name": "Producto",
+          "name": "Product",
           "parent": null,
           "repository": null,
           "status": "active",
@@ -81,10 +81,10 @@
           ],
           "id": "TyzgACHc57CG",
           "language": "en",
-          "name": "Soporte",
+          "name": "Support",
           "parent": {
             "id": "Pr8dUcTo4Rt3",
-            "name": "Producto"
+            "name": "Product"
           },
           "repository": "cirope/trk",
           "status": "active",
@@ -117,10 +117,10 @@
           "details": [],
           "id": "Pr3dUctAcme7",
           "language": "en",
-          "name": "Implementación Acme",
+          "name": "Acme rollout",
           "parent": {
             "id": "Pr8dUcTo4Rt3",
-            "name": "Producto"
+            "name": "Product"
           },
           "repository": null,
           "status": "on_hold",

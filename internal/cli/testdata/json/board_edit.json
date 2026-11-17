@@ -1,12 +1,12 @@
 {
   "id": "TyzgACHc57CG",
-  "name": "Soporte",
+  "name": "Support",
   "status": "on_hold",
   "repository": "cirope/trk",
   "language": "en",
   "parent": {
     "id": "Pr8dUcTo4Rt3",
-    "name": "Producto"
+    "name": "Product"
   },
   "columns": [
     {

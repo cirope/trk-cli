@@ -3,7 +3,7 @@
     "method": "POST",
     "path": "/api/v1/cards",
     "body": {
-      "board": "Soporte",
+      "board": "Support",
       "title": ""
     }
   },
