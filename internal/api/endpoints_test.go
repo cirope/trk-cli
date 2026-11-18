@@ -579,45 +579,6 @@ func TestRateAnswer(t *testing.T) {
 	}
 }
 
-func TestMail(t *testing.T) {
-	c, srv := fixtureClient(t, "test_access_token", "mail.list.ok", "mail.file.ok", "mail.discard.ok")
-	page, err := c.Mail(context.Background(), MailQuery{})
-	if err != nil {
-		t.Fatal(err)
-	}
-	th := page.Items[0]
-	if th.ID != "Mx7tHrEad2Qx" || th.Reason != "no_board" || th.From.Address != "bob@shop.example" || th.CardID != nil || th.Emails != 1 {
-		t.Errorf("thread = %+v", th)
-	}
-
-	card, err := c.FileMail(context.Background(), "Mx7tHrEad2Qx", "Support")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if card.ID != "CaRdFrMaiL3x" || card.Email == nil || card.Email.Subject != "Invoice 12 is frozen" ||
-		len(card.Email.From) != 1 || card.Email.Language != nil {
-		t.Errorf("filed card email = %+v", card.Email)
-	}
-	if m := card.Messages[0]; m.Author != "customer" || m.From == nil || m.From.Name != "Bob Shop" {
-		t.Errorf("customer message = %+v", m)
-	}
-
-	th2, err := c.DiscardMail(context.Background(), "Mx7tHrEad2Qx", true)
-	if err != nil || th2.Status != "discarded" || th2.Reason != "blocked" {
-		t.Errorf("discard = %+v, %v", th2, err)
-	}
-	if b := string(srv.Requests()[2].Body); b != `{"block":true}` {
-		t.Errorf("discard body = %s", b)
-	}
-}
-
-func TestMailDiscardedFilter(t *testing.T) {
-	q := MailQuery{Discarded: true, Limit: 5}.values()
-	if q.Encode() != "limit=5&status=discarded" {
-		t.Errorf("query = %s", q.Encode())
-	}
-}
-
 func textUpload(name, content string) Upload {
 	return Upload{Name: name, Size: int64(len(content)), Open: func() (io.ReadCloser, error) {
 		return io.NopCloser(strings.NewReader(content)), nil

@@ -150,7 +150,7 @@ func newRootCmd(a *app) *cobra.Command {
 	f.BoolVarP(&a.flags.verbose, "verbose", "v", false, "requests and timings on stderr (also $TRK_DEBUG=1)")
 
 	root.AddCommand(newLoginCmd(a), newLogoutCmd(a), newWhoamiCmd(a),
-		newCardsCmd(a, "cards"), newCardCmd(a), newBoardsCmd(a), newBoardCmd(a), newMailCmd(a), newInboxCmd(a),
+		newCardsCmd(a, "cards"), newCardCmd(a), newBoardsCmd(a), newBoardCmd(a), newInboxCmd(a),
 		newVersionCmd(a))
 	return root
 }

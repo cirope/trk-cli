@@ -2,6 +2,11 @@
 
 What changed in each release of `trk`, for the people who use it.
 
+## Unreleased
+
+- `trk mail` is gone: held email is reviewed in Trk's web app only, and
+  Trk no longer offers it to the CLI.
+
 ## 0.5.1
 
 - `trk board new` and `trk board edit` take `--agent-minutes` and
